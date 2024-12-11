@@ -4,49 +4,61 @@ import BrandText from "@/components/ui/BrandText";
 import StaticBackground from "@/components/ui/StaticBackground";
 import { useAuth } from "@/context/AuthContext";
 import { useThemeColors } from "@/hooks/useThemeColor";
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import { Image, SafeAreaView, StyleSheet, View } from "react-native";
 import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
+import Logo from "@/assets/images/logo.svg";
+import { Link } from "expo-router";
+import OnboardingLayout from "./OnboardingLayout";
 
-export default function AuthPage() {
+export default function FirstPage() {
     const colors = useThemeColors();
 
     return (
-        <StaticBackground>
-            <SafeAreaView
-                style={{
-                    margin: 24,
-                    flex: 1,
-                    justifyContent: "flex-end",
-                }}>
-                <BrandText
-                    style={[
-                        { color: colors.textOnPrimary, paddingBottom: 2 },
-                        styles.text,
-                    ]}>
-                    Speak with confidence.
-                </BrandText>
-                <ThemedText style={{ color: colors.textSecondaryOnPrimary }}>
-                    Your journey to fluency starts here.
-                </ThemedText>
-                <View style={{ paddingTop: 36, gap: 18, paddingBottom: 24 }}>
-                    <Button onPress={() => {}}>
-                        <ButtonText>Get started</ButtonText>
-                    </Button>
+        <OnboardingLayout>
+            <View style={[styles.container]}>
+                <Logo width={250} height={60} style={styles.logo} />
+                <View>
+                    <BrandText
+                        style={[
+                            { color: colors.textOnPrimary, paddingBottom: 2 },
+                            styles.text,
+                        ]}>
+                        Speak with confidence.
+                    </BrandText>
                     <ThemedText
-                        style={{
-                            textAlign: "center",
-                            color: colors.textOnPrimary,
-                        }}>
-                        I already have an account
+                        style={{ color: colors.textSecondaryOnPrimary }}>
+                        Your journey to fluency starts here.
                     </ThemedText>
+                    <View
+                        style={{ paddingTop: 36, gap: 16, paddingBottom: 24 }}>
+                        <Button
+                            href="/onboarding/choose-languages"
+                            variant="primaryVariant">
+                            <ButtonText>Get started</ButtonText>
+                        </Button>
+                        <ThemedText
+                            style={{
+                                textAlign: "center",
+                                color: colors.textOnPrimary,
+                            }}>
+                            I already have an account
+                        </ThemedText>
+                    </View>
                 </View>
-            </SafeAreaView>
-        </StaticBackground>
+            </View>
+        </OnboardingLayout>
     );
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: "space-between",
+    },
+    logo: {
+        alignSelf: "center",
+    },
     text: {
         fontSize: 36,
     },

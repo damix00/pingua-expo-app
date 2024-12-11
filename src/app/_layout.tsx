@@ -7,7 +7,7 @@ import {
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Platform, useColorScheme } from "react-native";
 import {
     Montserrat_100Thin,
@@ -31,6 +31,13 @@ import {
     WorkSans_800ExtraBold,
     WorkSans_900Black,
 } from "@expo-google-fonts/work-sans";
+import {
+    loadPreferences,
+    PreferencesProvider,
+    PreferencesType,
+} from "@/context/PreferencesContext";
+import { StatusBar } from "expo-status-bar";
+import * as NavigationBar from "expo-navigation-bar";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -59,38 +66,85 @@ export default function RootLayout() {
     });
 
     const [loggedIn, setLoggedIn] = useState(false);
+    const [loadedPrefs, setLoadedPrefs] = useState(false);
+    const [loadedAll, setLoadedAll] = useState(false);
+    const [prefs, setPrefs] = useState<PreferencesType | null>(null);
     const scheme = useColorScheme();
     const colors = useThemeColors();
 
-    const loaded = loadedFonts;
+    const loading = useRef(false);
+
+    const load = async () => {
+        setPrefs(await loadPreferences());
+        setLoadedPrefs(true);
+
+        console.log("Loaded preferences");
+
+        if (Platform.OS === "android") {
+            await NavigationBar.setPositionAsync("absolute");
+            await NavigationBar.setBackgroundColorAsync("#ffffff00");
+        }
+    };
 
     useEffect(() => {
-        if (loaded) {
+        if (loadedFonts && loadedPrefs && !loadedAll) {
+            console.log("Loaded all assets");
+            setLoadedAll(true);
             SplashScreen.hideAsync();
         }
-    }, [loadedFonts]);
+    }, [loadedFonts, loadedPrefs]);
 
-    if (!loaded) {
+    useEffect(() => {
+        if (!loading.current) {
+            load();
+            loading.current = true;
+        }
+    }, []);
+
+    if (!loadedAll) {
         return null;
     }
 
     return (
-        <AuthProvider user={null} loggedIn={loggedIn} setLoggedIn={setLoggedIn}>
-            <ThemeProvider value={scheme === "dark" ? DarkTheme : DefaultTheme}>
-                <Stack
-                    initialRouteName={loggedIn ? "index" : "onboarding/index"}
-                    screenOptions={{
-                        headerStyle: Platform.select({
-                            android: {},
-                        }),
-                    }}>
-                    <Stack.Screen
-                        name="onboarding/index"
-                        options={{ animation: "none", headerShown: false }}
-                    />
-                    <Stack.Screen name="index" />
-                </Stack>
-            </ThemeProvider>
-        </AuthProvider>
+        <PreferencesProvider
+            preferences={prefs ?? { hapticFeedback: true }}
+            setPreferences={() => {}}>
+            <AuthProvider
+                user={null}
+                loggedIn={loggedIn}
+                setLoggedIn={setLoggedIn}>
+                <ThemeProvider
+                    value={scheme === "dark" ? DarkTheme : DefaultTheme}>
+                    <StatusBar style="auto" />
+
+                    <Stack
+                        initialRouteName={
+                            loggedIn ? "index" : "onboarding/index"
+                        }
+                        screenOptions={{
+                            headerStyle: Platform.select({
+                                android: {},
+                            }),
+                            animation: "ios_from_right",
+                        }}>
+                        <Stack.Screen
+                            name="onboarding/index"
+                            options={{
+                                animation: "none",
+                                headerShown: false,
+                            }}
+                        />
+                        <Stack.Screen
+                            name="onboarding/choose-languages"
+                            options={{
+                                headerShown: false,
+                                animation: "default",
+                            }}
+                        />
+                        <Stack.Screen name="index" />
+                    </Stack>
+                </ThemeProvider>
+            </AuthProvider>
+        </PreferencesProvider>
     );
 }

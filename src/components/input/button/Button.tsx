@@ -1,10 +1,20 @@
+import { usePreferences } from "@/context/PreferencesContext";
 import { useThemeColors } from "@/hooks/useThemeColor";
-import { createContext, useContext } from "react";
+import { BlurView } from "expo-blur";
+import { createContext, useContext, useEffect } from "react";
 import {
     StyleSheet,
     TouchableOpacity,
     TouchableOpacityProps,
+    View,
 } from "react-native";
+import Animated, {
+    useSharedValue,
+    useAnimatedStyle,
+    withTiming,
+} from "react-native-reanimated";
+import * as Haptics from "expo-haptics";
+import { router } from "expo-router";
 
 type ButtonVariant = "primary" | "secondary" | "primaryVariant";
 
@@ -26,19 +36,49 @@ export function useButtonContext() {
     return ctx;
 }
 
+const AnimatedTouchableOpacity =
+    Animated.createAnimatedComponent(TouchableOpacity);
+
 export default function Button({
     children,
     style,
     variant,
+    href,
     ...props
-}: TouchableOpacityProps & { variant?: ButtonVariant }) {
+}: TouchableOpacityProps & { variant?: ButtonVariant; href?: string }) {
     const colors = useThemeColors();
+    const preferences = usePreferences();
+    const opacity = useSharedValue(props.disabled ? 0.5 : 1);
+
+    useEffect(() => {
+        opacity.value = withTiming(props.disabled ? 0.5 : 1, { duration: 300 });
+    }, [props.disabled]);
+
+    const animatedStyle = useAnimatedStyle(() => {
+        return {
+            opacity: opacity.value,
+        };
+    });
 
     return (
         <ButtonContext.Provider value={{ variant: variant ?? "primary" }}>
-            <TouchableOpacity
+            <AnimatedTouchableOpacity
+                {...props}
+                onPressIn={(e) => {
+                    if (preferences?.preferences.hapticFeedback) {
+                        Haptics.selectionAsync();
+                    }
+                    props.onPressIn && props.onPressIn(e);
+                }}
+                onPress={(e) => {
+                    if (href) {
+                        router.push(href as any);
+                    }
+                    props.onPress && props.onPress(e);
+                }}
                 style={[
                     styles.button,
+                    animatedStyle,
                     {
                         backgroundColor:
                             variant == "primaryVariant"
@@ -46,7 +86,6 @@ export default function Button({
                                 : variant == "secondary"
                                 ? colors.background
                                 : colors.primary,
-
                         borderColor:
                             variant == "secondary"
                                 ? colors.primary
@@ -54,15 +93,17 @@ export default function Button({
                         borderWidth: variant == "secondary" ? 1 : 0,
                     },
                     style,
-                ]}
-                {...props}>
+                ]}>
                 {children}
-            </TouchableOpacity>
+            </AnimatedTouchableOpacity>
         </ButtonContext.Provider>
     );
 }
 
 const styles = StyleSheet.create({
+    container: {
+        position: "relative",
+    },
     button: {
         boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
         borderRadius: 32,

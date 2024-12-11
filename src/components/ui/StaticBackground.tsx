@@ -13,14 +13,15 @@ export default function StaticBackground({
 }: {
     children?: React.ReactNode;
 }) {
+    const auraSource = require("@/assets/ui/aura.png");
     const colors = useThemeColors();
 
     return (
         <View style={[styles.container, { backgroundColor: colors.primary }]}>
             <Image
                 resizeMode="cover"
-                style={styles.aura}
-                source={require("@/assets/ui/aura.png")}
+                style={[styles.aura]}
+                source={auraSource}
             />
             <Image
                 resizeMode="repeat"
@@ -54,6 +55,6 @@ const styles = StyleSheet.create({
         bottom: 0,
         width: Dimensions.get("window").width,
         height: Dimensions.get("window").height,
-        opacity: 0.6,
+        opacity: 0.25,
     },
 });
