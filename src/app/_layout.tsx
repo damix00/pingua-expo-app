@@ -8,7 +8,7 @@ import {
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { Platform, useColorScheme } from "react-native";
+import { Platform, useColorScheme, View } from "react-native";
 import {
     Montserrat_100Thin,
     Montserrat_200ExtraLight,
@@ -38,6 +38,7 @@ import {
 } from "@/context/PreferencesContext";
 import { StatusBar } from "expo-status-bar";
 import * as NavigationBar from "expo-navigation-bar";
+import OnboardingAppbar from "./onboarding/OnboardingAppbar";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -125,7 +126,10 @@ export default function RootLayout() {
                             headerStyle: Platform.select({
                                 android: {},
                             }),
-                            animation: "ios_from_right",
+                            animation: Platform.select({
+                                android: "simple_push",
+                                ios: "ios_from_right",
+                            }),
                         }}>
                         <Stack.Screen
                             name="onboarding/index"
@@ -136,6 +140,17 @@ export default function RootLayout() {
                         />
                         <Stack.Screen
                             name="onboarding/choose-languages"
+                            options={{
+                                headerShown: true,
+                                headerTransparent: true,
+                                header: () => (
+                                    <OnboardingAppbar title="Choose Languages" />
+                                ),
+                                animation: "default",
+                            }}
+                        />
+                        <Stack.Screen
+                            name="auth/index"
                             options={{
                                 headerShown: false,
                                 animation: "default",

@@ -10,12 +10,13 @@ import ButtonText from "@/components/input/button/ButtonText";
 import Logo from "@/assets/images/logo.svg";
 import { Link } from "expo-router";
 import OnboardingLayout from "./OnboardingLayout";
+import AppLinkText from "@/components/input/AppLinkText";
 
 export default function FirstPage() {
     const colors = useThemeColors();
 
     return (
-        <OnboardingLayout>
+        <OnboardingLayout scrollable={false}>
             <View style={[styles.container]}>
                 <Logo width={250} height={60} style={styles.logo} />
                 <View>
@@ -37,13 +38,14 @@ export default function FirstPage() {
                             variant="primaryVariant">
                             <ButtonText>Get started</ButtonText>
                         </Button>
-                        <ThemedText
+                        <AppLinkText
+                            href="/auth"
                             style={{
                                 textAlign: "center",
                                 color: colors.textOnPrimary,
                             }}>
                             I already have an account
-                        </ThemedText>
+                        </AppLinkText>
                     </View>
                 </View>
             </View>
@@ -58,6 +60,7 @@ const styles = StyleSheet.create({
     },
     logo: {
         alignSelf: "center",
+        opacity: 0.9,
     },
     text: {
         fontSize: 36,

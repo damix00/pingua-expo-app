@@ -8,11 +8,11 @@ import OnboardingLayout from "./OnboardingLayout";
 export default function ChooseLanguageOnboarding() {
     return (
         <OnboardingLayout>
-            <View>
+            <View
+                style={{
+                    flex: 1,
+                }}>
                 <ThemedText>hello!</ThemedText>
-                <Link href="/onboarding/choose-languages">
-                    <ThemedText>Choose languages</ThemedText>
-                </Link>
             </View>
         </OnboardingLayout>
     );
