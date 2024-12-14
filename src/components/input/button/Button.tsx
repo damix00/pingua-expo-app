@@ -15,6 +15,7 @@ import Animated, {
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
+import HapticTouchableOpacity from "./HapticTouchableOpacity";
 
 type ButtonVariant = "primary" | "secondary" | "primaryVariant";
 
@@ -36,9 +37,6 @@ export function useButtonContext() {
     return ctx;
 }
 
-const AnimatedTouchableOpacity =
-    Animated.createAnimatedComponent(TouchableOpacity);
-
 export default function Button({
     children,
     style,
@@ -48,10 +46,10 @@ export default function Button({
 }: TouchableOpacityProps & { variant?: ButtonVariant; href?: string }) {
     const colors = useThemeColors();
     const preferences = usePreferences();
-    const opacity = useSharedValue(props.disabled ? 0.5 : 1);
+    const opacity = useSharedValue(props.disabled ? 0.4 : 1);
 
     useEffect(() => {
-        opacity.value = withTiming(props.disabled ? 0.5 : 1, { duration: 300 });
+        opacity.value = withTiming(props.disabled ? 0.4 : 1, { duration: 300 });
     }, [props.disabled]);
 
     const animatedStyle = useAnimatedStyle(() => {
@@ -62,40 +60,41 @@ export default function Button({
 
     return (
         <ButtonContext.Provider value={{ variant: variant ?? "primary" }}>
-            <AnimatedTouchableOpacity
-                {...props}
-                onPressIn={(e) => {
-                    if (preferences?.preferences.hapticFeedback) {
-                        Haptics.selectionAsync();
-                    }
-                    props.onPressIn && props.onPressIn(e);
-                }}
-                onPress={(e) => {
-                    if (href) {
-                        router.push(href as any);
-                    }
-                    props.onPress && props.onPress(e);
-                }}
-                style={[
-                    styles.button,
-                    animatedStyle,
-                    {
-                        backgroundColor:
-                            variant == "primaryVariant"
-                                ? colors.primaryVariant
-                                : variant == "secondary"
-                                ? colors.background
-                                : colors.primary,
-                        borderColor:
-                            variant == "secondary"
-                                ? colors.primary
-                                : "transparent",
-                        borderWidth: variant == "secondary" ? 1 : 0,
-                    },
-                    style,
-                ]}>
-                {children}
-            </AnimatedTouchableOpacity>
+            <Animated.View style={animatedStyle}>
+                <HapticTouchableOpacity
+                    {...props}
+                    onPressIn={(e) => {
+                        if (preferences?.preferences.hapticFeedback) {
+                            Haptics.selectionAsync();
+                        }
+                        props.onPressIn && props.onPressIn(e);
+                    }}
+                    onPress={(e) => {
+                        if (href) {
+                            router.push(href as any);
+                        }
+                        props.onPress && props.onPress(e);
+                    }}
+                    style={[
+                        styles.button,
+                        {
+                            backgroundColor:
+                                variant == "primaryVariant"
+                                    ? colors.primaryVariant
+                                    : variant == "secondary"
+                                    ? colors.background
+                                    : colors.primary,
+                            borderColor:
+                                variant == "secondary"
+                                    ? colors.primary
+                                    : "transparent",
+                            borderWidth: variant == "secondary" ? 1 : 0,
+                        },
+                        style,
+                    ]}>
+                    {children}
+                </HapticTouchableOpacity>
+            </Animated.View>
         </ButtonContext.Provider>
     );
 }

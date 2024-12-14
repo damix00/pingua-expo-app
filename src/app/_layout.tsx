@@ -107,59 +107,56 @@ export default function RootLayout() {
     }
 
     return (
-        <PreferencesProvider
-            preferences={prefs ?? { hapticFeedback: true }}
-            setPreferences={() => {}}>
-            <AuthProvider
-                user={null}
-                loggedIn={loggedIn}
-                setLoggedIn={setLoggedIn}>
-                <ThemeProvider
-                    value={scheme === "dark" ? DarkTheme : DefaultTheme}>
-                    <StatusBar style="auto" />
+        <View style={{ flex: 1, backgroundColor: colors.background }}>
+            <PreferencesProvider
+                preferences={prefs ?? { hapticFeedback: true }}
+                setPreferences={() => {}}>
+                <AuthProvider
+                    user={null}
+                    loggedIn={loggedIn}
+                    setLoggedIn={setLoggedIn}>
+                    <ThemeProvider
+                        value={scheme === "dark" ? DarkTheme : DefaultTheme}>
+                        <StatusBar style="auto" />
 
-                    <Stack
-                        initialRouteName={
-                            loggedIn ? "index" : "onboarding/index"
-                        }
-                        screenOptions={{
-                            headerStyle: Platform.select({
-                                android: {},
-                            }),
-                            animation: Platform.select({
-                                android: "simple_push",
-                                ios: "ios_from_right",
-                            }),
-                        }}>
-                        <Stack.Screen
-                            name="onboarding/index"
-                            options={{
-                                animation: "none",
-                                headerShown: false,
-                            }}
-                        />
-                        <Stack.Screen
-                            name="onboarding/choose-languages"
-                            options={{
-                                headerShown: true,
-                                headerTransparent: true,
-                                header: () => (
-                                    <OnboardingAppbar title="Choose Languages" />
-                                ),
-                                animation: "default",
-                            }}
-                        />
-                        <Stack.Screen
-                            name="auth/index"
-                            options={{
-                                headerShown: false,
-                                animation: "default",
-                            }}
-                        />
-                        <Stack.Screen name="index" />
-                    </Stack>
-                </ThemeProvider>
-            </AuthProvider>
-        </PreferencesProvider>
+                        <Stack
+                            initialRouteName={
+                                loggedIn ? "index" : "onboarding/index"
+                            }
+                            screenOptions={{
+                                animation: Platform.select({
+                                    android: "simple_push",
+                                    ios: "ios_from_right",
+                                }),
+                            }}>
+                            <Stack.Screen
+                                name="onboarding/index"
+                                options={{
+                                    animation: "none",
+                                    headerShown: false,
+                                }}
+                            />
+                            <Stack.Screen
+                                name="onboarding/choose-languages"
+                                options={{
+                                    headerShown: true,
+                                    headerTransparent: true,
+                                    header: () => (
+                                        <OnboardingAppbar title="Choose Languages" />
+                                    ),
+                                }}
+                            />
+                            <Stack.Screen
+                                name="auth/index"
+                                options={{
+                                    headerShown: false,
+                                }}
+                            />
+                            <Stack.Screen name="index" />
+                        </Stack>
+                    </ThemeProvider>
+                </AuthProvider>
+            </PreferencesProvider>
+        </View>
     );
 }

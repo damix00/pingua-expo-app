@@ -1,4 +1,4 @@
-import { useThemeColor } from "@/hooks/useThemeColor";
+import { useThemeColor, useThemeColors } from "@/hooks/useThemeColor";
 import { getLoadedFonts } from "expo-font";
 import { StyleSheet, Text, TextProps } from "react-native";
 import { NativeProps } from "react-native-safe-area-context/lib/typescript/src/specs/NativeSafeAreaView";
@@ -6,12 +6,25 @@ import { NativeProps } from "react-native-safe-area-context/lib/typescript/src/s
 export default function BrandText({
     children,
     style,
+    onPrimary = false,
+    large = false,
     ...props
-}: { children?: React.ReactNode } & TextProps) {
-    const color = useThemeColor("text");
+}: {
+    onPrimary?: boolean;
+    large?: boolean;
+    children?: React.ReactNode;
+} & TextProps) {
+    const colors = useThemeColors();
 
     return (
-        <Text style={[styles.text, { color }, style]} {...props}>
+        <Text
+            style={[
+                styles.text,
+                { color: onPrimary ? colors.textOnPrimary : colors.text },
+                large && { fontSize: 36 },
+                style,
+            ]}
+            {...props}>
             {children}
         </Text>
     );

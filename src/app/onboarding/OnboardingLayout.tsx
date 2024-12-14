@@ -1,13 +1,21 @@
 import StaticBackground from "@/components/ui/StaticBackground";
 import { StatusBar } from "expo-status-bar";
 import { ScrollView } from "react-native";
+import { ONBOARDING_APPBAR_HEIGHT } from "./OnboardingAppbar";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-function Content({ children }: { children: React.ReactNode }) {
+function Content({
+    appbar,
+    children,
+}: {
+    appbar?: boolean;
+    children: React.ReactNode;
+}) {
     return (
         <SafeAreaView
             style={{
                 margin: 24,
+                marginTop: appbar ? ONBOARDING_APPBAR_HEIGHT : 24,
                 marginBottom: 0,
                 flex: 1,
                 justifyContent: "flex-end",
@@ -20,9 +28,11 @@ function Content({ children }: { children: React.ReactNode }) {
 export default function OnboardingLayout({
     children,
     scrollable = true,
+    appbar = false,
 }: {
     children: React.ReactNode;
     scrollable?: boolean;
+    appbar?: boolean;
 }) {
     return (
         <StaticBackground>
@@ -35,10 +45,10 @@ export default function OnboardingLayout({
                     contentContainerStyle={{
                         flexGrow: 1,
                     }}>
-                    <Content>{children}</Content>
+                    <Content appbar={appbar}>{children}</Content>
                 </ScrollView>
             ) : (
-                <Content>{children}</Content>
+                <Content appbar={appbar}>{children}</Content>
             )}
         </StaticBackground>
     );

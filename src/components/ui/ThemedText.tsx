@@ -1,11 +1,18 @@
 import { Text, type TextProps, StyleSheet, Platform } from "react-native";
 
-import { useThemeColor } from "@/hooks/useThemeColor";
+import { useThemeColor, useThemeColors } from "@/hooks/useThemeColor";
 
 export type ThemedTextProps = TextProps & {
     lightColor?: string;
     darkColor?: string;
-    type?: "default" | "title" | "defaultSemiBold" | "subtitle" | "link";
+    type?:
+        | "default"
+        | "title"
+        | "defaultSemiBold"
+        | "subtitle"
+        | "link"
+        | "onPrimary"
+        | "onPrimarySecondary";
 };
 
 export function ThemedText({
@@ -16,6 +23,7 @@ export function ThemedText({
     ...rest
 }: ThemedTextProps) {
     const color = useThemeColor("text");
+    const colors = useThemeColors();
 
     return (
         <Text
@@ -26,6 +34,18 @@ export function ThemedText({
                 type === "defaultSemiBold" ? styles.defaultSemiBold : undefined,
                 type === "subtitle" ? styles.subtitle : undefined,
                 type === "link" ? styles.link : undefined,
+                type === "onPrimary"
+                    ? {
+                          ...styles.default,
+                          color: colors.textOnPrimary,
+                      }
+                    : undefined,
+                type === "onPrimarySecondary"
+                    ? {
+                          ...styles.default,
+                          color: colors.textSecondaryOnPrimary,
+                      }
+                    : undefined,
                 style,
             ]}
             {...rest}

@@ -20,19 +20,14 @@ export default function FirstPage() {
             <View style={[styles.container]}>
                 <Logo width={250} height={60} style={styles.logo} />
                 <View>
-                    <BrandText
-                        style={[
-                            { color: colors.textOnPrimary, paddingBottom: 2 },
-                            styles.text,
-                        ]}>
+                    <BrandText onPrimary large style={[{ paddingBottom: 2 }]}>
                         Speak with confidence.
                     </BrandText>
                     <ThemedText
                         style={{ color: colors.textSecondaryOnPrimary }}>
                         Your journey to fluency starts here.
                     </ThemedText>
-                    <View
-                        style={{ paddingTop: 36, gap: 16, paddingBottom: 24 }}>
+                    <View style={styles.buttonsWrapper}>
                         <Button
                             href="/onboarding/choose-languages"
                             variant="primaryVariant">
@@ -62,7 +57,9 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         opacity: 0.9,
     },
-    text: {
-        fontSize: 36,
+    buttonsWrapper: {
+        paddingTop: 36,
+        gap: 16,
+        paddingBottom: 24,
     },
 });
