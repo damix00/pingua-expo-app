@@ -10,13 +10,11 @@ import Animated, {
 
 export default function CheckboxRadial({
     selected,
-    onSelect,
     borderVariant = "onBackground",
     ...props
 }: {
     selected: boolean;
     borderVariant?: "onPrimary" | "onBackground";
-    onSelect: (selected: boolean) => void;
 } & ViewProps) {
     const colors = useThemeColors();
 

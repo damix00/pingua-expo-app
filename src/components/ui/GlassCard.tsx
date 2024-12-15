@@ -1,11 +1,13 @@
 import { Platform, StyleSheet, View, ViewProps } from "react-native";
 import CheckboxRadial from "../input/stateful/CheckboxRadial";
 import { BlurView } from "expo-blur";
+import HapticTouchableOpacity from "../input/button/HapticTouchableOpacity";
 
 type GlassCardProps = {
     elevation?: "0" | "1" | "2" | "3" | "4" | "5";
     leading?: React.ReactNode;
     trailing?: React.ReactNode;
+    contentPadding?: number;
 } & ViewProps;
 
 export default function GlassCard({
@@ -13,6 +15,7 @@ export default function GlassCard({
     elevation = "1",
     leading,
     trailing,
+    contentPadding = 12,
     ...props
 }: GlassCardProps) {
     // 2024 and Android still doesn't have good blur support...
@@ -22,7 +25,13 @@ export default function GlassCard({
                 {...props}
                 style={[styles.blurWrapper, styles.container, props.style]}>
                 {leading}
-                <View style={styles.content}>{children}</View>
+                <View
+                    style={{
+                        flex: 1,
+                        paddingHorizontal: contentPadding,
+                    }}>
+                    {children}
+                </View>
                 {trailing}
             </View>
         );
@@ -34,7 +43,13 @@ export default function GlassCard({
         <BlurView intensity={8} style={styles.blurWrapper}>
             <View {...props} style={[styles.container, props.style]}>
                 {leading}
-                <View style={styles.content}>{children}</View>
+                <View
+                    style={{
+                        flex: 1,
+                        paddingHorizontal: contentPadding,
+                    }}>
+                    {children}
+                </View>
                 {trailing}
             </View>
         </BlurView>
@@ -55,13 +70,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
         borderColor: "rgba(255, 255, 255, 0.1)",
         borderWidth: 1,
-        elevation: 5,
         flexDirection: "row",
         alignItems: "center",
-    },
-    content: {
-        flex: 1,
-        paddingHorizontal: 12,
+        justifyContent: "center",
     },
 });
 
@@ -77,43 +88,46 @@ export function GlassCardSelection({
     isTrailing?: boolean;
 }) {
     return (
-        <GlassCard
-            {...props}
-            elevation={elevation}
-            style={[
-                selected && [
-                    elevation == "1" && {
-                        backgroundColor: "rgba(255, 255, 255, 0.25)",
-                    },
-                ],
-                props.style,
-            ]}
-            leading={
-                !isTrailing ? (
-                    <CheckboxRadial
-                        borderVariant={
-                            elevation == "1" ? "onPrimary" : "onBackground"
-                        }
-                        selected={selected}
-                        onSelect={onSelect}
-                    />
-                ) : (
-                    props.leading
-                )
-            }
-            trailing={
-                isTrailing ? (
-                    <CheckboxRadial
-                        borderVariant={
-                            elevation == "1" ? "onPrimary" : "onBackground"
-                        }
-                        selected={selected}
-                        onSelect={onSelect}
-                    />
-                ) : (
-                    props.trailing
-                )
-            }
-        />
+        <HapticTouchableOpacity
+            onPress={() => {
+                onSelect(!selected);
+            }}>
+            <GlassCard
+                {...props}
+                elevation={elevation}
+                style={[
+                    selected && [
+                        elevation == "1" && {
+                            backgroundColor: "rgba(255, 255, 255, 0.25)",
+                        },
+                    ],
+                    props.style,
+                ]}
+                leading={
+                    !isTrailing ? (
+                        <CheckboxRadial
+                            borderVariant={
+                                elevation == "1" ? "onPrimary" : "onBackground"
+                            }
+                            selected={selected}
+                        />
+                    ) : (
+                        props.leading
+                    )
+                }
+                trailing={
+                    isTrailing ? (
+                        <CheckboxRadial
+                            borderVariant={
+                                elevation == "1" ? "onPrimary" : "onBackground"
+                            }
+                            selected={selected}
+                        />
+                    ) : (
+                        props.trailing
+                    )
+                }
+            />
+        </HapticTouchableOpacity>
     );
 }

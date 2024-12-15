@@ -7,7 +7,7 @@ import {
     View,
 } from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
-import { auraBg, staticBg } from "./CachedImages";
+import { auraBg, staticBg } from "@/utils/cache/CachedImages";
 
 export default function StaticBackground({
     children,

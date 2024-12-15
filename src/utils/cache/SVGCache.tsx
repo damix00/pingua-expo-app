@@ -42,8 +42,10 @@ export default class SVGCacheService {
 export async function fetchCached(uri: string) {
     const cached = await SVGCacheService.getSvg(uri);
     if (cached) {
+        console.log("CACHE HIT", uri);
         return cached;
     } else {
+        console.log("CACHE MISS", uri);
         const response = await fetch(uri);
         const svg = await response.text();
         SVGCacheService.setSvg(uri, svg);

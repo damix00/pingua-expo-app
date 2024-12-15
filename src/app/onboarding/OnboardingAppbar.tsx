@@ -7,7 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export const ONBOARDING_APPBAR_HEIGHT = 56;
 
-export default function OnboardingAppbar({ title }: { title: string }) {
+export default function OnboardingAppbar() {
     return (
         <SafeAreaView
             style={{

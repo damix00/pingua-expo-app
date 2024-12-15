@@ -141,9 +141,23 @@ export default function RootLayout() {
                                 options={{
                                     headerShown: true,
                                     headerTransparent: true,
-                                    header: () => (
-                                        <OnboardingAppbar title="Choose Languages" />
-                                    ),
+                                    header: () => <OnboardingAppbar />,
+                                }}
+                            />
+                            <Stack.Screen
+                                name="onboarding/choose-fluency"
+                                options={{
+                                    headerShown: true,
+                                    headerTransparent: true,
+                                    header: () => <OnboardingAppbar />,
+                                }}
+                            />
+                            <Stack.Screen
+                                name="onboarding/choose-goal"
+                                options={{
+                                    headerShown: true,
+                                    headerTransparent: true,
+                                    header: () => <OnboardingAppbar />,
                                 }}
                             />
                             <Stack.Screen
