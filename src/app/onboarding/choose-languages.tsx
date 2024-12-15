@@ -1,7 +1,7 @@
 import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
 import { ThemedText } from "@/components/ui/ThemedText";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { FlatList, StyleSheet, View } from "react-native";
 import OnboardingLayout from "./OnboardingLayout";
 import BrandText from "@/components/ui/BrandText";
@@ -77,32 +77,21 @@ const languages: Language[] = [
     },
 ];
 
-function ChooseLanguageCard({
-    language,
-    flag,
-    onSelect,
-    selected,
-}: Language & {
-    onSelect: () => void;
-    selected: boolean;
-}) {
+function ChooseLanguageCard({ language, flag }: Language) {
     return (
-        <GlassCardSelection
-            selected={selected}
-            onSelect={onSelect}
+        <GlassCard
+            onPress={() => {
+                router.push(`/onboarding/choose-fluency?language=${language}`);
+            }}
             style={{ paddingVertical: 0 }}
             elevation="1"
             leading={<CachedSvgUri width={50} height={50} uri={flag} />}>
             <ThemedText type="onPrimary">{language}</ThemedText>
-        </GlassCardSelection>
+        </GlassCard>
     );
 }
 
 export default function ChooseLanguageOnboarding() {
-    const [selectedLanguage, setSelectedLanguage] = useState<string | null>(
-        null
-    );
-
     const insets = useSafeAreaInsets();
 
     return (
@@ -135,19 +124,7 @@ export default function ChooseLanguageOnboarding() {
                         </ThemedText>
                     </View>
                 }
-                renderItem={({ item }) => (
-                    <ChooseLanguageCard
-                        selected={selectedLanguage == item.language}
-                        {...item}
-                        onSelect={() => {
-                            setSelectedLanguage(
-                                selectedLanguage == item.language
-                                    ? null
-                                    : item.language
-                            );
-                        }}
-                    />
-                )}
+                renderItem={({ item }) => <ChooseLanguageCard {...item} />}
                 keyExtractor={(item) => item.language}
                 contentContainerStyle={{
                     paddingBottom: 12,
@@ -155,21 +132,6 @@ export default function ChooseLanguageOnboarding() {
                     flexGrow: 1,
                     paddingHorizontal: 24,
                 }}
-                ListFooterComponent={
-                    <View>
-                        <Button
-                            href={`/onboarding/choose-fluency?language=${selectedLanguage}`}
-                            style={{
-                                flex: 0,
-                                marginBottom: 12 + insets.bottom,
-                                marginTop: 36,
-                            }}
-                            disabled={selectedLanguage === null}
-                            variant="primaryVariant">
-                            <ButtonText>Continue</ButtonText>
-                        </Button>
-                    </View>
-                }
             />
         </OnboardingLayout>
     );

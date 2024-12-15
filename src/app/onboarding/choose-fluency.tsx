@@ -3,7 +3,7 @@ import OnboardingLayout from "./OnboardingLayout";
 import { View } from "react-native";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { StyleSheet } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import GlassCard, { GlassCardSelection } from "@/components/ui/GlassCard";
 import HapticTouchableOpacity from "@/components/input/button/HapticTouchableOpacity";
 import Button from "@/components/input/button/Button";
@@ -30,7 +30,6 @@ const fluencyLevels = [
 ];
 
 export default function ChooseFluencyOnboarding() {
-    const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
     const { language } = useLocalSearchParams();
 
     return (
@@ -44,16 +43,13 @@ export default function ChooseFluencyOnboarding() {
                 </BrandText>
                 <View style={styles.listContainer}>
                     {fluencyLevels.map((level) => (
-                        <GlassCardSelection
-                            contentPadding={0}
-                            selected={selectedLevel == level.title}
-                            onSelect={() => {
-                                setSelectedLevel(
-                                    selectedLevel == level.title
-                                        ? null
-                                        : level.title
+                        <GlassCard
+                            onPress={() => {
+                                router.push(
+                                    `/onboarding/choose-goal?language=${language}&fluency=${level.title}`
                                 );
                             }}
+                            contentPadding={0}
                             style={styles.card}
                             key={level.title}>
                             <ThemedText
@@ -66,16 +62,9 @@ export default function ChooseFluencyOnboarding() {
                                 style={{ fontSize: 12 }}>
                                 {level.description}
                             </ThemedText>
-                        </GlassCardSelection>
+                        </GlassCard>
                     ))}
                 </View>
-                <Button
-                    disabled={!selectedLevel}
-                    variant="primaryVariant"
-                    style={{ marginTop: 36, marginBottom: 12 }}
-                    onPress={() => {}}>
-                    <ButtonText>Continue</ButtonText>
-                </Button>
             </View>
         </OnboardingLayout>
     );
