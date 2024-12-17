@@ -2,7 +2,6 @@ import { useThemeColors } from "@/hooks/useThemeColor";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { ChevronLeft } from "lucide-react-native";
 import { router } from "expo-router";
-import HapticTouchableOpacity from "@/components/input/button/HapticTouchableOpacity";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export const ONBOARDING_APPBAR_HEIGHT = 56;
@@ -16,7 +15,7 @@ export default function OnboardingAppbar() {
             <View style={styles.container}>
                 {/* This resizes the touchable width to only fit the icon */}
                 <View style={{ flexDirection: "row" }}>
-                    <HapticTouchableOpacity
+                    <TouchableOpacity
                         onPress={() => {
                             router.back();
                         }}>
@@ -26,7 +25,7 @@ export default function OnboardingAppbar() {
                                 margin: 16,
                             }}
                         />
-                    </HapticTouchableOpacity>
+                    </TouchableOpacity>
                 </View>
             </View>
         </SafeAreaView>

@@ -39,6 +39,7 @@ import {
 import { StatusBar } from "expo-status-bar";
 import * as NavigationBar from "expo-navigation-bar";
 import OnboardingAppbar from "./onboarding/OnboardingAppbar";
+import loadLocales from "../utils/i18n";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -80,6 +81,9 @@ export default function RootLayout() {
         setLoadedPrefs(true);
 
         console.log("Loaded preferences");
+
+        await loadLocales();
+        console.log("Loaded locales");
 
         if (Platform.OS === "android") {
             await NavigationBar.setPositionAsync("absolute");

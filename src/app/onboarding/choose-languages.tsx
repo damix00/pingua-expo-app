@@ -127,7 +127,7 @@ export default function ChooseLanguageOnboarding() {
                 renderItem={({ item }) => <ChooseLanguageCard {...item} />}
                 keyExtractor={(item) => item.language}
                 contentContainerStyle={{
-                    paddingBottom: 12,
+                    paddingBottom: 12 + insets.bottom,
                     gap: 8,
                     flexGrow: 1,
                     paddingHorizontal: 24,

@@ -11,27 +11,40 @@ import Logo from "@/assets/images/logo.svg";
 import { Link } from "expo-router";
 import OnboardingLayout from "./OnboardingLayout";
 import AppLinkText from "@/components/input/AppLinkText";
+import { useTranslation } from "react-i18next";
+import Dropdown from "@/components/input/stateful/Dropdown";
 
 export default function FirstPage() {
     const colors = useThemeColors();
+    const { t } = useTranslation();
 
     return (
         <OnboardingLayout scrollable={false}>
             <View style={[styles.container]}>
-                <Logo width={250} height={60} style={styles.logo} />
+                {/* <Logo width={250} height={60} style={styles.logo} /> */}
+                <Dropdown
+                    values={["English", "Croatian"]}
+                    selectedValue="English"
+                    onSelect={() => {}}
+                    textColor="white"
+                    style={{ alignSelf: "flex-end" }}
+                    position={{
+                        right: 0,
+                    }}
+                />
                 <View>
                     <BrandText onPrimary large style={[{ paddingBottom: 2 }]}>
-                        Speak with confidence.
+                        {t("onboarding.page_1_title")}
                     </BrandText>
                     <ThemedText
                         style={{ color: colors.textSecondaryOnPrimary }}>
-                        Your journey to fluency starts here.
+                        {t("onboarding.page_1_description")}
                     </ThemedText>
                     <View style={styles.buttonsWrapper}>
                         <Button
                             href="/onboarding/choose-languages"
                             variant="primaryVariant">
-                            <ButtonText>Get started</ButtonText>
+                            <ButtonText>{t("get_started")}</ButtonText>
                         </Button>
                         <AppLinkText
                             href="/auth"
@@ -39,7 +52,7 @@ export default function FirstPage() {
                                 textAlign: "center",
                                 color: colors.textOnPrimary,
                             }}>
-                            I already have an account
+                            {t("onboarding.have_account")}
                         </AppLinkText>
                     </View>
                 </View>
