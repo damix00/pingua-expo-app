@@ -1,4 +1,4 @@
-import { TextProps, TouchableOpacity } from "react-native";
+import { StyleSheet, TextProps, TouchableOpacity } from "react-native";
 import { ThemedText } from "../ui/ThemedText";
 import { Href, router } from "expo-router";
 
@@ -8,6 +8,7 @@ export default function AppLinkText({
 }: TextProps & { href: Href }) {
     return (
         <TouchableOpacity
+            style={style.container}
             onPress={(e) => {
                 router.push(href as any);
 
@@ -21,3 +22,9 @@ export default function AppLinkText({
         </TouchableOpacity>
     );
 }
+
+const style = StyleSheet.create({
+    container: {
+        padding: 8,
+    },
+});

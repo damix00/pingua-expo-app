@@ -12,7 +12,6 @@ import { Link } from "expo-router";
 import OnboardingLayout from "./OnboardingLayout";
 import AppLinkText from "@/components/input/AppLinkText";
 import { useTranslation } from "react-i18next";
-import Dropdown from "@/components/input/stateful/Dropdown";
 
 export default function FirstPage() {
     const colors = useThemeColors();
@@ -21,23 +20,21 @@ export default function FirstPage() {
     return (
         <OnboardingLayout scrollable={false}>
             <View style={[styles.container]}>
-                {/* <Logo width={250} height={60} style={styles.logo} /> */}
-                <Dropdown
-                    values={["English", "Croatian"]}
-                    selectedValue="English"
-                    onSelect={() => {}}
-                    textColor="white"
-                    style={{ alignSelf: "flex-end" }}
-                    position={{
-                        right: 0,
-                    }}
-                />
+                <View style={styles.headingContainer}>
+                    <BrandText onPrimary style={styles.logo}>
+                        pingua
+                    </BrandText>
+                </View>
+                <ThemedText>(slika pingvina)</ThemedText>
                 <View>
-                    <BrandText onPrimary large style={[{ paddingBottom: 2 }]}>
+                    <BrandText onPrimary large>
                         {t("onboarding.page_1_title")}
                     </BrandText>
                     <ThemedText
-                        style={{ color: colors.textSecondaryOnPrimary }}>
+                        style={{
+                            color: colors.textSecondaryOnPrimary,
+                            marginTop: 4,
+                        }}>
                         {t("onboarding.page_1_description")}
                     </ThemedText>
                     <View style={styles.buttonsWrapper}>
@@ -62,17 +59,24 @@ export default function FirstPage() {
 }
 
 const styles = StyleSheet.create({
+    headingContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+    logo: {
+        fontSize: 32,
+        paddingBottom: 8,
+        lineHeight: 32,
+        paddingTop: 8,
+    },
     container: {
         flex: 1,
         justifyContent: "space-between",
     },
-    logo: {
-        alignSelf: "center",
-        opacity: 0.9,
-    },
     buttonsWrapper: {
         paddingTop: 36,
-        gap: 16,
+        gap: 8,
         paddingBottom: 24,
     },
 });

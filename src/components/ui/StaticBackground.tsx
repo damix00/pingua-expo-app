@@ -6,19 +6,27 @@ import {
     StyleSheet,
     View,
 } from "react-native";
-import { useVideoPlayer, VideoView } from "expo-video";
 import { auraBg, staticBg } from "@/utils/cache/CachedImages";
 
 export default function StaticBackground({
     children,
+    showAura = true,
 }: {
     children?: React.ReactNode;
+    showAura?: boolean;
 }) {
     const colors = useThemeColors();
 
     return (
         <View style={[styles.container, { backgroundColor: colors.primary }]}>
-            <Image resizeMode="cover" style={[styles.aura]} source={auraBg} />
+            {showAura && (
+                <Image
+                    resizeMode="cover"
+                    style={[styles.aura]}
+                    source={auraBg}
+                />
+            )}
+
             <Image
                 resizeMode="repeat"
                 style={styles.static}

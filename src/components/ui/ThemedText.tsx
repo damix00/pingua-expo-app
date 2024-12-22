@@ -1,24 +1,25 @@
 import { Text, type TextProps, StyleSheet, Platform } from "react-native";
 
 import { useThemeColor, useThemeColors } from "@/hooks/useThemeColor";
+import Autolink, { AutolinkProps } from "react-native-autolink";
 
 export type ThemedTextProps = TextProps & {
-    lightColor?: string;
-    darkColor?: string;
+    onPrimary?: boolean;
     type?:
         | "default"
+        | "secondary"
         | "title"
         | "defaultSemiBold"
         | "subtitle"
         | "link"
         | "onPrimary"
-        | "onPrimarySecondary";
+        | "onPrimarySecondary"
+        | "heading";
 };
 
 export function ThemedText({
     style,
-    lightColor,
-    darkColor,
+    onPrimary = false,
     type = "default",
     ...rest
 }: ThemedTextProps) {
@@ -28,12 +29,16 @@ export function ThemedText({
     return (
         <Text
             style={[
-                { color },
+                { color: onPrimary ? colors.textOnPrimary : color },
                 type === "default" ? styles.default : undefined,
+                type == "secondary"
+                    ? { ...styles.default, color: colors.textSecondary }
+                    : undefined,
                 type === "title" ? styles.title : undefined,
                 type === "defaultSemiBold" ? styles.defaultSemiBold : undefined,
                 type === "subtitle" ? styles.subtitle : undefined,
                 type === "link" ? styles.link : undefined,
+                type === "heading" ? styles.heading : undefined,
                 type === "onPrimary"
                     ? {
                           ...styles.default,
@@ -46,6 +51,7 @@ export function ThemedText({
                           color: colors.textSecondaryOnPrimary,
                       }
                     : undefined,
+
                 style,
             ]}
             {...rest}
@@ -60,20 +66,22 @@ const styles = StyleSheet.create({
     },
     defaultSemiBold: {
         fontSize: 16,
-        lineHeight: 24,
-        fontWeight: "600",
+        fontFamily: "Montserrat_600SemiBold",
     },
     title: {
         fontSize: 32,
-        fontWeight: "bold",
+        fontFamily: "Montserrat_900Black",
         lineHeight: 32,
     },
     subtitle: {
         fontSize: 20,
-        fontWeight: "bold",
+        fontFamily: "Montserrat_700Bold",
+    },
+    heading: {
+        fontSize: 28,
+        fontFamily: "Montserrat_900Black",
     },
     link: {
-        lineHeight: 30,
         fontSize: 16,
         color: "#0a7ea4",
     },

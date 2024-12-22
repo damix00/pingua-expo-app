@@ -6,7 +6,7 @@ import {
     ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack } from "expo-router";
+import { SplashScreen, Stack, useNavigation, usePathname } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Platform, useColorScheme, View } from "react-native";
 import {
@@ -21,16 +21,12 @@ import {
     Montserrat_900Black,
 } from "@expo-google-fonts/montserrat";
 import {
-    WorkSans_100Thin,
-    WorkSans_200ExtraLight,
-    WorkSans_300Light,
-    WorkSans_400Regular,
-    WorkSans_500Medium,
-    WorkSans_600SemiBold,
-    WorkSans_700Bold,
-    WorkSans_800ExtraBold,
-    WorkSans_900Black,
-} from "@expo-google-fonts/work-sans";
+    Comfortaa_300Light,
+    Comfortaa_400Regular,
+    Comfortaa_500Medium,
+    Comfortaa_600SemiBold,
+    Comfortaa_700Bold,
+} from "@expo-google-fonts/comfortaa";
 import {
     loadPreferences,
     PreferencesProvider,
@@ -55,16 +51,12 @@ export default function RootLayout() {
         Montserrat_700Bold,
         Montserrat_800ExtraBold,
         Montserrat_900Black,
-        // Work Sans - brand font
-        WorkSans_100Thin,
-        WorkSans_200ExtraLight,
-        WorkSans_300Light,
-        WorkSans_400Regular,
-        WorkSans_500Medium,
-        WorkSans_600SemiBold,
-        WorkSans_700Bold,
-        WorkSans_800ExtraBold,
-        WorkSans_900Black,
+        // Comfortaa - heading font
+        Comfortaa_300Light,
+        Comfortaa_400Regular,
+        Comfortaa_500Medium,
+        Comfortaa_600SemiBold,
+        Comfortaa_700Bold,
     });
 
     const [loggedIn, setLoggedIn] = useState(false);
@@ -73,6 +65,7 @@ export default function RootLayout() {
     const [prefs, setPrefs] = useState<PreferencesType | null>(null);
     const scheme = useColorScheme();
     const colors = useThemeColors();
+    const pathname = usePathname();
 
     const loading = useRef(false);
 
@@ -111,7 +104,13 @@ export default function RootLayout() {
     }
 
     return (
-        <View style={{ flex: 1, backgroundColor: colors.background }}>
+        <View
+            style={{
+                flex: 1,
+                backgroundColor: pathname.startsWith("/onboarding")
+                    ? colors.primary
+                    : colors.background,
+            }}>
             <PreferencesProvider
                 preferences={prefs ?? { hapticFeedback: true }}
                 setPreferences={() => {}}>
@@ -149,6 +148,14 @@ export default function RootLayout() {
                                 }}
                             />
                             <Stack.Screen
+                                name="onboarding/app-language"
+                                options={{
+                                    headerShown: true,
+                                    headerTransparent: true,
+                                    header: () => <OnboardingAppbar />,
+                                }}
+                            />
+                            <Stack.Screen
                                 name="onboarding/choose-fluency"
                                 options={{
                                     headerShown: true,
@@ -167,7 +174,9 @@ export default function RootLayout() {
                             <Stack.Screen
                                 name="auth/index"
                                 options={{
-                                    headerShown: false,
+                                    headerShown: true,
+                                    headerTransparent: true,
+                                    header: () => <OnboardingAppbar darkText />,
                                 }}
                             />
                             <Stack.Screen name="index" />

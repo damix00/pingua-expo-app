@@ -9,44 +9,50 @@ import HapticTouchableOpacity from "@/components/input/button/HapticTouchableOpa
 import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const fluencyLevels = [
     {
-        title: "Beginner",
-        description: "I know a few words and phrases.",
+        title: "beginner",
+        description: "beginner_description",
     },
     {
-        title: "Intermediate",
-        description: "I can hold a basic conversation.",
+        title: "intermediate",
+        description: "intermediate_description",
     },
     {
-        title: "Advanced",
-        description: "I can discuss most topics fluently.",
+        title: "advanced",
+        description: "advanced_description",
     },
     {
-        title: "Fluent",
-        description: "I can communicate like a native speaker.",
+        title: "fluent",
+        description: "fluent_description",
     },
 ];
 
 export default function ChooseFluencyOnboarding() {
-    const { language } = useLocalSearchParams();
+    const { code } = useLocalSearchParams();
+    const { t } = useTranslation();
+
+    const language = t(`languages.${code}`);
 
     return (
         <OnboardingLayout appbar>
             <View style={styles.parent}>
-                <BrandText
+                <ThemedText
                     onPrimary
-                    large
-                    style={[{ paddingBottom: 4, fontSize: 28 }]}>
-                    How fluent are you in {language}?
-                </BrandText>
+                    type="heading"
+                    style={[{ paddingBottom: 4 }]}>
+                    {t("onboarding.page_3_title", {
+                        language,
+                    })}
+                </ThemedText>
                 <View style={styles.listContainer}>
                     {fluencyLevels.map((level) => (
                         <GlassCard
                             onPress={() => {
                                 router.push(
-                                    `/onboarding/choose-goal?language=${language}&fluency=${level.title}`
+                                    `/onboarding/choose-goal?code=${code}&fluency=${level.title}`
                                 );
                             }}
                             contentPadding={0}
@@ -55,12 +61,14 @@ export default function ChooseFluencyOnboarding() {
                             <ThemedText
                                 style={{ marginBottom: 2, fontSize: 16 }}
                                 type="onPrimary">
-                                {level.title}
+                                {t(`onboarding.fluency.${level.title}`)}
                             </ThemedText>
                             <ThemedText
                                 type="onPrimarySecondary"
                                 style={{ fontSize: 12 }}>
-                                {level.description}
+                                {t(`onboarding.fluency.${level.description}`, {
+                                    language,
+                                })}
                             </ThemedText>
                         </GlassCard>
                     ))}

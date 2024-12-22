@@ -32,6 +32,6 @@ export default function BrandText({
 
 const styles = StyleSheet.create({
     text: {
-        fontFamily: "WorkSans_900Black",
+        fontFamily: "Comfortaa_700Bold",
     },
 });

@@ -12,7 +12,7 @@ export default function HapticTouchableOpacity({
             {...props}
             onPressIn={(e) => {
                 if (preferences?.preferences.hapticFeedback) {
-                    Haptics.selectionAsync();
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 }
                 props.onPressIn && props.onPressIn(e);
             }}

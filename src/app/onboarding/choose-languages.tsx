@@ -16,83 +16,33 @@ import {
 } from "react-native-safe-area-context";
 import { CachedSvgUri } from "@/utils/cache/SVGCache";
 import { ONBOARDING_APPBAR_HEIGHT } from "./OnboardingAppbar";
+import { useTranslation } from "react-i18next";
+import { ChevronRight } from "lucide-react-native";
+import {
+    CourseLanguage,
+    courseLanguages,
+    findFlag,
+    languageMap,
+} from "@/utils/i18n";
 
-type Language = {
-    language: string;
-    flag: string;
-};
-
-const languages: Language[] = [
-    {
-        language: "English",
-        flag: `${twemoji.base}svg/1f1ec-1f1e7.svg`,
-    },
-    {
-        language: "German",
-        flag: `${twemoji.base}svg/1f1e9-1f1ea.svg`,
-    },
-    {
-        language: "Croatian",
-        flag: `${twemoji.base}svg/1f1ed-1f1f7.svg`,
-    },
-    {
-        language: "Spanish",
-        flag: `${twemoji.base}svg/1f1ea-1f1f8.svg`,
-    },
-    {
-        language: "French",
-        flag: `${twemoji.base}svg/1f1eb-1f1f7.svg`,
-    },
-    {
-        language: "Italian",
-        flag: `${twemoji.base}svg/1f1ee-1f1f9.svg`,
-    },
-    {
-        language: "Russian",
-        flag: `${twemoji.base}svg/1f1f7-1f1fa.svg`,
-    },
-    {
-        language: "Portuguese",
-        flag: `${twemoji.base}svg/1f1f5-1f1f9.svg`,
-    },
-    {
-        language: "Turkish",
-        flag: `${twemoji.base}svg/1f1f9-1f1f7.svg`,
-    },
-    {
-        language: "Greek",
-        flag: `${twemoji.base}svg/1f1ec-1f1f7.svg`,
-    },
-    {
-        language: "Dutch",
-        flag: `${twemoji.base}svg/1f1f3-1f1f1.svg`,
-    },
-    {
-        language: "Polish",
-        flag: `${twemoji.base}svg/1f1f5-1f1f1.svg`,
-    },
-    {
-        language: "Swedish",
-        flag: `${twemoji.base}svg/1f1f8-1f1ea.svg`,
-    },
-];
-
-function ChooseLanguageCard({ language, flag }: Language) {
+function ChooseLanguageCard({ code, flag }: CourseLanguage) {
+    const { t } = useTranslation();
     return (
         <GlassCard
             onPress={() => {
-                router.push(`/onboarding/choose-fluency?language=${language}`);
+                router.push(`/onboarding/choose-fluency?code=${code}`);
             }}
             style={{ paddingVertical: 0 }}
             elevation="1"
             leading={<CachedSvgUri width={50} height={50} uri={flag} />}>
-            <ThemedText type="onPrimary">{language}</ThemedText>
+            <ThemedText type="onPrimary">{t(`languages.${code}`)}</ThemedText>
         </GlassCard>
     );
 }
 
 export default function ChooseLanguageOnboarding() {
     const insets = useSafeAreaInsets();
+    const { t, i18n } = useTranslation();
 
     return (
         <OnboardingLayout appbar scrollable={false} safeArea={false}>
@@ -106,26 +56,52 @@ export default function ChooseLanguageOnboarding() {
                     flex: 1,
                     justifyContent: "flex-end",
                 }}
-                data={languages}
+                data={courseLanguages}
                 ListHeaderComponent={
                     <View
                         style={{
-                            marginBottom: 24,
                             marginTop: ONBOARDING_APPBAR_HEIGHT + insets.top,
                         }}>
-                        <BrandText
+                        <ThemedText
                             onPrimary
-                            large
-                            style={[{ paddingBottom: 4, fontSize: 28 }]}>
-                            Choose a language to learn
-                        </BrandText>
-                        <ThemedText type="onPrimarySecondary">
-                            Which language will empower your future?
+                            type="heading"
+                            style={[{ paddingBottom: 16 }]}>
+                            {t("onboarding.page_2_title")}
+                        </ThemedText>
+                        <ThemedText
+                            type="onPrimarySecondary"
+                            style={{ marginBottom: 8 }}>
+                            {t("onboarding.i_speak")}
+                        </ThemedText>
+                        <GlassCard
+                            leading={
+                                <CachedSvgUri
+                                    width={50}
+                                    height={50}
+                                    uri={findFlag(i18n.language) ?? ""}
+                                />
+                            }
+                            trailing={<ChevronRight color="white" size={24} />}
+                            style={{ paddingVertical: 0 }}
+                            elevation="1"
+                            onPress={() => {
+                                router.push("/onboarding/app-language");
+                            }}>
+                            <ThemedText type="onPrimary">
+                                {t(`languages.${i18n.language}`)}
+                            </ThemedText>
+                        </GlassCard>
+                        <ThemedText
+                            type="onPrimarySecondary"
+                            style={{
+                                marginTop: 16,
+                            }}>
+                            {t("onboarding.i_want_to_learn")}
                         </ThemedText>
                     </View>
                 }
                 renderItem={({ item }) => <ChooseLanguageCard {...item} />}
-                keyExtractor={(item) => item.language}
+                keyExtractor={(item) => item.code}
                 contentContainerStyle={{
                     paddingBottom: 12 + insets.bottom,
                     gap: 8,

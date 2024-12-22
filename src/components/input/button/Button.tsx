@@ -63,12 +63,6 @@ export default function Button({
             <Animated.View style={animatedStyle}>
                 <HapticTouchableOpacity
                     {...props}
-                    onPressIn={(e) => {
-                        if (preferences?.preferences.hapticFeedback) {
-                            Haptics.selectionAsync();
-                        }
-                        props.onPressIn && props.onPressIn(e);
-                    }}
                     onPress={(e) => {
                         if (href) {
                             router.push(href as any);
@@ -105,7 +99,7 @@ const styles = StyleSheet.create({
     },
     button: {
         boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
-        borderRadius: 32,
+        borderRadius: 8,
         height: 36,
         justifyContent: "center",
         alignItems: "center",

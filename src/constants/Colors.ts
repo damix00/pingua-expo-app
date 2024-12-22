@@ -10,6 +10,7 @@ const lightTheme = {
     background: "#F6F2FF",
     icon: "#687076",
     tabIconDefault: "#687076",
+    outline: "#D4D0D8",
 };
 
 export const Colors = {

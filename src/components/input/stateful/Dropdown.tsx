@@ -2,19 +2,12 @@ import { ThemedText } from "@/components/ui/ThemedText";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { Check, ChevronDown } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
-import {
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-    ViewStyle,
-} from "react-native";
+import { StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
 import Animated, {
     useAnimatedStyle,
     useSharedValue,
     withTiming,
 } from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 interface DropdownProps {
     values: string[];
@@ -28,6 +21,7 @@ interface DropdownProps {
         left?: number;
         right?: number;
     };
+    fontSize?: number;
 }
 
 export default function Dropdown({
@@ -37,6 +31,7 @@ export default function Dropdown({
     textColor = "black",
     style,
     position,
+    fontSize,
 }: DropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
     const rotation = useSharedValue(0);
@@ -61,7 +56,7 @@ export default function Dropdown({
     });
 
     return (
-        <>
+        <View style={{ position: "relative" }}>
             <TouchableOpacity
                 style={[styles.button, style]}
                 onPress={() => {
@@ -70,8 +65,7 @@ export default function Dropdown({
                 <ThemedText
                     style={{
                         color: textColor,
-                        fontSize: 16,
-                        fontFamily: "WorkSans_700Bold",
+                        fontSize: fontSize || 16,
                     }}>
                     {selectedValue}
                 </ThemedText>
@@ -89,6 +83,8 @@ export default function Dropdown({
                         bottom: position?.bottom,
                         left: position?.left,
                         right: position?.right,
+                        height:
+                            values.length * 36 + 24 + (values.length - 1 * 4),
                     },
                 ]}>
                 {values.map((value) => (
@@ -106,7 +102,7 @@ export default function Dropdown({
                     </TouchableOpacity>
                 ))}
             </Animated.View>
-        </>
+        </View>
     );
 }
 
@@ -122,13 +118,14 @@ const styles = StyleSheet.create({
         gap: 4,
         paddingVertical: 12,
         borderRadius: 8,
+        justifyContent: "center",
+        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
     },
     item: {
         paddingHorizontal: 16,
-        paddingVertical: 8,
+        height: 36,
         gap: 4,
         flexDirection: "row",
         alignItems: "center",
-        width: "100%",
     },
 });
