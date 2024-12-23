@@ -3,6 +3,7 @@ import { useThemeColors } from "@/hooks/useThemeColor";
 import { BlurView } from "expo-blur";
 import { createContext, useContext, useEffect } from "react";
 import {
+    ActivityIndicator,
     StyleSheet,
     TouchableOpacity,
     TouchableOpacityProps,
@@ -42,15 +43,24 @@ export default function Button({
     style,
     variant,
     href,
+    haptic = true,
+    loading = false,
     ...props
-}: TouchableOpacityProps & { variant?: ButtonVariant; href?: string }) {
+}: TouchableOpacityProps & {
+    variant?: ButtonVariant;
+    href?: string;
+    haptic?: boolean;
+    loading?: boolean;
+}) {
     const colors = useThemeColors();
     const preferences = usePreferences();
-    const opacity = useSharedValue(props.disabled ? 0.4 : 1);
+    const opacity = useSharedValue(props.disabled || loading ? 0.4 : 1);
 
     useEffect(() => {
-        opacity.value = withTiming(props.disabled ? 0.4 : 1, { duration: 300 });
-    }, [props.disabled]);
+        opacity.value = withTiming(props.disabled || loading ? 0.4 : 1, {
+            duration: 300,
+        });
+    }, [props.disabled, loading]);
 
     const animatedStyle = useAnimatedStyle(() => {
         return {
@@ -62,6 +72,8 @@ export default function Button({
         <ButtonContext.Provider value={{ variant: variant ?? "primary" }}>
             <Animated.View style={animatedStyle}>
                 <HapticTouchableOpacity
+                    disabled={props.disabled || loading}
+                    enableHaptics={haptic}
                     {...props}
                     onPress={(e) => {
                         if (href) {
@@ -86,7 +98,19 @@ export default function Button({
                         },
                         style,
                     ]}>
-                    {children}
+                    {loading ? (
+                        <ActivityIndicator
+                            color={
+                                variant == "primaryVariant"
+                                    ? colors.textOnPrimary
+                                    : variant == "secondary"
+                                    ? colors.primary
+                                    : colors.textOnPrimary
+                            }
+                        />
+                    ) : (
+                        children
+                    )}
                 </HapticTouchableOpacity>
             </Animated.View>
         </ButtonContext.Provider>

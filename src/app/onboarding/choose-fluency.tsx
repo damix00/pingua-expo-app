@@ -52,7 +52,7 @@ export default function ChooseFluencyOnboarding() {
                         <GlassCard
                             onPress={() => {
                                 router.push(
-                                    `/onboarding/choose-goal?code=${code}&fluency=${level.title}`
+                                    `/onboarding/configuring-course?code=${code}&fluency=${level.title}`
                                 );
                             }}
                             contentPadding={0}

@@ -7,7 +7,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CachedSvgUri } from "@/utils/cache/SVGCache";
 import { useTranslation } from "react-i18next";
 import { ChevronRight } from "lucide-react-native";
-import { findFlag, languageCodeMap, languageMap } from "@/utils/i18n";
+import {
+    findFlag,
+    languageCodeMap,
+    languageMap,
+    saveLocale,
+} from "@/utils/i18n";
 import { router } from "expo-router";
 
 function ChooseLanguageCard({
@@ -73,8 +78,9 @@ export default function AppLanguagePage() {
                 renderItem={({ item }) => (
                     <ChooseLanguageCard
                         language={item}
-                        onPress={() => {
+                        onPress={async () => {
                             i18n.changeLanguage(item);
+                            await saveLocale(item);
                             router.back();
                         }}
                     />

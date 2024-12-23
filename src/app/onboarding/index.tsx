@@ -7,8 +7,6 @@ import { useThemeColors } from "@/hooks/useThemeColor";
 import { Image, SafeAreaView, StyleSheet, View } from "react-native";
 import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
-import Logo from "@/assets/images/logo.svg";
-import { Link } from "expo-router";
 import OnboardingLayout from "./OnboardingLayout";
 import AppLinkText from "@/components/input/AppLinkText";
 import { useTranslation } from "react-i18next";
@@ -25,7 +23,10 @@ export default function FirstPage() {
                         pingua
                     </BrandText>
                 </View>
-                <ThemedText>(slika pingvina)</ThemedText>
+                <Image
+                    style={styles.image}
+                    source={require("@/assets/images/mascot.png")}
+                />
                 <View>
                     <BrandText onPrimary large>
                         {t("onboarding.page_1_title")}
@@ -69,6 +70,11 @@ const styles = StyleSheet.create({
         paddingBottom: 8,
         lineHeight: 32,
         paddingTop: 8,
+    },
+    image: {
+        width: 200,
+        alignSelf: "center",
+        objectFit: "contain",
     },
     container: {
         flex: 1,

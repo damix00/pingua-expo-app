@@ -1,32 +1,29 @@
 import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
 import { ThemedText } from "@/components/ui/ThemedText";
-import {
-    Image,
-    Keyboard,
-    KeyboardAvoidingView,
-    ScrollView,
-    StyleSheet,
-    View,
-} from "react-native";
-import {
-    SafeAreaView,
-    useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { Image, Keyboard, StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ONBOARDING_APPBAR_HEIGHT } from "../onboarding/OnboardingAppbar";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { useTranslation } from "react-i18next";
 import { StatusBar } from "expo-status-bar";
 import TextInput from "@/components/input/TextInput";
-import React from "react";
+import React, { useRef, useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Autolink from "react-native-autolink";
 import { openBrowserAsync } from "expo-web-browser";
+import * as Haptics from "expo-haptics";
+import axios from "axios";
+import Toast from "react-native-toast-message";
+import { useVideoPlayer, VideoView } from "expo-video";
 
 export default function Auth() {
     const colors = useThemeColors();
     const { t } = useTranslation();
     const insets = useSafeAreaInsets();
+    const email = useRef("");
+    const [emailError, setEmailError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     return (
         <>
@@ -45,7 +42,7 @@ export default function Auth() {
                 ]}>
                 <View style={[styles.imageWrapper]}>
                     <Image
-                        source={require("@/assets/images/icon.png")}
+                        source={require("@/assets/images/mascot.png")}
                         style={styles.image}
                     />
                 </View>
@@ -54,16 +51,71 @@ export default function Auth() {
                         {t("auth.login")}
                     </ThemedText>
                     <TextInput
+                        spellCheck={false}
+                        autoComplete="email"
+                        errorKey={emailError}
                         keyboardType="email-address"
                         returnKeyType="done"
                         textContentType="emailAddress"
-                        title="Email"
+                        title={t("email")}
                         placeholder="example@latinary.com"
+                        onChangeText={(text) => {
+                            email.current = text;
+                        }}
                         style={{ marginBottom: 16 }}
                     />
                     <Button
-                        onPress={() => {
+                        loading={loading}
+                        haptic={false}
+                        onPress={async () => {
                             Keyboard.dismiss();
+
+                            if (email.current == "") {
+                                await Haptics.notificationAsync(
+                                    Haptics.NotificationFeedbackType.Error
+                                );
+
+                                setEmailError("errors.email_empty");
+                                return;
+                            }
+
+                            if (!email.current.includes("@")) {
+                                await Haptics.notificationAsync(
+                                    Haptics.NotificationFeedbackType.Error
+                                );
+
+                                setEmailError("errors.email_invalid");
+                                return;
+                            }
+
+                            setLoading(true);
+
+                            setEmailError("");
+
+                            const result = await axios.post(
+                                "/v1/auth/email/send-code",
+                                {
+                                    email: email.current,
+                                }
+                            );
+
+                            setLoading(false);
+
+                            if (result.status == 200) {
+                                await Haptics.notificationAsync(
+                                    Haptics.NotificationFeedbackType.Success
+                                );
+                            } else {
+                                await Haptics.notificationAsync(
+                                    Haptics.NotificationFeedbackType.Error
+                                );
+
+                                Toast.show({
+                                    type: "error",
+                                    text1: t("errors.oh_no"),
+                                    text2: t("errors.email_sending_fail"),
+                                });
+                            }
                         }}>
                         <ButtonText>{t("continue")}</ButtonText>
                     </Button>
@@ -119,7 +171,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     image: {
-        height: 128,
+        height: 256,
         objectFit: "contain",
     },
     disclaimer: {

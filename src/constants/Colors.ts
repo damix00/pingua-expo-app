@@ -8,9 +8,12 @@ const lightTheme = {
     textSecondary: "#837B8E",
     textSecondaryOnPrimary: "#CAB4E9",
     background: "#F6F2FF",
+    backgroundVariant: "#E1DBED",
+    card: "#E8DFFF",
     icon: "#687076",
     tabIconDefault: "#687076",
     outline: "#D4D0D8",
+    outlineSecondary: "#E1DBED",
 };
 
 export const Colors = {

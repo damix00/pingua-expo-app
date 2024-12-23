@@ -1,7 +1,12 @@
-import { Platform, StyleSheet, View, ViewProps } from "react-native";
+import {
+    Platform,
+    StyleSheet,
+    TouchableOpacity,
+    View,
+    ViewProps,
+} from "react-native";
 import CheckboxRadial from "../input/stateful/CheckboxRadial";
 import { BlurView } from "expo-blur";
-import HapticTouchableOpacity from "../input/button/HapticTouchableOpacity";
 
 type GlassCardProps = {
     elevation?: "0" | "1" | "2" | "3" | "4" | "5";
@@ -65,9 +70,9 @@ export default function GlassCard({
 }: GlassCardProps) {
     if (onPress) {
         return (
-            <HapticTouchableOpacity onPress={onPress}>
+            <TouchableOpacity onPress={onPress}>
                 <InnerGlassCard {...props}>{children}</InnerGlassCard>
-            </HapticTouchableOpacity>
+            </TouchableOpacity>
         );
     }
 

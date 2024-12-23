@@ -21,6 +21,7 @@ export default function OnboardingAppbar({
                 },
             ]}>
             <TouchableOpacity
+                style={styles.backButton}
                 onPress={() => {
                     router.back();
                 }}>
@@ -33,10 +34,12 @@ export default function OnboardingAppbar({
 const styles = StyleSheet.create({
     container: {
         height: ONBOARDING_APPBAR_HEIGHT,
-        justifyContent: "space-between",
         flexDirection: "row",
         alignItems: "center",
+    },
+    backButton: {
+        height: "100%",
+        justifyContent: "center",
         paddingHorizontal: 16,
-        width: "100%",
     },
 });

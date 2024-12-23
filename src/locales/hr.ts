@@ -3,6 +3,7 @@ import en from "./en";
 const translations: typeof en = {
     get_started: "Započni",
     continue: "Nastavi",
+    email: "Email",
     languages: {
         en: "Engleski",
         de: "Njemački",
@@ -17,6 +18,13 @@ const translations: typeof en = {
         nl: "Nizozemski",
         pl: "Poljski",
         sv: "Švedski",
+    },
+    errors: {
+        email_empty: "Email ne može biti prazan.",
+        email_invalid: "Email nije valjan.",
+        oh_no: "O, ne!",
+        email_sending_fail:
+            "Slanje e-pošte nije uspjelo. Molimo pokušajte ponovno.",
     },
     onboarding: {
         page_1_title: "Pričaj s povjerenjem.",
@@ -51,6 +59,9 @@ const translations: typeof en = {
             tier_4: "30+ minuta dnevno",
             tier_4_description: "Posvećeno vrijeme za savladavanje",
         },
+        configuring_course_title: "Samo sekunda!",
+        configuring_course_description:
+            "Postavljamo tvoj tečaj. Ovo neće dugo trajati.",
     },
     auth: {
         login: "Prijavi se ili registriraj",

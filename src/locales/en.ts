@@ -1,6 +1,7 @@
 export default {
     get_started: "Get started",
     continue: "Continue",
+    email: "Email",
     languages: {
         en: "English",
         de: "German",
@@ -15,6 +16,12 @@ export default {
         nl: "Dutch",
         pl: "Polish",
         sv: "Swedish",
+    },
+    errors: {
+        email_empty: "Email cannot be empty.",
+        email_invalid: "Email is invalid.",
+        oh_no: "Oh no!",
+        email_sending_fail: "Failed to send email. Please try again.",
     },
     onboarding: {
         page_1_title: "Speak with confidence.",
@@ -48,6 +55,9 @@ export default {
             tier_4: "30+ minutes per day",
             tier_4_description: "Dedicated time for mastery",
         },
+        configuring_course_title: "Hang tight!",
+        configuring_course_description:
+            "We're setting up your course. This won't take long.",
     },
     auth: {
         login: "Log in or sign up",

@@ -36,6 +36,9 @@ import { StatusBar } from "expo-status-bar";
 import * as NavigationBar from "expo-navigation-bar";
 import OnboardingAppbar from "./onboarding/OnboardingAppbar";
 import loadLocales from "../utils/i18n";
+import { initAxios } from "@/api/config";
+import Toast from "react-native-toast-message";
+import BaseToast from "@/components/ui/toast/BaseToast";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -70,6 +73,8 @@ export default function RootLayout() {
     const loading = useRef(false);
 
     const load = async () => {
+        initAxios(); // Initialize axios, set base URL and headers
+
         setPrefs(await loadPreferences());
         setLoadedPrefs(true);
 
@@ -80,7 +85,7 @@ export default function RootLayout() {
 
         if (Platform.OS === "android") {
             await NavigationBar.setPositionAsync("absolute");
-            await NavigationBar.setBackgroundColorAsync("#ffffff00");
+            await NavigationBar.setBackgroundColorAsync("#ffffff01");
         }
     };
 
@@ -164,6 +169,13 @@ export default function RootLayout() {
                                 }}
                             />
                             <Stack.Screen
+                                name="onboarding/configuring-course"
+                                options={{
+                                    headerShown: false,
+                                    gestureEnabled: false,
+                                }}
+                            />
+                            <Stack.Screen
                                 name="onboarding/choose-goal"
                                 options={{
                                     headerShown: true,
@@ -184,6 +196,16 @@ export default function RootLayout() {
                     </ThemeProvider>
                 </AuthProvider>
             </PreferencesProvider>
+            <Toast
+                config={{
+                    success: BaseToast,
+                    error: (props) => <BaseToast error {...props} />,
+                    info: BaseToast,
+                    any_custom_type: BaseToast,
+                }}
+                topOffset={0}
+                bottomOffset={0}
+            />
         </View>
     );
 }

@@ -3,15 +3,18 @@ import * as Haptics from "expo-haptics";
 import { TouchableOpacity, TouchableOpacityProps } from "react-native";
 
 export default function HapticTouchableOpacity({
+    enableHaptics = true,
     ...props
-}: TouchableOpacityProps) {
+}: TouchableOpacityProps & {
+    enableHaptics?: boolean;
+}) {
     const preferences = usePreferences();
 
     return (
         <TouchableOpacity
             {...props}
             onPressIn={(e) => {
-                if (preferences?.preferences.hapticFeedback) {
+                if (preferences?.preferences.hapticFeedback && enableHaptics) {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 }
                 props.onPressIn && props.onPressIn(e);
