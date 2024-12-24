@@ -1,6 +1,7 @@
 import StaticBackground from "@/components/ui/StaticBackground";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { useTimeout } from "@/hooks/useTimeout";
+import { mascot } from "@/utils/cache/CachedImages";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -19,10 +20,7 @@ export default function OnboardingConfiguringCourse() {
     return (
         <StaticBackground showAura={false}>
             <View style={styles.page}>
-                <Image
-                    style={styles.image}
-                    source={require("@/assets/images/mascot.png")}
-                />
+                <Image style={styles.image} source={mascot} />
                 <View style={styles.textWrapper}>
                     <ThemedText onPrimary type="heading">
                         {t("onboarding.configuring_course_title")}
@@ -45,7 +43,7 @@ const styles = StyleSheet.create({
         margin: 24,
     },
     image: {
-        width: 200,
+        height: 200,
         objectFit: "contain",
     },
     textWrapper: {

@@ -16,6 +16,8 @@ import * as Haptics from "expo-haptics";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import { useVideoPlayer, VideoView } from "expo-video";
+import { mascot } from "@/utils/cache/CachedImages";
+import { router } from "expo-router";
 
 export default function Auth() {
     const colors = useThemeColors();
@@ -41,17 +43,16 @@ export default function Auth() {
                     },
                 ]}>
                 <View style={[styles.imageWrapper]}>
-                    <Image
-                        source={require("@/assets/images/mascot.png")}
-                        style={styles.image}
-                    />
+                    <Image source={mascot} style={styles.image} />
                 </View>
                 <View>
                     <ThemedText style={styles.heading} type="heading">
                         {t("auth.login")}
                     </ThemedText>
                     <TextInput
+                        autoCorrect={false}
                         spellCheck={false}
+                        autoCapitalize="none"
                         autoComplete="email"
                         errorKey={emailError}
                         keyboardType="email-address"
@@ -92,20 +93,34 @@ export default function Auth() {
 
                             setEmailError("");
 
-                            const result = await axios.post(
-                                "/v1/auth/email/send-code",
-                                {
-                                    email: email.current,
-                                }
-                            );
-
-                            setLoading(false);
-
-                            if (result.status == 200) {
-                                await Haptics.notificationAsync(
-                                    Haptics.NotificationFeedbackType.Success
+                            try {
+                                const result = await axios.post(
+                                    "/v1/auth/email/send-code",
+                                    {
+                                        email: email.current,
+                                    }
                                 );
-                            } else {
+
+                                if (result.status == 200) {
+                                    await Haptics.notificationAsync(
+                                        Haptics.NotificationFeedbackType.Success
+                                    );
+
+                                    router.push(
+                                        `/auth/otp?email=${email.current}`
+                                    );
+                                } else {
+                                    await Haptics.notificationAsync(
+                                        Haptics.NotificationFeedbackType.Error
+                                    );
+
+                                    Toast.show({
+                                        type: "error",
+                                        text1: t("errors.oh_no"),
+                                        text2: t("errors.email_sending_fail"),
+                                    });
+                                }
+                            } catch (e) {
                                 await Haptics.notificationAsync(
                                     Haptics.NotificationFeedbackType.Error
                                 );
@@ -115,6 +130,8 @@ export default function Auth() {
                                     text1: t("errors.oh_no"),
                                     text2: t("errors.email_sending_fail"),
                                 });
+                            } finally {
+                                setLoading(false);
                             }
                         }}>
                         <ButtonText>{t("continue")}</ButtonText>

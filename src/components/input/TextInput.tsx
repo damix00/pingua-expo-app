@@ -9,7 +9,14 @@ import Animated, {
     withTiming,
     runOnJS,
 } from "react-native-reanimated";
-import { useEffect, useRef } from "react";
+import {
+    Component,
+    Ref,
+    RefAttributes,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 
 const AnimatedRNTextInput = Animated.createAnimatedComponent(RNTextInput);
@@ -19,11 +26,26 @@ export default function TextInput({
     title,
     errorKey,
     ...props
-}: TextInputProps & { title?: string; errorKey?: string }) {
+}: TextInputProps & {
+    title?: string;
+    errorKey?: string;
+}) {
     const { t } = useTranslation();
     const colors = useThemeColors();
     const shakeAnim = useSharedValue(0);
     const prevErrorKey = useRef<string | null>(null);
+    const [focused, setFocused] = useState(false);
+
+    const borderColor = useSharedValue(
+        focused ? colors.primary : colors.outline
+    );
+
+    useEffect(() => {
+        borderColor.value = withTiming(
+            focused ? colors.primary : colors.outline,
+            { duration: 100 }
+        );
+    }, [focused]);
 
     const duration = 100;
 
@@ -43,6 +65,7 @@ export default function TextInput({
     const animatedStyle = useAnimatedStyle(() => {
         return {
             transform: [{ translateX: shakeAnim.value }],
+            borderColor: borderColor.value,
         };
     });
 
@@ -57,6 +80,8 @@ export default function TextInput({
                 )}
             </View>
             <AnimatedRNTextInput
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
                 placeholderTextColor={colors.textSecondary}
                 style={[
                     styles.input,

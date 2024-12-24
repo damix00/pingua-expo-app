@@ -36,7 +36,9 @@ export default function BaseToast({
                 <View style={styles.textContainer}>
                     <ThemedText>{text1}</ThemedText>
                     {text2 && (
-                        <ThemedText style={{ fontSize: 12 }} type="secondary">
+                        <ThemedText
+                            style={{ fontSize: 12, marginTop: 2 }}
+                            type="secondary">
                             {text2}
                         </ThemedText>
                     )}
@@ -50,13 +52,12 @@ const styles = StyleSheet.create({
     container: {
         borderWidth: 1,
         flex: 1,
-        paddingHorizontal: 16,
-        paddingVertical: 12,
+        padding: 16,
         borderRadius: 8,
         boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.1)",
         flexDirection: "row",
         alignItems: "center",
-        gap: 8,
+        gap: 12,
     },
     textContainer: {
         flex: 1,

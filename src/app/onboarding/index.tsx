@@ -10,6 +10,7 @@ import ButtonText from "@/components/input/button/ButtonText";
 import OnboardingLayout from "./OnboardingLayout";
 import AppLinkText from "@/components/input/AppLinkText";
 import { useTranslation } from "react-i18next";
+import { mascot } from "@/utils/cache/CachedImages";
 
 export default function FirstPage() {
     const colors = useThemeColors();
@@ -23,10 +24,7 @@ export default function FirstPage() {
                         pingua
                     </BrandText>
                 </View>
-                <Image
-                    style={styles.image}
-                    source={require("@/assets/images/mascot.png")}
-                />
+                <Image style={styles.image} source={mascot} />
                 <View>
                     <BrandText onPrimary large>
                         {t("onboarding.page_1_title")}
@@ -72,7 +70,7 @@ const styles = StyleSheet.create({
         paddingTop: 8,
     },
     image: {
-        width: 200,
+        height: 200,
         alignSelf: "center",
         objectFit: "contain",
     },

@@ -37,7 +37,7 @@ function ChooseLanguageCard({
                 />
             }>
             <ThemedText type="onPrimary">
-                {t(`languages.${language}`)}
+                {languageMap[language as keyof typeof languageMap]}
             </ThemedText>
         </GlassCard>
     );

@@ -4,6 +4,9 @@ const translations: typeof en = {
     get_started: "Započni",
     continue: "Nastavi",
     email: "Email",
+    name: "Ime",
+    username: "Korisničko ime",
+    finish: "Završi",
     languages: {
         en: "Engleski",
         de: "Njemački",
@@ -25,6 +28,8 @@ const translations: typeof en = {
         oh_no: "O, ne!",
         email_sending_fail:
             "Slanje e-pošte nije uspjelo. Molimo pokušajte ponovno.",
+        otp_fail: "Nešto je pošlo po zlu. Molimo pokušajte ponovno.",
+        wrong_otp: "Pogrešan kȏd. Molimo pokušajte ponovno.",
     },
     onboarding: {
         page_1_title: "Pričaj s povjerenjem.",
@@ -64,10 +69,16 @@ const translations: typeof en = {
             "Postavljamo tvoj tečaj. Ovo neće dugo trajati.",
     },
     auth: {
-        login: "Prijavi se ili registriraj",
-        register: "Još samo jedan korak!",
+        login: "Prijava ili registracija",
         disclaimer:
             'Nastavkom se slažeš s našim <a href="https://google.com">Uvjetima korištenja</a> i <a href="https://google.com">Pravilima privatnosti</a>.',
+        otp_title: "Šesteroznamenkasti kȏd",
+        otp_description:
+            "Poslali smo kȏd na {{email}}. Unesite ga ispod kako biste nastavili.",
+        otp_button: "Potvrdi",
+        profile_setup_title: "Dobrodošli!",
+        profile_setup_description:
+            "Drago nam je što ste s nama. Upoznajmo se bolje.",
     },
 };
 

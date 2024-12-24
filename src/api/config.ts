@@ -11,4 +11,6 @@ export function initAxios() {
     axios.defaults.headers.common["Content-Type"] = "application/json";
     axios.defaults.headers.common["Accept"] = "application/json";
     axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+    axios.defaults.timeout = 30 * 1000; // 30 seconds
+    axios.defaults.validateStatus = (status) => true; // Prevents axios from throwing errors on non-2xx status codes
 }

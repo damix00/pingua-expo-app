@@ -72,9 +72,9 @@ export default function Button({
         <ButtonContext.Provider value={{ variant: variant ?? "primary" }}>
             <Animated.View style={animatedStyle}>
                 <HapticTouchableOpacity
+                    {...props}
                     disabled={props.disabled || loading}
                     enableHaptics={haptic}
-                    {...props}
                     onPress={(e) => {
                         if (href) {
                             router.push(href as any);

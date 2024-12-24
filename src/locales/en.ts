@@ -2,6 +2,9 @@ export default {
     get_started: "Get started",
     continue: "Continue",
     email: "Email",
+    name: "Name",
+    username: "Username",
+    finish: "Finish",
     languages: {
         en: "English",
         de: "German",
@@ -22,6 +25,8 @@ export default {
         email_invalid: "Email is invalid.",
         oh_no: "Oh no!",
         email_sending_fail: "Failed to send email. Please try again.",
+        otp_fail: "Failed to verify OTP. Please try again.",
+        wrong_otp: "Wrong code. Please try again.",
     },
     onboarding: {
         page_1_title: "Speak with confidence.",
@@ -61,8 +66,14 @@ export default {
     },
     auth: {
         login: "Log in or sign up",
-        register: "Just one more step!",
         disclaimer:
             'By continuing, you agree to our <a href="https://google.com">Terms of Service</a> and <a href="https://google.com">Privacy Policy</a>.',
+        otp_title: "6-digit code",
+        otp_description:
+            "We've sent a code to {{email}}. Enter it below to continue.",
+        otp_button: "Verify",
+        profile_setup_title: "Welcome to the community!",
+        profile_setup_description:
+            "We're excited to have you. Let's get to know you better.",
     },
 };

@@ -14,6 +14,7 @@
             "buildNumber": "1",
             "splash": {
                 "image": "./src/assets/images/splash-icon.png",
+                "imageWidth": 128,
                 "resizeMode": "contain",
                 "backgroundColor": "#7d51ef"
             }
@@ -23,6 +24,7 @@
             "versionCode": 1,
             "splash": {
                 "image": "./src/assets/images/splash-icon.png",
+                "imageWidth": 128,
                 "resizeMode": "contain",
                 "backgroundColor": "#7d51ef"
             },
@@ -39,7 +41,7 @@
                 "expo-splash-screen",
                 {
                     "image": "./src/assets/images/splash-icon.png",
-                    "imageWidth": 200,
+                    "imageWidth": 128,
                     "resizeMode": "contain",
                     "backgroundColor": "#7d51ef"
                 }

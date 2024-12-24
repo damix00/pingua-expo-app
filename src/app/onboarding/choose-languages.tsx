@@ -44,6 +44,10 @@ export default function ChooseLanguageOnboarding() {
     const insets = useSafeAreaInsets();
     const { t, i18n } = useTranslation();
 
+    const languages = courseLanguages.filter(
+        (language) => language.code !== i18n.language
+    );
+
     return (
         <OnboardingLayout appbar scrollable={false} safeArea={false}>
             <FlatList
@@ -56,7 +60,7 @@ export default function ChooseLanguageOnboarding() {
                     flex: 1,
                     justifyContent: "flex-end",
                 }}
-                data={courseLanguages}
+                data={languages}
                 ListHeaderComponent={
                     <View
                         style={{
