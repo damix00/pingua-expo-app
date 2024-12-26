@@ -14,6 +14,7 @@ const lightTheme = {
     tabIconDefault: "#687076",
     outline: "#D4D0D8",
     outlineSecondary: "#E1DBED",
+    error: "red",
 };
 
 export const Colors = {

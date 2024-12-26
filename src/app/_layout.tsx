@@ -77,7 +77,6 @@ export default function RootLayout() {
     // Store preferences and user data
     const [prefs, setPrefs] = useState<PreferencesType | null>(null);
     const [user, setUser] = useState<UserCacheType | null>(null);
-    const [courses, setCourses] = useState<Course[]>([]);
 
     const scheme = useColorScheme();
     const colors = useThemeColors();
@@ -142,23 +141,38 @@ export default function RootLayout() {
                 preferences={prefs ?? { hapticFeedback: true }}
                 setPreferences={(newPrefs) => setPrefs(newPrefs)}>
                 <AuthProvider
-                    courses={courses}
+                    courses={user?.courses ?? []}
                     user={user?.user ?? null}
                     setUser={(newUser) => {
                         if (user) {
                             setUser({
                                 ...user,
                                 user: newUser,
-                                jwt: user.jwt,
                             });
                         } else {
                             setUser({
                                 user: newUser,
                                 jwt: null,
+                                courses: [],
                             });
                         }
                     }}
-                    setCourses={setCourses}
+                    setCourses={(newCourses) => {
+                        if (user) {
+                            setUser({
+                                ...user,
+                                user: user.user,
+                                jwt: user.jwt,
+                                courses: newCourses,
+                            });
+                        } else {
+                            setUser({
+                                user: null,
+                                jwt: null,
+                                courses: newCourses,
+                            });
+                        }
+                    }}
                     loggedIn={loggedIn}
                     setLoggedIn={setLoggedIn}>
                     <ThemeProvider

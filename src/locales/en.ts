@@ -27,6 +27,9 @@ export default {
         email_sending_fail: "Failed to send email. Please try again.",
         otp_fail: "Failed to verify OTP. Please try again.",
         wrong_otp: "Wrong code. Please try again.",
+        field_required: "This field is required.",
+        min_characters: "Must be at least {{count}} characters.",
+        something_went_wrong: "Something went wrong. Please try again.",
     },
     onboarding: {
         page_1_title: "Speak with confidence.",

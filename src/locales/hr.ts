@@ -30,6 +30,10 @@ const translations: typeof en = {
             "Slanje e-pošte nije uspjelo. Molimo pokušajte ponovno.",
         otp_fail: "Nešto je pošlo po zlu. Molimo pokušajte ponovno.",
         wrong_otp: "Pogrešan kȏd. Molimo pokušajte ponovno.",
+        field_required: "Ovo polje je obavezno.",
+        min_characters: "Mora sadržavati najmanje {{count}} znakova.",
+        something_went_wrong:
+            "Nešto je pošlo po zlu. Molimo pokušajte ponovno.",
     },
     onboarding: {
         page_1_title: "Pričaj s povjerenjem.",

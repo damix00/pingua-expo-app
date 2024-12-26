@@ -5,10 +5,6 @@ import { ThemedText } from "@/components/ui/ThemedText";
 import { StyleSheet } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import GlassCard, { GlassCardSelection } from "@/components/ui/GlassCard";
-import HapticTouchableOpacity from "@/components/input/button/HapticTouchableOpacity";
-import Button from "@/components/input/button/Button";
-import ButtonText from "@/components/input/button/ButtonText";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const fluencyLevels = [
@@ -48,11 +44,11 @@ export default function ChooseFluencyOnboarding() {
                     })}
                 </ThemedText>
                 <View style={styles.listContainer}>
-                    {fluencyLevels.map((level) => (
+                    {fluencyLevels.map((level, index) => (
                         <GlassCard
                             onPress={() => {
                                 router.push(
-                                    `/onboarding/configuring-course?code=${code}&fluency=${level.title}`
+                                    `/onboarding/configuring-course?code=${code}&fluency=${index}`
                                 );
                             }}
                             contentPadding={0}

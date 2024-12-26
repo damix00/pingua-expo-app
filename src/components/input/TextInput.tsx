@@ -25,10 +25,12 @@ export default function TextInput({
     style,
     title,
     errorKey,
+    errorParams,
     ...props
 }: TextInputProps & {
     title?: string;
     errorKey?: string;
+    errorParams?: Record<string, any>;
 }) {
     const { t } = useTranslation();
     const colors = useThemeColors();
@@ -37,28 +39,31 @@ export default function TextInput({
     const [focused, setFocused] = useState(false);
 
     const borderColor = useSharedValue(
-        focused ? colors.primary : colors.outline
+        errorKey ? colors.error : focused ? colors.primary : colors.outline
     );
 
     useEffect(() => {
         borderColor.value = withTiming(
-            focused ? colors.primary : colors.outline,
+            errorKey ? colors.error : focused ? colors.primary : colors.outline,
             { duration: 100 }
         );
-    }, [focused]);
+    }, [focused, errorKey]);
 
     const duration = 100;
+    const shakeOffset = 5;
 
     useEffect(() => {
-        if (errorKey && errorKey !== prevErrorKey.current) {
+        if (errorKey) {
             shakeAnim.value = withSequence(
-                withTiming(-10, { duration }),
-                withTiming(10, { duration }),
-                withTiming(-10, { duration }),
-                withTiming(10, { duration }),
+                withTiming(-shakeOffset, { duration }),
+                withTiming(shakeOffset, { duration }),
+                withTiming(-shakeOffset, { duration }),
+                withTiming(shakeOffset, { duration }),
                 withTiming(0, { duration })
             );
-            prevErrorKey.current = errorKey;
+        }
+        if (errorKey !== prevErrorKey.current) {
+            prevErrorKey.current = errorKey ?? null;
         }
     }, [errorKey]);
 
@@ -75,7 +80,7 @@ export default function TextInput({
                 {title && <ThemedText>{title}</ThemedText>}
                 {errorKey && (
                     <ThemedText style={styles.errorText} type="secondary">
-                        {t(errorKey)}
+                        {t(errorKey, errorParams)}
                     </ThemedText>
                 )}
             </View>
@@ -87,10 +92,8 @@ export default function TextInput({
                     styles.input,
                     {
                         color: colors.text,
-                        borderColor: colors.outline,
                         backgroundColor: colors.background,
                     },
-                    errorKey && styles.inputError,
                     animatedStyle,
                     style,
                 ]}
@@ -122,8 +125,5 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingVertical: 0,
         height: 36,
-    },
-    inputError: {
-        borderColor: "red",
     },
 });

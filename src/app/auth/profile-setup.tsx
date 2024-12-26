@@ -2,8 +2,9 @@ import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
 import TextInput from "@/components/input/TextInput";
 import { ThemedText } from "@/components/ui/ThemedText";
+import useHaptics from "@/hooks/useHaptics";
 import { useThemeColors } from "@/hooks/useThemeColor";
-import React from "react";
+import React, { useState } from "react";
 import { Ref, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -13,20 +14,35 @@ import {
     View,
     ScrollView,
 } from "react-native";
-import Autolink from "react-native-autolink";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import * as Haptics from "expo-haptics";
+import axios from "axios";
+import { router, useLocalSearchParams } from "expo-router";
+import Toast from "react-native-toast-message";
+import { useAuth } from "@/context/AuthContext";
+import { setJwt } from "@/api/data";
+import { saveUserCache } from "@/utils/cache/user-cache";
 
 export default function ProfileSetupPage() {
     const colors = useThemeColors();
     const insets = useSafeAreaInsets();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const haptics = useHaptics();
+
+    const [loading, setLoading] = useState(false);
+    const [nameError, setNameError] = useState<string>("");
+    const [usernameError, setUsernameError] = useState<string>("");
+    const [username, setUsername] = useState("");
+    const [name, setName] = useState("");
+    const { email, otp, code, fluency, goal } = useLocalSearchParams();
+    const auth = useAuth();
+
+    console.log(email, otp, code, fluency, goal);
 
     return (
         <>
             <ScrollView
                 contentInsetAdjustmentBehavior="never"
-                keyboardShouldPersistTaps="handled"
                 contentContainerStyle={styles.scrollViewContent}
                 style={[
                     styles.scrollView,
@@ -45,16 +61,33 @@ export default function ProfileSetupPage() {
 
                     <View style={styles.inputWrapper}>
                         <TextInput
+                            errorKey={nameError}
+                            maxLength={128}
                             autoFocus
                             autoCapitalize="words"
                             textContentType="name"
                             title={t("name")}
+                            onChangeText={(text) => setName(text)}
+                            value={name}
                             placeholder="Fran Galović"
                         />
                         <TextInput
+                            errorKey={usernameError}
+                            errorParams={{ count: 3 }}
                             autoCapitalize="none"
+                            maxLength={20}
                             title={t("username")}
                             placeholder="frang1"
+                            onChangeText={(text) => {
+                                setUsername(
+                                    text
+                                        .toLowerCase()
+                                        .replaceAll(" ", "_")
+                                        // Remove all non-alphanumeric characters, except periods, underscores and hyphens
+                                        .replace(/[^a-z0-9._-]/g, "")
+                                );
+                            }}
+                            value={username}
                         />
                     </View>
                 </View>
@@ -66,10 +99,94 @@ export default function ProfileSetupPage() {
                     styles.buttonWrapper,
                     {
                         paddingBottom: insets.bottom + 16,
-                        backgroundColor: colors.background,
                     },
                 ]}>
-                <Button>
+                <Button
+                    loading={loading}
+                    onPress={async () => {
+                        const newName = name.trim();
+                        setName(newName);
+
+                        let error = false;
+
+                        if (newName === "") {
+                            error = true;
+                            setNameError("errors.field_required");
+                        } else {
+                            setNameError("");
+                        }
+
+                        if (username === "") {
+                            error = true;
+
+                            setUsernameError("errors.field_required");
+                        } else if (username.length < 3) {
+                            error = true;
+
+                            setUsernameError("errors.min_characters");
+                        } else {
+                            setUsernameError("");
+                        }
+
+                        if (error) {
+                            await haptics.notificationAsync(
+                                Haptics.NotificationFeedbackType.Error
+                            );
+
+                            return;
+                        }
+
+                        setLoading(true);
+
+                        try {
+                            // Simulate loading
+                            const response = await axios.post(
+                                "/v1/auth/register",
+                                {
+                                    email,
+                                    code_id: otp,
+                                    username,
+                                    name: newName,
+                                    app_locale: i18n.language,
+                                    language_code: code,
+                                    fluency_level: fluency,
+                                    goal,
+                                }
+                            );
+
+                            console.log(response.data);
+                            if (response.status == 201 && response.data.user) {
+                                setJwt(response.data.jwt);
+                                auth.setUser(response.data.user);
+                                auth.setLoggedIn(true);
+                                auth.setCourses(response.data.courses);
+
+                                await saveUserCache(
+                                    response.data.user,
+                                    response.data.jwt,
+                                    response.data.courses
+                                );
+
+                                router.replace("/");
+                            } else {
+                                Toast.show({
+                                    type: "error",
+                                    text1: t("errors.oh_no"),
+                                    text2: t("errors.something_went_wrong"),
+                                });
+                            }
+                        } catch (e) {
+                            console.error(e);
+
+                            Toast.show({
+                                type: "error",
+                                text1: t("errors.oh_no"),
+                                text2: t("errors.something_went_wrong"),
+                            });
+                        } finally {
+                            setLoading(false);
+                        }
+                    }}>
                     <ButtonText>{t("finish")}</ButtonText>
                 </Button>
             </KeyboardAvoidingView>

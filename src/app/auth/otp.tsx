@@ -1,6 +1,11 @@
 import { ThemedText } from "@/components/ui/ThemedText";
 import { useThemeColors } from "@/hooks/useThemeColor";
-import { Keyboard, KeyboardAvoidingView, StyleSheet, View } from "react-native";
+import {
+    Keyboard,
+    KeyboardAvoidingView,
+    TouchableWithoutFeedback,
+    View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ONBOARDING_APPBAR_HEIGHT } from "../onboarding/OnboardingAppbar";
 import { useTranslation } from "react-i18next";
@@ -9,12 +14,12 @@ import { router, useLocalSearchParams, useRootNavigation } from "expo-router";
 import { useRef, useState } from "react";
 import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
-import { sleep } from "@/utils/util";
 import Toast from "react-native-toast-message";
 import axios from "axios";
 import { setJwt } from "@/api/data";
 import { useAuth } from "@/context/AuthContext";
 import { CommonActions } from "@react-navigation/native";
+import { saveUserCache } from "@/utils/cache/user-cache";
 
 export default function AuthOtpPage() {
     const insets = useSafeAreaInsets();
@@ -49,6 +54,12 @@ export default function AuthOtpPage() {
                     auth.setLoggedIn(true);
                     auth.setCourses(response.data.courses);
 
+                    await saveUserCache(
+                        response.data.user,
+                        response.data.jwt,
+                        response.data.courses
+                    );
+
                     // Replace all routes with the home route
                     navigation.dispatch(
                         CommonActions.reset({
@@ -69,7 +80,8 @@ export default function AuthOtpPage() {
                                     name: "auth/profile-setup",
                                     params: {
                                         email,
-                                        code: response.data.id,
+                                        otp: response.data.id,
+                                        ...params,
                                     },
                                 },
                             ],
@@ -116,6 +128,10 @@ export default function AuthOtpPage() {
                 </ThemedText>
 
                 <OtpInput
+                    textInputProps={{
+                        textContentType: "oneTimeCode",
+                        autoComplete: "one-time-code",
+                    }}
                     disabled={loading}
                     theme={{
                         pinCodeContainerStyle: {

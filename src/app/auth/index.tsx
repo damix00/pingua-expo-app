@@ -12,12 +12,13 @@ import React, { useRef, useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Autolink from "react-native-autolink";
 import { openBrowserAsync } from "expo-web-browser";
-import * as Haptics from "expo-haptics";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { mascot } from "@/utils/cache/CachedImages";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
+import useHaptics from "@/hooks/useHaptics";
+import * as Haptics from "expo-haptics";
 
 export default function Auth() {
     const colors = useThemeColors();
@@ -26,11 +27,15 @@ export default function Auth() {
     const email = useRef("");
     const [emailError, setEmailError] = useState("");
     const [loading, setLoading] = useState(false);
+    const haptics = useHaptics();
+
+    const { code, fluency, goal } = useLocalSearchParams();
 
     return (
         <>
             <StatusBar style="auto" />
             <KeyboardAwareScrollView
+                alwaysBounceVertical={false}
                 enableOnAndroid
                 contentInsetAdjustmentBehavior="never"
                 keyboardShouldPersistTaps="handled"
@@ -72,7 +77,7 @@ export default function Auth() {
                             Keyboard.dismiss();
 
                             if (email.current == "") {
-                                await Haptics.notificationAsync(
+                                await haptics.notificationAsync(
                                     Haptics.NotificationFeedbackType.Error
                                 );
 
@@ -81,7 +86,7 @@ export default function Auth() {
                             }
 
                             if (!email.current.includes("@")) {
-                                await Haptics.notificationAsync(
+                                await haptics.notificationAsync(
                                     Haptics.NotificationFeedbackType.Error
                                 );
 
@@ -102,15 +107,21 @@ export default function Auth() {
                                 );
 
                                 if (result.status == 200) {
-                                    await Haptics.notificationAsync(
+                                    await haptics.notificationAsync(
                                         Haptics.NotificationFeedbackType.Success
                                     );
 
-                                    router.push(
-                                        `/auth/otp?email=${email.current}`
-                                    );
+                                    if (!code) {
+                                        router.push(
+                                            `/auth/otp?email=${email.current}`
+                                        );
+                                    } else {
+                                        router.push(
+                                            `/auth/otp?email=${email.current}&code=${code}&fluency=${fluency}&goal=${goal}`
+                                        );
+                                    }
                                 } else {
-                                    await Haptics.notificationAsync(
+                                    await haptics.notificationAsync(
                                         Haptics.NotificationFeedbackType.Error
                                     );
 
@@ -121,7 +132,7 @@ export default function Auth() {
                                     });
                                 }
                             } catch (e) {
-                                await Haptics.notificationAsync(
+                                await haptics.notificationAsync(
                                     Haptics.NotificationFeedbackType.Error
                                 );
 

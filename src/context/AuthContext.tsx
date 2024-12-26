@@ -19,9 +19,10 @@ export type UserContextType = {
     loggedIn: boolean;
     setLoggedIn: (loggedIn: boolean) => void;
     user: AuthUser | null;
-    setUser: (user: AuthUser) => void;
+    setUser: (user: AuthUser | null) => void;
     courses: Course[];
     setCourses: (courses: Course[]) => void;
+    logout: () => void;
 };
 
 export const AuthContext = createContext<UserContextType>({
@@ -31,6 +32,7 @@ export const AuthContext = createContext<UserContextType>({
     setUser: () => {},
     courses: [],
     setCourses: () => {},
+    logout: () => {},
 });
 
 export function AuthProvider({
@@ -44,15 +46,22 @@ export function AuthProvider({
 }: {
     children: React.ReactNode;
     user: AuthUser | null;
-    setUser: (user: AuthUser) => void;
+    setUser: (user: AuthUser | null) => void;
     courses: Course[];
     setCourses: (courses: Course[]) => void;
     loggedIn: boolean;
     setLoggedIn: (loggedIn: boolean) => void;
 }) {
+    const logout = () => {
+        setUser(null);
+        setCourses([]);
+        setLoggedIn(false);
+    };
+
     return (
         <AuthContext.Provider
             value={{
+                logout,
                 loggedIn,
                 setLoggedIn,
                 user,
