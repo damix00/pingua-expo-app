@@ -6,6 +6,7 @@ import { StyleSheet } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import GlassCard, { GlassCardSelection } from "@/components/ui/GlassCard";
 import { useTranslation } from "react-i18next";
+import { objectToQueryString } from "@/utils/util";
 
 const fluencyLevels = [
     {
@@ -27,7 +28,7 @@ const fluencyLevels = [
 ];
 
 export default function ChooseFluencyOnboarding() {
-    const { code } = useLocalSearchParams();
+    const { code, ...params } = useLocalSearchParams();
     const { t } = useTranslation();
 
     const language = t(`languages.${code}`);
@@ -48,7 +49,9 @@ export default function ChooseFluencyOnboarding() {
                         <GlassCard
                             onPress={() => {
                                 router.push(
-                                    `/onboarding/configuring-course?code=${code}&fluency=${index}`
+                                    `/onboarding/configuring-course?code=${code}&fluency=${index}&${objectToQueryString(
+                                        params
+                                    )}`
                                 );
                             }}
                             contentPadding={0}

@@ -10,7 +10,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ONBOARDING_APPBAR_HEIGHT } from "../onboarding/OnboardingAppbar";
 import { useTranslation } from "react-i18next";
 import { OtpInput, OtpInputRef } from "react-native-otp-entry";
-import { router, useLocalSearchParams, useRootNavigation } from "expo-router";
+import {
+    router,
+    useLocalSearchParams,
+    useNavigation,
+    useRootNavigation,
+} from "expo-router";
 import { useRef, useState } from "react";
 import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
@@ -29,7 +34,7 @@ export default function AuthOtpPage() {
     const [otp, setOtp] = useState("");
     const [loading, setLoading] = useState(false);
     const auth = useAuth();
-    const navigation = useRootNavigation();
+    const navigation = useNavigation();
 
     const verifyOtp = async (code: string) => {
         setLoading(true);
@@ -66,27 +71,36 @@ export default function AuthOtpPage() {
                             index: 0,
                             routes: [
                                 {
-                                    name: "index",
+                                    name: "(tabs)",
                                 },
                             ],
                         })
                     );
                 } else {
-                    navigation.dispatch(
-                        CommonActions.reset({
-                            index: 0,
-                            routes: [
-                                {
-                                    name: "auth/profile-setup",
-                                    params: {
-                                        email,
-                                        otp: response.data.id,
-                                        ...params,
+                    if (!params.code) {
+                        // The user doesn't have an account but they think they do
+                        // So we show them a screen informing them and then send them to onboarding
+
+                        router.replace(
+                            `/onboarding/no-account?email=${email}&otp=${response.data.id}`
+                        );
+                    } else {
+                        navigation.dispatch(
+                            CommonActions.reset({
+                                index: 0,
+                                routes: [
+                                    {
+                                        name: "auth/profile-setup",
+                                        params: {
+                                            email,
+                                            otp: response.data.id,
+                                            ...params,
+                                        },
                                     },
-                                },
-                            ],
-                        })
-                    );
+                                ],
+                            })
+                        );
+                    }
                 }
             } else {
                 Toast.show({

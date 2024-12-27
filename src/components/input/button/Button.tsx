@@ -18,7 +18,7 @@ import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import HapticTouchableOpacity from "./HapticTouchableOpacity";
 
-type ButtonVariant = "primary" | "secondary" | "primaryVariant";
+type ButtonVariant = "primary" | "secondary" | "primaryVariant" | "text";
 
 export type ButtonContextType = {
     variant: ButtonVariant;
@@ -65,8 +65,26 @@ export default function Button({
     const animatedStyle = useAnimatedStyle(() => {
         return {
             opacity: opacity.value,
+            width: "100%",
         };
     });
+
+    let bgColor = colors.primary;
+
+    switch (variant) {
+        case "secondary":
+            bgColor = colors.background;
+            break;
+        case "primaryVariant":
+            bgColor = colors.primaryVariant;
+            break;
+        case "primary":
+            bgColor = colors.primary;
+            break;
+        case "text":
+            bgColor = "transparent";
+            break;
+    }
 
     return (
         <ButtonContext.Provider value={{ variant: variant ?? "primary" }}>
@@ -84,17 +102,16 @@ export default function Button({
                     style={[
                         styles.button,
                         {
-                            backgroundColor:
-                                variant == "primaryVariant"
-                                    ? colors.primaryVariant
-                                    : variant == "secondary"
-                                    ? colors.background
-                                    : colors.primary,
+                            backgroundColor: bgColor,
                             borderColor:
                                 variant == "secondary"
                                     ? colors.primary
                                     : "transparent",
                             borderWidth: variant == "secondary" ? 1 : 0,
+                            boxShadow:
+                                variant == "text"
+                                    ? "none"
+                                    : styles.button.boxShadow,
                         },
                         style,
                     ]}>

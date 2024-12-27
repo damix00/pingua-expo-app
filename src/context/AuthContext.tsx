@@ -1,16 +1,23 @@
 import { createContext, useContext, useState } from "react";
 
+export type Plan = "FREE" | "BASIC" | "PREMIUM" | "ULTRA";
+
 export type AuthUser = {
     id: string;
     avatar: string;
     username: string;
     name: string;
     email: string;
+    xp: number;
+    plan: Plan;
+    planExpiresAt: Date;
 };
 
 export type Course = {
     id: string;
-    languageId: string;
+    appLanguageCode: string;
+    languageCode: string;
+    fluencyLevel: number;
     xp: number;
     level: number;
 };

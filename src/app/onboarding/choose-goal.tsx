@@ -5,10 +5,11 @@ import { StyleSheet, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import GlassCard from "@/components/ui/GlassCard";
 import { router, useLocalSearchParams } from "expo-router";
+import { objectToQueryString } from "@/utils/util";
 
 export default function ChooseGoalOnboarding() {
     const { t } = useTranslation();
-    const { code, fluency } = useLocalSearchParams();
+    const { code, fluency, ...params } = useLocalSearchParams();
 
     return (
         <OnboardingLayout appbar>
@@ -26,9 +27,19 @@ export default function ChooseGoalOnboarding() {
                     {Array.from({ length: 4 }).map((_, index) => (
                         <GlassCard
                             onPress={() => {
-                                router.push(
-                                    `/auth?code=${code}&fluency=${fluency}&goal=${index}`
-                                );
+                                if (params.email && params.otp) {
+                                    router.push(
+                                        `/auth/profile-setup?code=${code}&fluency=${index}&goal=${index}&${objectToQueryString(
+                                            params
+                                        )}`
+                                    );
+                                } else {
+                                    router.push(
+                                        `/auth?code=${code}&fluency=${fluency}&goal=${index}&${objectToQueryString(
+                                            params
+                                        )}`
+                                    );
+                                }
                             }}
                             style={{
                                 paddingHorizontal: 16,

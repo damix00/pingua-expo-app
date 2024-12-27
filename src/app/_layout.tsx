@@ -1,5 +1,5 @@
 // Provide authentication, preferences, theming, and app navigation setup
-import { AuthProvider, Course } from "@/context/AuthContext";
+import { AuthProvider, AuthUser, Course } from "@/context/AuthContext";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import {
     DarkTheme,
@@ -76,7 +76,8 @@ export default function RootLayout() {
 
     // Store preferences and user data
     const [prefs, setPrefs] = useState<PreferencesType | null>(null);
-    const [user, setUser] = useState<UserCacheType | null>(null);
+    const [user, setUser] = useState<AuthUser | null>(null);
+    const [courses, setCourses] = useState<Course[]>([]);
 
     const scheme = useColorScheme();
     const colors = useThemeColors();
@@ -94,11 +95,12 @@ export default function RootLayout() {
 
         // Fetch user data and set JWT if available
         const userCache = await loadUserCache();
-        setUser(userCache);
+        setUser(userCache.user);
         if (userCache.jwt) {
             setLoggedIn(true);
         }
         setJwt(userCache.jwt ?? "");
+        setCourses(userCache.courses);
 
         // Adjust navigation bar for Android
         if (Platform.OS === "android") {
@@ -141,38 +143,10 @@ export default function RootLayout() {
                 preferences={prefs ?? { hapticFeedback: true }}
                 setPreferences={(newPrefs) => setPrefs(newPrefs)}>
                 <AuthProvider
-                    courses={user?.courses ?? []}
-                    user={user?.user ?? null}
-                    setUser={(newUser) => {
-                        if (user) {
-                            setUser({
-                                ...user,
-                                user: newUser,
-                            });
-                        } else {
-                            setUser({
-                                user: newUser,
-                                jwt: null,
-                                courses: [],
-                            });
-                        }
-                    }}
-                    setCourses={(newCourses) => {
-                        if (user) {
-                            setUser({
-                                ...user,
-                                user: user.user,
-                                jwt: user.jwt,
-                                courses: newCourses,
-                            });
-                        } else {
-                            setUser({
-                                user: null,
-                                jwt: null,
-                                courses: newCourses,
-                            });
-                        }
-                    }}
+                    courses={courses}
+                    user={user}
+                    setUser={setUser}
+                    setCourses={setCourses}
                     loggedIn={loggedIn}
                     setLoggedIn={setLoggedIn}>
                     <ThemeProvider
@@ -182,7 +156,7 @@ export default function RootLayout() {
                         {/* Stack for handling navigation between screens */}
                         <Stack
                             initialRouteName={
-                                loggedIn ? "index" : "onboarding/index"
+                                loggedIn ? "(tabs)" : "onboarding/index"
                             }
                             screenOptions={{
                                 animation: Platform.select({
@@ -237,6 +211,14 @@ export default function RootLayout() {
                                 }}
                             />
                             <Stack.Screen
+                                name="onboarding/no-account"
+                                options={{
+                                    headerShown: true,
+                                    headerTransparent: true,
+                                    header: () => <OnboardingAppbar />,
+                                }}
+                            />
+                            <Stack.Screen
                                 name="auth/index"
                                 options={{
                                     headerShown: true,
@@ -258,7 +240,24 @@ export default function RootLayout() {
                                     headerShown: false,
                                 }}
                             />
-                            <Stack.Screen name="index" />
+                            <Stack.Screen
+                                name="(tabs)"
+                                options={{ headerShown: false }}
+                            />
+
+                            {/* Modals */}
+                            <Stack.Screen
+                                name="modals/subscription/index"
+                                options={{
+                                    gestureEnabled: false,
+                                    presentation: "modal",
+                                    headerShown: false,
+                                    animation:
+                                        Platform.OS == "android"
+                                            ? "slide_from_bottom"
+                                            : "default",
+                                }}
+                            />
                         </Stack>
                     </ThemeProvider>
                 </AuthProvider>

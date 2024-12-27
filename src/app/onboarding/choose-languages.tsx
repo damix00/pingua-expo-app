@@ -1,7 +1,7 @@
 import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
 import { ThemedText } from "@/components/ui/ThemedText";
-import { Link, router } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 import { FlatList, StyleSheet, View } from "react-native";
 import OnboardingLayout from "./OnboardingLayout";
 import BrandText from "@/components/ui/BrandText";
@@ -24,14 +24,18 @@ import {
     findFlag,
     languageMap,
 } from "@/utils/i18n";
+import { objectToQueryString } from "@/utils/util";
 
-function ChooseLanguageCard({ code, flag }: CourseLanguage) {
+function ChooseLanguageCard({
+    code,
+    flag,
+    onPress,
+}: CourseLanguage & { onPress: () => void }) {
     const { t } = useTranslation();
+
     return (
         <GlassCard
-            onPress={() => {
-                router.push(`/onboarding/choose-fluency?code=${code}`);
-            }}
+            onPress={onPress}
             style={{ paddingVertical: 0 }}
             elevation="1"
             leading={<CachedSvgUri width={50} height={50} uri={flag} />}>
@@ -43,6 +47,7 @@ function ChooseLanguageCard({ code, flag }: CourseLanguage) {
 export default function ChooseLanguageOnboarding() {
     const insets = useSafeAreaInsets();
     const { t, i18n } = useTranslation();
+    const params = useLocalSearchParams();
 
     const languages = courseLanguages.filter(
         (language) => language.code !== i18n.language
@@ -104,7 +109,18 @@ export default function ChooseLanguageOnboarding() {
                         </ThemedText>
                     </View>
                 }
-                renderItem={({ item }) => <ChooseLanguageCard {...item} />}
+                renderItem={({ item }) => (
+                    <ChooseLanguageCard
+                        onPress={() => {
+                            router.push(
+                                `/onboarding/choose-fluency?code=${
+                                    item.code
+                                }&${objectToQueryString(params)}`
+                            );
+                        }}
+                        {...item}
+                    />
+                )}
                 keyExtractor={(item) => item.code}
                 contentContainerStyle={{
                     paddingBottom: 12 + insets.bottom,

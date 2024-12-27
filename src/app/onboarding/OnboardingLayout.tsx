@@ -55,7 +55,6 @@ export default function OnboardingLayout({
 }) {
     return (
         <StaticBackground>
-            <StatusBar style="light" />
             {scrollable ? (
                 <ScrollView
                     style={{

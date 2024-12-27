@@ -2,6 +2,7 @@ import { ExternalLink, LinkText } from "@/components/ExternalLink";
 import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
 import { ThemedView } from "@/components/ThemedView";
+import { ThemedText } from "@/components/ui/ThemedText";
 import { useAuth } from "@/context/AuthContext";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { clearUserCache } from "@/utils/cache/user-cache";
@@ -9,24 +10,7 @@ import { useRootNavigationState, useRouter } from "expo-router";
 import { useEffect } from "react";
 
 export default function Index() {
-    const rootNavigationState = useRootNavigationState();
-    const router = useRouter();
     const auth = useAuth();
-
-    useEffect(() => {
-        // If the navigation isn't mounted yet, don't do anything
-        if (!rootNavigationState.key) {
-            return;
-        }
-
-        if (!auth.loggedIn) {
-            router.replace("/onboarding");
-        }
-    }, [auth, rootNavigationState]);
-
-    if (!auth.loggedIn) {
-        return null;
-    }
 
     return (
         <ThemedView
@@ -35,6 +19,7 @@ export default function Index() {
                 justifyContent: "center",
                 alignItems: "center",
             }}>
+            <ThemedText>Hi, {auth.user?.name}!</ThemedText>
             <Button
                 onPress={async () => {
                     await clearUserCache();

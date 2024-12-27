@@ -7,6 +7,7 @@ const translations: typeof en = {
     name: "Ime",
     username: "Korisničko ime",
     finish: "Završi",
+    back: "Natrag",
     languages: {
         en: "Engleski",
         de: "Njemački",
@@ -71,6 +72,9 @@ const translations: typeof en = {
         configuring_course_title: "Samo sekunda!",
         configuring_course_description:
             "Postavljamo tvoj tečaj. Ovo neće dugo trajati.",
+        no_account_title: "Nismo mogli pronaći tvoj račun.",
+        no_account_description:
+            "Izgleda da ste se pokušali prijaviti s e-mailom koji nije povezan s nijednim računom. Možete se vratiti ili nastaviti s postavljanjem novog računa.",
     },
     auth: {
         login: "Prijava ili registracija",

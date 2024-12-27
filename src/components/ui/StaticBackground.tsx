@@ -7,6 +7,8 @@ import {
     View,
 } from "react-native";
 import { auraBg, staticBg } from "@/utils/cache/CachedImages";
+import { StatusBar } from "expo-status-bar";
+import React from "react";
 
 export default function StaticBackground({
     children,
@@ -18,23 +20,27 @@ export default function StaticBackground({
     const colors = useThemeColors();
 
     return (
-        <View style={[styles.container, { backgroundColor: colors.primary }]}>
-            {showAura && (
+        <>
+            <StatusBar style="light" />
+            <View
+                style={[styles.container, { backgroundColor: colors.primary }]}>
+                {showAura && (
+                    <Image
+                        resizeMode="cover"
+                        style={[styles.aura]}
+                        source={auraBg}
+                    />
+                )}
+
                 <Image
-                    resizeMode="cover"
-                    style={[styles.aura]}
-                    source={auraBg}
+                    resizeMode="repeat"
+                    style={styles.static}
+                    source={staticBg}
                 />
-            )}
 
-            <Image
-                resizeMode="repeat"
-                style={styles.static}
-                source={staticBg}
-            />
-
-            {children}
-        </View>
+                {children}
+            </View>
+        </>
     );
 }
 

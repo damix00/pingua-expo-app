@@ -17,17 +17,20 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import axios from "axios";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import Toast from "react-native-toast-message";
 import { useAuth } from "@/context/AuthContext";
 import { setJwt } from "@/api/data";
 import { saveUserCache } from "@/utils/cache/user-cache";
+import { StatusBar } from "expo-status-bar";
+import { CommonActions } from "@react-navigation/native";
 
 export default function ProfileSetupPage() {
     const colors = useThemeColors();
     const insets = useSafeAreaInsets();
     const { t, i18n } = useTranslation();
     const haptics = useHaptics();
+    const navigation = useNavigation();
 
     const [loading, setLoading] = useState(false);
     const [nameError, setNameError] = useState<string>("");
@@ -37,10 +40,9 @@ export default function ProfileSetupPage() {
     const { email, otp, code, fluency, goal } = useLocalSearchParams();
     const auth = useAuth();
 
-    console.log(email, otp, code, fluency, goal);
-
     return (
         <>
+            <StatusBar style="dark" />
             <ScrollView
                 contentInsetAdjustmentBehavior="never"
                 contentContainerStyle={styles.scrollViewContent}
@@ -154,7 +156,6 @@ export default function ProfileSetupPage() {
                                 }
                             );
 
-                            console.log(response.data);
                             if (response.status == 201 && response.data.user) {
                                 setJwt(response.data.jwt);
                                 auth.setUser(response.data.user);
@@ -167,7 +168,16 @@ export default function ProfileSetupPage() {
                                     response.data.courses
                                 );
 
-                                router.replace("/");
+                                navigation.dispatch(
+                                    CommonActions.reset({
+                                        index: 0,
+                                        routes: [
+                                            {
+                                                name: "(tabs)",
+                                            },
+                                        ],
+                                    })
+                                );
                             } else {
                                 Toast.show({
                                     type: "error",

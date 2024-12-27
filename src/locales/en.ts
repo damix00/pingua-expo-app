@@ -5,6 +5,7 @@ export default {
     name: "Name",
     username: "Username",
     finish: "Finish",
+    back: "Back",
     languages: {
         en: "English",
         de: "German",
@@ -66,6 +67,9 @@ export default {
         configuring_course_title: "Hang tight!",
         configuring_course_description:
             "We're setting up your course. This won't take long.",
+        no_account_title: "No account found",
+        no_account_description:
+            "Looks like you tried to log in with an email that doesn't have an account. You can go back and try another email or continue with the onboarding process.",
     },
     auth: {
         login: "Log in or sign up",
