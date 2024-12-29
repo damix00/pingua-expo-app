@@ -21,7 +21,7 @@ export default function BrandText({
             style={[
                 styles.text,
                 { color: onPrimary ? colors.textOnPrimary : colors.text },
-                large && { fontSize: 36 },
+                large && { fontSize: 36, lineHeight: 36 * 1.2 }, // 1.2 is the recommended line height for headings
                 style,
             ]}
             {...props}>

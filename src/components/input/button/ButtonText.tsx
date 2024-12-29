@@ -26,7 +26,7 @@ export default function ButtonText({ children, style, ...props }: TextProps) {
 
 const styles = StyleSheet.create({
     text: {
-        fontSize: 14,
+        fontSize: 13,
         fontFamily: "Montserrat_600SemiBold",
     },
 });

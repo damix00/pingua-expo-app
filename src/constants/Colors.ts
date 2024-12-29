@@ -1,5 +1,6 @@
 const lightTheme = {
     primary: "#7d51ef",
+    primaryContainer: "#E8DFFF",
     primaryVariant: "#895ef3",
     link: "#7D51EFa",
     linkOnPrimary: "38C4F6",
@@ -8,6 +9,7 @@ const lightTheme = {
     textSecondary: "#837B8E",
     textSecondaryOnPrimary: "#CAB4E9",
     background: "#F6F2FF",
+    transparentBackground: "#f6f2ffbd",
     backgroundVariant: "#E1DBED",
     card: "#E8DFFF",
     icon: "#687076",

@@ -1,3 +1,5 @@
+import axios from "axios";
+
 let jwt = "";
 
 export function getJwt() {
@@ -6,4 +8,6 @@ export function getJwt() {
 
 export function setJwt(newJwt: string) {
     jwt = newJwt;
+
+    axios.defaults.headers.common["Authorization"] = newJwt ?? "";
 }

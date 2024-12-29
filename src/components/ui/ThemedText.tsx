@@ -6,6 +6,7 @@ import Autolink, { AutolinkProps } from "react-native-autolink";
 export type ThemedTextProps = TextProps & {
     onPrimary?: boolean;
     type?:
+        | "primary"
         | "default"
         | "secondary"
         | "title"
@@ -31,6 +32,9 @@ export function ThemedText({
             style={[
                 { color: onPrimary ? colors.textOnPrimary : color },
                 type === "default" ? styles.default : undefined,
+                type === "primary"
+                    ? { color: colors.primary, ...styles.primary }
+                    : undefined,
                 type == "secondary"
                     ? { ...styles.default, color: colors.textSecondary }
                     : undefined,
@@ -65,7 +69,7 @@ const styles = StyleSheet.create({
         fontFamily: "Montserrat_500Medium",
     },
     defaultSemiBold: {
-        fontSize: 16,
+        fontSize: 14,
         fontFamily: "Montserrat_600SemiBold",
     },
     title: {
@@ -80,6 +84,9 @@ const styles = StyleSheet.create({
     heading: {
         fontSize: 28,
         fontFamily: "Montserrat_900Black",
+    },
+    primary: {
+        fontFamily: "Montserrat_600SemiBold",
     },
     link: {
         fontSize: 16,

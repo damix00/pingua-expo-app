@@ -1,3 +1,11 @@
+import {
+    Globe,
+    LockKeyholeOpen,
+    MegaphoneOff,
+    MessageCircle,
+    Sparkles,
+} from "lucide-react-native";
+
 export default {
     get_started: "Get started",
     continue: "Continue",
@@ -82,5 +90,18 @@ export default {
         profile_setup_title: "Welcome to the community!",
         profile_setup_description:
             "We're excited to have you. Let's get to know you better.",
+    },
+    subscription: {
+        name: "Premium",
+        title: "Level up your language",
+        description:
+            "Exclusive lessons, real-world practice, and AI-powered guidance - all in one place.",
+        cta: "Subscribe now",
+        disclaimer:
+            "Your subscription will automatically renew unless canceled. You can manage or cancel your subscription in your account settings at any time. By subscribing, you agree to our Terms of Service and Privacy Policy.",
+        item_1: "**Personalized lessons** tailored towards your goals.",
+        item_2: "**Speak confidently** in work and everyday life.",
+        item_3: "**No ads, no distractions** - just premium language tools.",
+        item_4: "**Practice speaking** with realistic, interactive AI dialogue.",
     },
 };
