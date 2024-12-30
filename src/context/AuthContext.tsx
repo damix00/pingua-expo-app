@@ -13,6 +13,13 @@ export type AuthUser = {
     planExpiresAt: Date;
 };
 
+export type CourseSection = {
+    id: string;
+    finished: boolean;
+    level: number;
+    accessible: boolean;
+};
+
 export type Course = {
     id: string;
     appLanguageCode: string;
@@ -20,6 +27,7 @@ export type Course = {
     fluencyLevel: number;
     xp: number;
     level: number;
+    sections: CourseSection[];
 };
 
 export type UserContextType = {

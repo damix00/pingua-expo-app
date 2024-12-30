@@ -24,13 +24,14 @@ import { setJwt } from "@/api/data";
 import { saveUserCache } from "@/utils/cache/user-cache";
 import { StatusBar } from "expo-status-bar";
 import { CommonActions } from "@react-navigation/native";
+import { usePopAllAndPush } from "@/hooks/navigation";
 
 export default function ProfileSetupPage() {
     const colors = useThemeColors();
     const insets = useSafeAreaInsets();
     const { t, i18n } = useTranslation();
     const haptics = useHaptics();
-    const navigation = useNavigation();
+    const popAllAndPush = usePopAllAndPush();
 
     const [loading, setLoading] = useState(false);
     const [nameError, setNameError] = useState<string>("");
@@ -168,16 +169,7 @@ export default function ProfileSetupPage() {
                                     response.data.courses
                                 );
 
-                                navigation.dispatch(
-                                    CommonActions.reset({
-                                        index: 0,
-                                        routes: [
-                                            {
-                                                name: "(tabs)",
-                                            },
-                                        ],
-                                    })
-                                );
+                                popAllAndPush("(tabs)");
                             } else {
                                 Toast.show({
                                     type: "error",

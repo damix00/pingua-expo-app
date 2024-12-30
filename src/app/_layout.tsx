@@ -247,7 +247,7 @@ export default function RootLayout() {
 
                             {/* Modals */}
                             <Stack.Screen
-                                name="modals/subscription/index"
+                                name="modals/subscription"
                                 options={{
                                     gestureEnabled: false,
                                     presentation: "modal",

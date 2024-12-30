@@ -3,7 +3,7 @@ import ButtonText from "@/components/input/button/ButtonText";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ui/ThemedText";
 
-export default function ProfileTab() {
+export default function ChatsTab() {
     return (
         <ThemedView
             style={{
@@ -11,10 +11,7 @@ export default function ProfileTab() {
                 justifyContent: "center",
                 alignItems: "center",
             }}>
-            <ThemedText>Profile</ThemedText>
-            <Button href="/modals/subscription">
-                <ButtonText>Subscribe</ButtonText>
-            </Button>
+            <ThemedText>chats</ThemedText>
         </ThemedView>
     );
 }

@@ -50,13 +50,6 @@ export default function SubscriptionModal() {
                     paddingBottom: insets.bottom,
                 }}>
                 <View>
-                    <TouchableOpacity
-                        style={styles.closeButton}
-                        onPress={() => {
-                            router.dismiss();
-                        }}>
-                        <X size={24} color={colors.text} />
-                    </TouchableOpacity>
                     <View style={styles.contentWrapper}>
                         <Chip>
                             <Gem size={16} color={colors.primary} />
@@ -134,7 +127,7 @@ export default function SubscriptionModal() {
                     </View>
                 </View>
                 <View style={styles.horizontalPadding}>
-                    <Button>
+                    <Button href="modals/subscription/plans">
                         <ButtonText>{t("subscription.cta")}</ButtonText>
                     </Button>
                     <ThemedText type="secondary" style={styles.disclaimer}>
@@ -160,13 +153,6 @@ const styles = StyleSheet.create({
         marginTop: 8,
         marginBottom: 12,
     },
-    closeButton: {
-        position: "absolute",
-        top: 0,
-        right: 0,
-        paddingVertical: 16,
-        paddingHorizontal: 24,
-    },
     contentWrapper: {
         paddingHorizontal: 24,
         paddingVertical: 20 + 24,
@@ -183,12 +169,12 @@ const styles = StyleSheet.create({
         height: 56,
     },
     icon: {
-        width: 36,
-        height: 36,
+        width: 40,
+        height: 40,
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 8,
-        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+        boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.2)",
     },
     itemText: {
         flex: 1,

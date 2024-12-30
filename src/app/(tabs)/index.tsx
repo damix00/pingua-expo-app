@@ -3,6 +3,7 @@ import ButtonText from "@/components/input/button/ButtonText";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { useAuth } from "@/context/AuthContext";
+import { usePopAllAndPush } from "@/hooks/navigation";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { clearUserCache } from "@/utils/cache/user-cache";
 import { ScrollView } from "react-native";
@@ -10,6 +11,7 @@ import { ScrollView } from "react-native";
 export default function Index() {
     const auth = useAuth();
     const colors = useThemeColors();
+    const popAllAndPush = usePopAllAndPush();
 
     return (
         <ScrollView
@@ -26,6 +28,7 @@ export default function Index() {
                 onPress={async () => {
                     await clearUserCache();
                     auth.logout();
+                    popAllAndPush("onboarding/index");
                 }}>
                 <ButtonText>Logout</ButtonText>
             </Button>

@@ -25,6 +25,7 @@ import { setJwt } from "@/api/data";
 import { useAuth } from "@/context/AuthContext";
 import { CommonActions } from "@react-navigation/native";
 import { saveUserCache } from "@/utils/cache/user-cache";
+import { usePopAllAndPush } from "@/hooks/navigation";
 
 export default function AuthOtpPage() {
     const insets = useSafeAreaInsets();
@@ -34,7 +35,7 @@ export default function AuthOtpPage() {
     const [otp, setOtp] = useState("");
     const [loading, setLoading] = useState(false);
     const auth = useAuth();
-    const navigation = useNavigation();
+    const popAllAndPush = usePopAllAndPush();
 
     const verifyOtp = async (code: string) => {
         setLoading(true);
@@ -46,12 +47,6 @@ export default function AuthOtpPage() {
             });
 
             if (response.status == 200) {
-                if (!navigation) {
-                    console.error("Navigation is not available");
-
-                    return;
-                }
-
                 if (response.data.user) {
                     // User exists
                     setJwt(response.data.jwt);
@@ -66,16 +61,7 @@ export default function AuthOtpPage() {
                     );
 
                     // Replace all routes with the home route
-                    navigation.dispatch(
-                        CommonActions.reset({
-                            index: 0,
-                            routes: [
-                                {
-                                    name: "(tabs)",
-                                },
-                            ],
-                        })
-                    );
+                    popAllAndPush("(tabs)");
                 } else {
                     if (!params.code) {
                         // The user doesn't have an account but they think they do
@@ -85,21 +71,11 @@ export default function AuthOtpPage() {
                             `/onboarding/no-account?email=${email}&otp=${response.data.id}`
                         );
                     } else {
-                        navigation.dispatch(
-                            CommonActions.reset({
-                                index: 0,
-                                routes: [
-                                    {
-                                        name: "auth/profile-setup",
-                                        params: {
-                                            email,
-                                            otp: response.data.id,
-                                            ...params,
-                                        },
-                                    },
-                                ],
-                            })
-                        );
+                        popAllAndPush("auth/profile-setup", {
+                            email,
+                            otp: response.data.id,
+                            ...params,
+                        });
                     }
                 }
             } else {

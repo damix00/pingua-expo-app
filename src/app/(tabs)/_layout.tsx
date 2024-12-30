@@ -5,28 +5,30 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { getJwt, setJwt } from "@/api/data";
 import axios from "axios";
-import { saveUserCache } from "@/utils/cache/user-cache";
+import { clearUserCache, saveUserCache } from "@/utils/cache/user-cache";
 import { useNetworkState } from "expo-network";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { Platform, StyleSheet, TouchableOpacity } from "react-native";
 import { BlurView } from "expo-blur";
 import IosBlurView from "@/components/IosBlurView";
+import { usePopAllAndPush } from "@/hooks/navigation";
 
 export default function TabLayout() {
     const rootNavigationState = useRootNavigationState();
     const router = useRouter();
     const auth = useAuth();
     const colors = useThemeColors();
+    const popAllAndPush = usePopAllAndPush();
 
     const networkState = useNetworkState();
     const executed = useRef(false);
 
     const fetchUser = async () => {
+        console.time("fetchUser");
         const me = await axios.get("/v1/auth/me");
+        console.timeEnd("fetchUser");
         const refreshed = await axios.post("/v1/auth/refresh-token");
 
         if (me.status == 200 && refreshed.status == 200) {
-            console.log("User fetched and refreshed");
-
             setJwt(refreshed.data.jwt);
             auth.setUser(me.data.user);
             await saveUserCache(
@@ -34,6 +36,10 @@ export default function TabLayout() {
                 refreshed.data.jwt,
                 me.data.courses
             );
+        } else if (me.status == 401) {
+            await clearUserCache();
+            auth.logout();
+            popAllAndPush("onboarding/index");
         }
     };
 
@@ -41,7 +47,7 @@ export default function TabLayout() {
         if (networkState.isConnected && auth.loggedIn) {
             fetchUser();
         }
-    }, [networkState, auth.loggedIn]);
+    }, [networkState.isConnected, auth.loggedIn]);
 
     useEffect(() => {
         if (executed.current) {
@@ -87,10 +93,13 @@ export default function TabLayout() {
                 // Bottom navigation bar
                 tabBarBackground: () => (
                     <IosBlurView
-                        intensity={100}
+                        intensity={48}
                         style={{
                             ...StyleSheet.absoluteFillObject,
-                            backgroundColor: colors.transparentBackground,
+                            backgroundColor:
+                                Platform.OS == "ios"
+                                    ? colors.transparentBackground
+                                    : colors.background,
                         }}
                     />
                 ),
@@ -108,10 +117,13 @@ export default function TabLayout() {
                 },
                 headerBackground: () => (
                     <IosBlurView
-                        intensity={100}
+                        intensity={48}
                         style={{
                             ...StyleSheet.absoluteFillObject,
-                            backgroundColor: colors.transparentBackground,
+                            backgroundColor:
+                                Platform.OS == "ios"
+                                    ? colors.transparentBackground
+                                    : colors.background,
                             borderBottomWidth: 1,
                             borderColor: colors.outline,
                         }}
@@ -125,6 +137,38 @@ export default function TabLayout() {
                     tabBarIcon: ({ focused }) => (
                         <Ionicons
                             name={focused ? "home" : "home-outline"}
+                            size={24}
+                            color={
+                                focused ? colors.primary : colors.textSecondary
+                            }
+                        />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="overview"
+                options={{
+                    title: "Overview",
+                    tabBarIcon: ({ focused }) => (
+                        <Ionicons
+                            name={focused ? "sparkles" : "sparkles-outline"}
+                            size={24}
+                            color={
+                                focused ? colors.primary : colors.textSecondary
+                            }
+                        />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="chats"
+                options={{
+                    title: "Chats",
+                    tabBarIcon: ({ focused }) => (
+                        <Ionicons
+                            name={
+                                focused ? "chatbubbles" : "chatbubbles-outline"
+                            }
                             size={24}
                             color={
                                 focused ? colors.primary : colors.textSecondary

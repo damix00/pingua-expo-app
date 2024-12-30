@@ -19,6 +19,7 @@ import { mascot } from "@/utils/cache/CachedImages";
 import { router, useLocalSearchParams } from "expo-router";
 import useHaptics from "@/hooks/useHaptics";
 import * as Haptics from "expo-haptics";
+import useUnmountSignal from "use-unmount-signal";
 
 export default function Auth() {
     const colors = useThemeColors();
@@ -28,6 +29,7 @@ export default function Auth() {
     const [emailError, setEmailError] = useState("");
     const [loading, setLoading] = useState(false);
     const haptics = useHaptics();
+    const unmountSignal = useUnmountSignal();
 
     const { code, fluency, goal } = useLocalSearchParams();
 
@@ -103,6 +105,9 @@ export default function Auth() {
                                     "/v1/auth/email/send-code",
                                     {
                                         email: email.current,
+                                    },
+                                    {
+                                        signal: unmountSignal,
                                     }
                                 );
 
