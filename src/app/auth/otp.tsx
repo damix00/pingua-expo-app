@@ -53,11 +53,13 @@ export default function AuthOtpPage() {
                     auth.setUser(response.data.user);
                     auth.setLoggedIn(true);
                     auth.setCourses(response.data.courses);
+                    auth.setSectionData(response.data.section_data);
 
                     await saveUserCache(
                         response.data.user,
                         response.data.jwt,
-                        response.data.courses
+                        response.data.courses,
+                        response.data.section_data
                     );
 
                     // Replace all routes with the home route

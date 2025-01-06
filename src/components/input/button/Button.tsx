@@ -8,6 +8,7 @@ import {
     TouchableOpacity,
     TouchableOpacityProps,
     View,
+    ViewProps,
 } from "react-native";
 import Animated, {
     useSharedValue,
@@ -41,12 +42,14 @@ export function useButtonContext() {
 export default function Button({
     children,
     style,
+    fullWidth = true,
     variant,
     href,
     haptic = true,
     loading = false,
     ...props
 }: TouchableOpacityProps & {
+    fullWidth?: boolean;
     variant?: ButtonVariant;
     href?: string;
     haptic?: boolean;
@@ -65,7 +68,7 @@ export default function Button({
     const animatedStyle = useAnimatedStyle(() => {
         return {
             opacity: opacity.value,
-            width: "100%",
+            width: fullWidth ? "100%" : "auto",
         };
     });
 
@@ -88,7 +91,7 @@ export default function Button({
 
     return (
         <ButtonContext.Provider value={{ variant: variant ?? "primary" }}>
-            <Animated.View style={animatedStyle}>
+            <Animated.View style={[animatedStyle]}>
                 <HapticTouchableOpacity
                     {...props}
                     disabled={props.disabled || loading}
@@ -109,7 +112,7 @@ export default function Button({
                                     : "transparent",
                             borderWidth: variant == "secondary" ? 1 : 0,
                             boxShadow:
-                                variant == "text"
+                                variant == "text" || variant == "secondary"
                                     ? "none"
                                     : styles.button.boxShadow,
                         },

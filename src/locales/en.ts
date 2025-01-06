@@ -1,11 +1,3 @@
-import {
-    Globe,
-    LockKeyholeOpen,
-    MegaphoneOff,
-    MessageCircle,
-    Sparkles,
-} from "lucide-react-native";
-
 export default {
     get_started: "Get started",
     continue: "Continue",
@@ -14,6 +6,7 @@ export default {
     username: "Username",
     finish: "Finish",
     back: "Back",
+    change: "Change",
     languages: {
         en: "English",
         de: "German",
@@ -28,6 +21,8 @@ export default {
         nl: "Dutch",
         pl: "Polish",
         sv: "Swedish",
+        currently_learning:
+            "You're currently learning {{language}}, with the base language set to {{base}}.",
     },
     errors: {
         email_empty: "Email cannot be empty.",
@@ -92,6 +87,7 @@ export default {
             "We're excited to have you. Let's get to know you better.",
     },
     subscription: {
+        subscribe: "Subscribe",
         name: "Premium",
         title: "Level up your language",
         description:
@@ -103,5 +99,11 @@ export default {
         item_2: "**Speak confidently** in work and everyday life.",
         item_3: "**No ads, no distractions** - just premium language tools.",
         item_4: "**Practice speaking** with realistic, interactive AI dialogue.",
+    },
+    tabs: {
+        home: "Home",
+        overview: "Overview",
+        chats: "Chats",
+        profile: "Profile",
     },
 };

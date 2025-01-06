@@ -1,5 +1,10 @@
 // Provide authentication, preferences, theming, and app navigation setup
-import { AuthProvider, AuthUser, Course } from "@/context/AuthContext";
+import {
+    AuthProvider,
+    AuthUser,
+    Course,
+    SectionData,
+} from "@/context/AuthContext";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import {
     DarkTheme,
@@ -44,6 +49,7 @@ import BaseToast from "@/components/ui/toast/BaseToast";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { loadUserCache, UserCacheType } from "@/utils/cache/user-cache";
 import { setJwt } from "@/api/data";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 // Disable auto-hide and manage it manually
 SplashScreen.preventAutoHideAsync();
@@ -78,6 +84,8 @@ export default function RootLayout() {
     const [prefs, setPrefs] = useState<PreferencesType | null>(null);
     const [user, setUser] = useState<AuthUser | null>(null);
     const [courses, setCourses] = useState<Course[]>([]);
+    const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
+    const [sectionData, setSectionData] = useState<SectionData[]>([]);
 
     const scheme = useColorScheme();
     const colors = useThemeColors();
@@ -101,6 +109,8 @@ export default function RootLayout() {
         }
         setJwt(userCache.jwt ?? "");
         setCourses(userCache.courses);
+        setSelectedCourse(userCache.selectedCourse);
+        setSectionData(userCache.sectionData);
 
         // Adjust navigation bar for Android
         if (Platform.OS === "android") {
@@ -132,148 +142,160 @@ export default function RootLayout() {
 
     // Provide preferences, authentication, and theme to the rest of the app
     return (
-        <View
-            style={{
-                flex: 1,
-                backgroundColor: pathname.startsWith("/onboarding")
-                    ? colors.primary
-                    : colors.background,
-            }}>
-            <PreferencesProvider
-                preferences={prefs ?? { hapticFeedback: true }}
-                setPreferences={(newPrefs) => setPrefs(newPrefs)}>
-                <AuthProvider
-                    courses={courses}
-                    user={user}
-                    setUser={setUser}
-                    setCourses={setCourses}
-                    loggedIn={loggedIn}
-                    setLoggedIn={setLoggedIn}>
-                    <ThemeProvider
-                        value={scheme === "dark" ? DarkTheme : DefaultTheme}>
-                        <StatusBar style="auto" />
+        <GestureHandlerRootView>
+            <View
+                style={{
+                    flex: 1,
+                    backgroundColor: pathname.startsWith("/onboarding")
+                        ? colors.primary
+                        : colors.background,
+                }}>
+                <PreferencesProvider
+                    preferences={prefs ?? { hapticFeedback: true }}
+                    setPreferences={(newPrefs) => setPrefs(newPrefs)}>
+                    <AuthProvider
+                        sectionData={sectionData}
+                        setSectionData={setSectionData}
+                        selectedCourse={selectedCourse}
+                        setSelectedCourse={setSelectedCourse}
+                        courses={courses}
+                        user={user}
+                        setUser={setUser}
+                        setCourses={setCourses}
+                        loggedIn={loggedIn}
+                        setLoggedIn={setLoggedIn}>
+                        <ThemeProvider
+                            value={
+                                scheme === "dark" ? DarkTheme : DefaultTheme
+                            }>
+                            <StatusBar style="auto" />
 
-                        {/* Stack for handling navigation between screens */}
-                        <Stack
-                            initialRouteName={
-                                loggedIn ? "(tabs)" : "onboarding/index"
-                            }
-                            screenOptions={{
-                                animation: Platform.select({
-                                    android: "simple_push",
-                                    ios: "ios_from_right",
-                                }),
-                            }}>
-                            <Stack.Screen
-                                name="onboarding/index"
-                                options={{
-                                    animation: "none",
-                                    headerShown: false,
-                                }}
-                            />
-                            <Stack.Screen
-                                name="onboarding/choose-languages"
-                                options={{
-                                    headerShown: true,
-                                    headerTransparent: true,
-                                    header: () => <OnboardingAppbar />,
-                                }}
-                            />
-                            <Stack.Screen
-                                name="onboarding/app-language"
-                                options={{
-                                    headerShown: true,
-                                    headerTransparent: true,
-                                    header: () => <OnboardingAppbar />,
-                                }}
-                            />
-                            <Stack.Screen
-                                name="onboarding/choose-fluency"
-                                options={{
-                                    headerShown: true,
-                                    headerTransparent: true,
-                                    header: () => <OnboardingAppbar />,
-                                }}
-                            />
-                            <Stack.Screen
-                                name="onboarding/configuring-course"
-                                options={{
-                                    headerShown: false,
-                                    gestureEnabled: false,
-                                }}
-                            />
-                            <Stack.Screen
-                                name="onboarding/choose-goal"
-                                options={{
-                                    headerShown: true,
-                                    headerTransparent: true,
-                                    header: () => <OnboardingAppbar />,
-                                }}
-                            />
-                            <Stack.Screen
-                                name="onboarding/no-account"
-                                options={{
-                                    headerShown: true,
-                                    headerTransparent: true,
-                                    header: () => <OnboardingAppbar />,
-                                }}
-                            />
-                            <Stack.Screen
-                                name="auth/index"
-                                options={{
-                                    headerShown: true,
-                                    headerTransparent: true,
-                                    header: () => <OnboardingAppbar darkText />,
-                                }}
-                            />
-                            <Stack.Screen
-                                name="auth/otp"
-                                options={{
-                                    headerShown: true,
-                                    headerTransparent: true,
-                                    header: () => <OnboardingAppbar darkText />,
-                                }}
-                            />
-                            <Stack.Screen
-                                name="auth/profile-setup"
-                                options={{
-                                    headerShown: false,
-                                }}
-                            />
-                            <Stack.Screen
-                                name="(tabs)"
-                                options={{ headerShown: false }}
-                            />
+                            {/* Stack for handling navigation between screens */}
+                            <Stack
+                                initialRouteName={
+                                    loggedIn ? "(tabs)" : "onboarding/index"
+                                }
+                                screenOptions={{
+                                    animation: Platform.select({
+                                        android: "simple_push",
+                                        ios: "ios_from_right",
+                                    }),
+                                }}>
+                                <Stack.Screen
+                                    name="onboarding/index"
+                                    options={{
+                                        animation: "none",
+                                        headerShown: false,
+                                    }}
+                                />
+                                <Stack.Screen
+                                    name="onboarding/choose-languages"
+                                    options={{
+                                        headerShown: true,
+                                        headerTransparent: true,
+                                        header: () => <OnboardingAppbar />,
+                                    }}
+                                />
+                                <Stack.Screen
+                                    name="onboarding/app-language"
+                                    options={{
+                                        headerShown: true,
+                                        headerTransparent: true,
+                                        header: () => <OnboardingAppbar />,
+                                    }}
+                                />
+                                <Stack.Screen
+                                    name="onboarding/choose-fluency"
+                                    options={{
+                                        headerShown: true,
+                                        headerTransparent: true,
+                                        header: () => <OnboardingAppbar />,
+                                    }}
+                                />
+                                <Stack.Screen
+                                    name="onboarding/configuring-course"
+                                    options={{
+                                        headerShown: false,
+                                        gestureEnabled: false,
+                                    }}
+                                />
+                                <Stack.Screen
+                                    name="onboarding/choose-goal"
+                                    options={{
+                                        headerShown: true,
+                                        headerTransparent: true,
+                                        header: () => <OnboardingAppbar />,
+                                    }}
+                                />
+                                <Stack.Screen
+                                    name="onboarding/no-account"
+                                    options={{
+                                        headerShown: true,
+                                        headerTransparent: true,
+                                        header: () => <OnboardingAppbar />,
+                                    }}
+                                />
+                                <Stack.Screen
+                                    name="auth/index"
+                                    options={{
+                                        headerShown: true,
+                                        headerTransparent: true,
+                                        header: () => (
+                                            <OnboardingAppbar darkText />
+                                        ),
+                                    }}
+                                />
+                                <Stack.Screen
+                                    name="auth/otp"
+                                    options={{
+                                        headerShown: true,
+                                        headerTransparent: true,
+                                        header: () => (
+                                            <OnboardingAppbar darkText />
+                                        ),
+                                    }}
+                                />
+                                <Stack.Screen
+                                    name="auth/profile-setup"
+                                    options={{
+                                        headerShown: false,
+                                    }}
+                                />
+                                <Stack.Screen
+                                    name="(tabs)"
+                                    options={{ headerShown: false }}
+                                />
 
-                            {/* Modals */}
-                            <Stack.Screen
-                                name="modals/subscription"
-                                options={{
-                                    gestureEnabled: false,
-                                    presentation: "modal",
-                                    headerShown: false,
-                                    animation:
-                                        Platform.OS == "android"
-                                            ? "slide_from_bottom"
-                                            : "default",
-                                }}
-                            />
-                        </Stack>
-                    </ThemeProvider>
-                </AuthProvider>
-            </PreferencesProvider>
+                                {/* Modals */}
+                                <Stack.Screen
+                                    name="modals/subscription"
+                                    options={{
+                                        gestureEnabled: false,
+                                        presentation: "modal",
+                                        headerShown: false,
+                                        animation:
+                                            Platform.OS == "android"
+                                                ? "slide_from_bottom"
+                                                : "default",
+                                    }}
+                                />
+                            </Stack>
+                        </ThemeProvider>
+                    </AuthProvider>
+                </PreferencesProvider>
 
-            {/* Toast notifications */}
-            <Toast
-                config={{
-                    success: BaseToast,
-                    error: (props) => <BaseToast error {...props} />,
-                    info: BaseToast,
-                    any_custom_type: BaseToast,
-                }}
-                topOffset={0}
-                bottomOffset={0}
-            />
-        </View>
+                {/* Toast notifications */}
+                <Toast
+                    config={{
+                        success: BaseToast,
+                        error: (props) => <BaseToast error {...props} />,
+                        info: BaseToast,
+                        any_custom_type: BaseToast,
+                    }}
+                    topOffset={0}
+                    bottomOffset={0}
+                />
+            </View>
+        </GestureHandlerRootView>
     );
 }

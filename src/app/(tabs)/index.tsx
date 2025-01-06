@@ -1,17 +1,16 @@
-import Button from "@/components/input/button/Button";
-import ButtonText from "@/components/input/button/ButtonText";
-import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { useAuth } from "@/context/AuthContext";
-import { usePopAllAndPush } from "@/hooks/navigation";
+import { useCurrentCourse, useSectionTitle } from "@/hooks/course";
 import { useThemeColors } from "@/hooks/useThemeColor";
-import { clearUserCache } from "@/utils/cache/user-cache";
+import { useMemo } from "react";
 import { ScrollView } from "react-native";
 
 export default function Index() {
     const auth = useAuth();
     const colors = useThemeColors();
-    const popAllAndPush = usePopAllAndPush();
+
+    const { currentCourse, currentCourseData } = useCurrentCourse();
+    const title = useSectionTitle(currentCourseData);
 
     return (
         <ScrollView
@@ -23,18 +22,7 @@ export default function Index() {
                 paddingHorizontal: 24,
                 backgroundColor: colors.background,
             }}>
-            <ThemedText>Hi, {auth.user?.name}!</ThemedText>
-            <Button
-                onPress={async () => {
-                    await clearUserCache();
-                    auth.logout();
-                    popAllAndPush("onboarding/index");
-                }}>
-                <ButtonText>Logout</ButtonText>
-            </Button>
-            <Button href="/modals/subscription">
-                <ButtonText>Subscribe</ButtonText>
-            </Button>
+            <ThemedText>{title}</ThemedText>
         </ScrollView>
     );
 }

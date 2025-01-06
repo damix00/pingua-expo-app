@@ -1,10 +1,3 @@
-import {
-    Globe,
-    LockKeyholeOpen,
-    MegaphoneOff,
-    MessageCircle,
-    Sparkles,
-} from "lucide-react-native";
 import en from "./en";
 
 const translations: typeof en = {
@@ -15,6 +8,7 @@ const translations: typeof en = {
     username: "Korisničko ime",
     finish: "Završi",
     back: "Natrag",
+    change: "Promijeni",
     languages: {
         en: "Engleski",
         de: "Njemački",
@@ -29,6 +23,8 @@ const translations: typeof en = {
         nl: "Nizozemski",
         pl: "Poljski",
         sv: "Švedski",
+        currently_learning:
+            "Trenutno učiš {{language}}, s postavljenim temeljnim jezikom na {{base}}.",
     },
     errors: {
         email_empty: "Email ne može biti prazan.",
@@ -96,6 +92,7 @@ const translations: typeof en = {
             "Drago nam je što ste s nama. Upoznajmo se bolje.",
     },
     subscription: {
+        subscribe: "Pretplati se",
         name: "Premium",
         title: "Unaprijedi svoje jezične vještine",
         description:
@@ -107,6 +104,12 @@ const translations: typeof en = {
         item_2: "**Pričaj s povjerenjem** u poslu i svakodnevnom životu.",
         item_3: "**Bez reklama, bez ometanja** - samo premium iskustvo.",
         item_4: "**Vježbaj govor** s realističnim, interaktivnim AI dijalogom.",
+    },
+    tabs: {
+        home: "Početna",
+        overview: "Pregled",
+        chats: "Čavrljanja",
+        profile: "Profil",
     },
 };
 

@@ -13,11 +13,16 @@ export type AuthUser = {
     planExpiresAt: Date;
 };
 
+export type SectionCache = {
+    title: string;
+};
+
 export type CourseSection = {
     id: string;
     finished: boolean;
     level: number;
     accessible: boolean;
+    cachedData?: SectionCache;
 };
 
 export type Course = {
@@ -27,10 +32,23 @@ export type Course = {
     fluencyLevel: number;
     xp: number;
     level: number;
-    sections: CourseSection[];
+    section: CourseSection;
+};
+
+export type SectionData = {
+    course_id: string;
+    id: string;
+    title: string;
+    title_hr: string;
+    level: number;
+    unitCount: string;
 };
 
 export type UserContextType = {
+    sectionData: SectionData[];
+    setSectionData: (sectionData: SectionData[]) => void;
+    selectedCourse: string | null;
+    setSelectedCourse: (course: string | null) => void;
     loggedIn: boolean;
     setLoggedIn: (loggedIn: boolean) => void;
     user: AuthUser | null;
@@ -41,6 +59,10 @@ export type UserContextType = {
 };
 
 export const AuthContext = createContext<UserContextType>({
+    sectionData: [],
+    setSectionData: () => {},
+    selectedCourse: null,
+    setSelectedCourse: () => {},
     loggedIn: false,
     setLoggedIn: () => {},
     user: null,
@@ -51,6 +73,10 @@ export const AuthContext = createContext<UserContextType>({
 });
 
 export function AuthProvider({
+    sectionData,
+    setSectionData,
+    selectedCourse,
+    setSelectedCourse,
     user,
     setUser,
     courses,
@@ -59,13 +85,17 @@ export function AuthProvider({
     setLoggedIn,
     ...props
 }: {
-    children: React.ReactNode;
+    sectionData: SectionData[];
+    setSectionData: (sectionData: SectionData[]) => void;
+    selectedCourse: string | null;
+    setSelectedCourse: (course: string | null) => void;
     user: AuthUser | null;
     setUser: (user: AuthUser | null) => void;
     courses: Course[];
     setCourses: (courses: Course[]) => void;
     loggedIn: boolean;
     setLoggedIn: (loggedIn: boolean) => void;
+    children: React.ReactNode;
 }) {
     const logout = () => {
         setUser(null);
@@ -76,6 +106,10 @@ export function AuthProvider({
     return (
         <AuthContext.Provider
             value={{
+                sectionData,
+                setSectionData,
+                selectedCourse,
+                setSelectedCourse,
                 logout,
                 loggedIn,
                 setLoggedIn,

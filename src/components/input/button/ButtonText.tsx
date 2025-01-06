@@ -12,7 +12,8 @@ export default function ButtonText({ children, style, ...props }: TextProps) {
                 styles.text,
                 {
                     color:
-                        context.variant == "secondary"
+                        context.variant == "secondary" ||
+                        context.variant == "text"
                             ? colors.text
                             : colors.textOnPrimary,
                 },

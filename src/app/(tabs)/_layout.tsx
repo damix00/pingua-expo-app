@@ -1,6 +1,6 @@
 import { useAuth } from "@/context/AuthContext";
 import { Tabs, useRootNavigationState, useRouter } from "expo-router";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { getJwt, setJwt } from "@/api/data";
@@ -8,9 +8,19 @@ import axios from "axios";
 import { clearUserCache, saveUserCache } from "@/utils/cache/user-cache";
 import { useNetworkState } from "expo-network";
 import { Platform, StyleSheet, TouchableOpacity } from "react-native";
-import { BlurView } from "expo-blur";
 import IosBlurView from "@/components/IosBlurView";
 import { usePopAllAndPush } from "@/hooks/navigation";
+import { useTranslation } from "react-i18next";
+import CourseSelect from "@/components/homescreen/CourseSelect";
+import {
+    BottomSheetModal,
+    BottomSheetModalProvider,
+    BottomSheetView,
+} from "@gorhom/bottom-sheet";
+import { ThemedText } from "@/components/ui/ThemedText";
+import CourseSelectSheet from "@/components/homescreen/CourseSelectSheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import PremiumButton from "@/components/homescreen/PremiumButton";
 
 export default function TabLayout() {
     const rootNavigationState = useRootNavigationState();
@@ -18,22 +28,34 @@ export default function TabLayout() {
     const auth = useAuth();
     const colors = useThemeColors();
     const popAllAndPush = usePopAllAndPush();
+    const { t } = useTranslation();
+    const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
 
     const networkState = useNetworkState();
     const executed = useRef(false);
 
+    const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+    const handlePresentModalPress = useCallback(() => {
+        setBottomSheetVisible(true);
+
+        bottomSheetModalRef.current?.present();
+    }, []);
+
     const fetchUser = async () => {
-        console.time("fetchUser");
         const me = await axios.get("/v1/auth/me");
-        console.timeEnd("fetchUser");
         const refreshed = await axios.post("/v1/auth/refresh-token");
+
+        console.log(me.data.section_data);
 
         if (me.status == 200 && refreshed.status == 200) {
             setJwt(refreshed.data.jwt);
             auth.setUser(me.data.user);
+            auth.setSectionData(me.data.section_data);
             await saveUserCache(
                 me.data.user,
                 refreshed.data.jwt,
+                me.data.section_data,
                 me.data.courses
             );
         } else if (me.status == 401) {
@@ -77,121 +99,148 @@ export default function TabLayout() {
     }
 
     return (
-        <Tabs
-            screenOptions={{
-                sceneStyle: {
-                    backgroundColor: colors.background,
-                },
-                tabBarActiveTintColor: colors.primary,
-                tabBarStyle: {
-                    backgroundColor: "transparent",
-                    borderTopWidth: 1,
-                    borderColor: colors.outline,
-                    elevation: 0,
-                    position: "absolute",
-                },
-                // Bottom navigation bar
-                tabBarBackground: () => (
-                    <IosBlurView
-                        intensity={48}
-                        style={{
-                            ...StyleSheet.absoluteFillObject,
-                            backgroundColor:
-                                Platform.OS == "ios"
-                                    ? colors.transparentBackground
-                                    : colors.background,
-                        }}
-                    />
-                ),
-                tabBarButton: (props) => (
-                    // @ts-ignore
-                    <TouchableOpacity {...props} activeOpacity={1} />
-                ),
+        <BottomSheetModalProvider>
+            <Tabs
+                screenOptions={{
+                    sceneStyle: {
+                        backgroundColor: colors.background,
+                    },
+                    tabBarActiveTintColor: colors.primary,
+                    tabBarStyle: {
+                        backgroundColor: "transparent",
+                        borderTopWidth: 1,
+                        borderColor: colors.outline,
+                        elevation: 0,
+                        position: "absolute",
+                    },
+                    headerLeft: () => (
+                        <CourseSelect onPress={handlePresentModalPress} />
+                    ),
+                    headerRight: () => <PremiumButton />,
+                    // Bottom navigation bar
+                    tabBarBackground: () => (
+                        <IosBlurView
+                            intensity={48}
+                            style={{
+                                ...StyleSheet.absoluteFillObject,
+                                backgroundColor:
+                                    Platform.OS == "ios"
+                                        ? colors.transparentBackground
+                                        : colors.background,
+                            }}
+                        />
+                    ),
+                    tabBarButton: (props) => (
+                        // @ts-ignore
+                        <TouchableOpacity {...props} activeOpacity={1} />
+                    ),
 
-                // Header
-                headerTransparent: true,
-                headerStyle: {
-                    backgroundColor: "transparent",
-                    elevation: 0,
-                    borderBottomWidth: 0,
-                },
-                headerBackground: () => (
-                    <IosBlurView
-                        intensity={48}
-                        style={{
-                            ...StyleSheet.absoluteFillObject,
-                            backgroundColor:
-                                Platform.OS == "ios"
-                                    ? colors.transparentBackground
-                                    : colors.background,
-                            borderBottomWidth: 1,
-                            borderColor: colors.outline,
-                        }}
-                    />
-                ),
-            }}>
-            <Tabs.Screen
-                name="index"
-                options={{
-                    title: "Home",
-                    tabBarIcon: ({ focused }) => (
-                        <Ionicons
-                            name={focused ? "home" : "home-outline"}
-                            size={24}
-                            color={
-                                focused ? colors.primary : colors.textSecondary
-                            }
+                    // Header
+                    headerTransparent: true,
+                    headerStyle: {
+                        backgroundColor: "transparent",
+                        elevation: 0,
+                        borderBottomWidth: 0,
+                    },
+                    headerBackground: () => (
+                        <IosBlurView
+                            intensity={48}
+                            style={{
+                                ...StyleSheet.absoluteFillObject,
+                                backgroundColor:
+                                    Platform.OS == "ios"
+                                        ? colors.transparentBackground
+                                        : colors.background,
+                                borderBottomWidth: 1,
+                                borderColor: colors.outline,
+                            }}
                         />
                     ),
+                }}>
+                <Tabs.Screen
+                    name="index"
+                    options={{
+                        title: t("tabs.home"),
+                        tabBarIcon: ({ focused }) => (
+                            <Ionicons
+                                name={focused ? "home" : "home-outline"}
+                                size={24}
+                                color={
+                                    focused
+                                        ? colors.primary
+                                        : colors.textSecondary
+                                }
+                            />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
+                    name="overview"
+                    options={{
+                        title: t("tabs.overview"),
+                        tabBarIcon: ({ focused }) => (
+                            <Ionicons
+                                name={focused ? "sparkles" : "sparkles-outline"}
+                                size={24}
+                                color={
+                                    focused
+                                        ? colors.primary
+                                        : colors.textSecondary
+                                }
+                            />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
+                    name="chats"
+                    options={{
+                        title: t("tabs.chats"),
+                        tabBarIcon: ({ focused }) => (
+                            <Ionicons
+                                name={
+                                    focused
+                                        ? "chatbubbles"
+                                        : "chatbubbles-outline"
+                                }
+                                size={24}
+                                color={
+                                    focused
+                                        ? colors.primary
+                                        : colors.textSecondary
+                                }
+                            />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
+                    name="profile"
+                    options={{
+                        title: t("tabs.profile"),
+                        tabBarIcon: ({ focused }) => (
+                            <Ionicons
+                                name={focused ? "person" : "person-outline"}
+                                size={24}
+                                color={
+                                    focused
+                                        ? colors.primary
+                                        : colors.textSecondary
+                                }
+                            />
+                        ),
+                    }}
+                />
+            </Tabs>
+            <BottomSheetModal
+                backgroundStyle={{
+                    backgroundColor: colors.background,
                 }}
-            />
-            <Tabs.Screen
-                name="overview"
-                options={{
-                    title: "Overview",
-                    tabBarIcon: ({ focused }) => (
-                        <Ionicons
-                            name={focused ? "sparkles" : "sparkles-outline"}
-                            size={24}
-                            color={
-                                focused ? colors.primary : colors.textSecondary
-                            }
-                        />
-                    ),
+                containerStyle={{
+                    backgroundColor: "#00000039",
                 }}
-            />
-            <Tabs.Screen
-                name="chats"
-                options={{
-                    title: "Chats",
-                    tabBarIcon: ({ focused }) => (
-                        <Ionicons
-                            name={
-                                focused ? "chatbubbles" : "chatbubbles-outline"
-                            }
-                            size={24}
-                            color={
-                                focused ? colors.primary : colors.textSecondary
-                            }
-                        />
-                    ),
-                }}
-            />
-            <Tabs.Screen
-                name="profile"
-                options={{
-                    title: "Profile",
-                    tabBarIcon: ({ focused }) => (
-                        <Ionicons
-                            name={focused ? "person" : "person-outline"}
-                            size={24}
-                            color={
-                                focused ? colors.primary : colors.textSecondary
-                            }
-                        />
-                    ),
-                }}
-            />
-        </Tabs>
+                onDismiss={() => setBottomSheetVisible(false)}
+                ref={bottomSheetModalRef}>
+                <CourseSelectSheet />
+            </BottomSheetModal>
+        </BottomSheetModalProvider>
     );
 }
