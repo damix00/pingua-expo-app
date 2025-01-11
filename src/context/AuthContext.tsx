@@ -41,7 +41,8 @@ export type SectionData = {
     title: string;
     title_hr: string;
     level: number;
-    unitCount: string;
+    unitCount: number;
+    unitTitles: { [key: string]: string }[];
 };
 
 export type UserContextType = {

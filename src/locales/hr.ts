@@ -111,6 +111,16 @@ const translations: typeof en = {
         chats: "Čavrljanja",
         profile: "Profil",
     },
+    course: {
+        completed_unit: "Jedinica {{unit}} završena!",
+        continue_unit: "Nastavi s Jedinicom {{unit}}",
+        unavailable_unit:
+            "Molimo završite Jedinicu {{unit}} kako biste nastavili.",
+        unit: "Jedinica {{unit}}",
+        xpToLevel: "{{xp}} XP do Sekcije {{level}}",
+        xp: "{{xp}} XP",
+        xpToUnit: "{{xp}} XP do Jedinice {{unit}}",
+    },
 };
 
 export default translations;

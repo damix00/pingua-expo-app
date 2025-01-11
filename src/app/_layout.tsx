@@ -48,7 +48,7 @@ import Toast from "react-native-toast-message";
 import BaseToast from "@/components/ui/toast/BaseToast";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { loadUserCache, UserCacheType } from "@/utils/cache/user-cache";
-import { setJwt } from "@/api/data";
+import { getJwt, setJwt } from "@/api/data";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 // Disable auto-hide and manage it manually
@@ -86,6 +86,7 @@ export default function RootLayout() {
     const [courses, setCourses] = useState<Course[]>([]);
     const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
     const [sectionData, setSectionData] = useState<SectionData[]>([]);
+    const [initialized, setInitialized] = useState(false);
 
     const scheme = useColorScheme();
     const colors = useThemeColors();
@@ -103,13 +104,17 @@ export default function RootLayout() {
 
         // Fetch user data and set JWT if available
         const userCache = await loadUserCache();
+
         setUser(userCache.user);
+
         if (userCache.jwt) {
             setLoggedIn(true);
         }
+
         setJwt(userCache.jwt ?? "");
         setCourses(userCache.courses);
         setSelectedCourse(userCache.selectedCourse);
+
         setSectionData(userCache.sectionData);
 
         // Adjust navigation bar for Android
@@ -117,15 +122,17 @@ export default function RootLayout() {
             await NavigationBar.setPositionAsync("absolute");
             await NavigationBar.setBackgroundColorAsync("#ffffff00");
         }
+
+        setInitialized(true);
     };
 
     // Hide splash once fonts and preferences load
     useEffect(() => {
-        if (loadedFonts && loadedPrefs && !loadedAll) {
+        if (loadedFonts && loadedPrefs && !loadedAll && initialized) {
             setLoadedAll(true);
             SplashScreen.hideAsync();
         }
-    }, [loadedFonts, loadedPrefs]);
+    }, [loadedFonts, loadedPrefs, initialized]);
 
     // Initiate loading on component mount
     useEffect(() => {

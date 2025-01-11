@@ -25,6 +25,7 @@ export default function CourseSelect({ onPress }: { onPress?: () => void }) {
                 : fallbackCourse
         );
     }, [auth]);
+
     return (
         <HapticTouchableOpacity onPress={onPress} style={styles.container}>
             <CachedSvgUri

@@ -106,4 +106,13 @@ export default {
         chats: "Chats",
         profile: "Profile",
     },
+    course: {
+        completed_unit: "Unit {{unit}} complete!",
+        continue_unit: "Continue with Unit {{unit}}",
+        unavailable_unit: "Please complete Unit {{unit}} to continue.",
+        unit: "Unit {{unit}}",
+        xpToLevel: "{{xp}} XP to Section {{level}}",
+        xp: "{{xp}} XP",
+        xpToUnit: "{{xp}} XP to Unit {{unit}}",
+    },
 };

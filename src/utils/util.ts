@@ -7,3 +7,7 @@ export function objectToQueryString(obj: Record<string, any>) {
         .map((key) => `${key}=${obj[key]}`)
         .join("&");
 }
+
+export function addZero(num: number) {
+    return num < 10 ? `0${num}` : num;
+}

@@ -26,10 +26,15 @@ export function useCurrentCourse() {
 export function useSectionTitle(sectionData: SectionData) {
     const { i18n } = useTranslation();
 
-    // if (i18n.language == "en") {
-    //     return sectionData.title;
-    // }
-
     // @ts-ignore
     return sectionData[`title_${i18n.language}`] ?? sectionData.title;
+}
+
+export function useUnitTitle(sectionData: SectionData, unit: number) {
+    const { i18n } = useTranslation();
+
+    return (
+        sectionData.unitTitles[unit][`title_${i18n.language}`] ??
+        sectionData.unitTitles[unit].title
+    );
 }

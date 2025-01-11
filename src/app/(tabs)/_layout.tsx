@@ -46,17 +46,17 @@ export default function TabLayout() {
         const me = await axios.get("/v1/auth/me");
         const refreshed = await axios.post("/v1/auth/refresh-token");
 
-        console.log(me.data.section_data);
-
         if (me.status == 200 && refreshed.status == 200) {
             setJwt(refreshed.data.jwt);
             auth.setUser(me.data.user);
+            auth.setCourses(me.data.courses);
             auth.setSectionData(me.data.section_data);
+
             await saveUserCache(
                 me.data.user,
                 refreshed.data.jwt,
-                me.data.section_data,
-                me.data.courses
+                me.data.courses,
+                me.data.section_data
             );
         } else if (me.status == 401) {
             await clearUserCache();
