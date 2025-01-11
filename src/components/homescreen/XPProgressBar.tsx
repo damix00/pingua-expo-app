@@ -49,15 +49,8 @@ export default function XPProgressBar({
                 />
             </View>
             <View style={styles.bottomText}>
-                <ThemedText style={styles.textSmaller}>
-                    {t("course.xp", { xp })}
-                </ThemedText>
                 <ThemedText type="secondary" style={styles.textSmaller}>
-                    {" / "}
-                    {t("course.xpToUnit", {
-                        xp: currentUnit * 10 - xp,
-                        unit: currentUnit + 1,
-                    })}
+                    {t("course.xp", { xp })}
                 </ThemedText>
             </View>
         </View>

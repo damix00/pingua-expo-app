@@ -1,13 +1,15 @@
 import { useThemeColors } from "@/hooks/useThemeColor";
 import HapticTouchableOpacity from "../input/button/HapticTouchableOpacity";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Check } from "lucide-react-native";
+import { Check, LockKeyholeIcon } from "lucide-react-native";
 import BrandText from "../ui/BrandText";
 import { ThemedText } from "../ui/ThemedText";
 import { useTranslation } from "react-i18next";
 import { addZero } from "@/utils/util";
 import { useUnitTitle } from "@/hooks/course";
 import { SectionData } from "@/context/AuthContext";
+import Tooltip from "../ui/modals/Tooltip";
+import { useState } from "react";
 
 export default function UnitButton({
     currentXp,
@@ -28,56 +30,58 @@ export default function UnitButton({
     index: number;
     sectionData: SectionData;
 }) {
+    const [tooltipVisible, setTooltipVisible] = useState(false);
     const { t } = useTranslation();
     const colors = useThemeColors();
 
     const title = useUnitTitle(sectionData, index);
 
     return (
-        <TouchableOpacity
-            disabled={(!shouldContinue && !completed) || completed}>
-            <View
-                style={[
-                    styles.unitButton,
-                    {
-                        opacity: shouldContinue || completed ? 1 : 0.5,
-                    },
-                ]}>
+        <Tooltip
+            visible={tooltipVisible}
+            setVisible={setTooltipVisible}
+            content={<Text>{t("course.lockedUnit")}</Text>}
+            position="top">
+            <TouchableOpacity
+                onPress={() => {
+                    setTooltipVisible((prev) => !prev);
+                }}
+                disabled={(!shouldContinue && !completed) || completed}>
                 <View
                     style={[
+                        styles.unitButton,
                         {
-                            backgroundColor: completed
-                                ? colors.primary
-                                : colors.primaryContainer,
+                            opacity: shouldContinue || completed ? 1 : 0.5,
                         },
-                        styles.iconContainer,
                     ]}>
-                    {completed ? (
-                        <Check size={24} color={colors.textOnPrimary} />
-                    ) : (
-                        <BrandText
-                            style={{
-                                color: colors.primary,
-                                fontSize: 16,
-                            }}>
-                            {addZero(index + 1)}
-                        </BrandText>
+                    <View
+                        style={[
+                            {
+                                backgroundColor: completed
+                                    ? colors.primary
+                                    : colors.primaryContainer,
+                            },
+                            styles.iconContainer,
+                        ]}>
+                        {completed ? (
+                            <Check size={24} color={colors.textOnPrimary} />
+                        ) : (
+                            <BrandText
+                                style={{
+                                    color: colors.primary,
+                                    fontSize: 16,
+                                }}>
+                                {addZero(index + 1)}
+                            </BrandText>
+                        )}
+                    </View>
+                    <ThemedText style={styles.unitTitle}>{title}</ThemedText>
+                    {!shouldContinue && !completed && (
+                        <LockKeyholeIcon size={20} color={colors.text} />
                     )}
                 </View>
-                <ThemedText>
-                    {/* {completed
-                        ? t("course.completed_unit", { unit: index + 1 })
-                        : shouldContinue
-                        ? t("course.continue_unit", {
-                              unit: index + 1,
-                          })
-                        : t("course.unavailable_unit", {
-                              unit: lastCompletedIndex + 1,
-                          })} */}
-                    {title}
-                </ThemedText>
-            </View>
-        </TouchableOpacity>
+            </TouchableOpacity>
+        </Tooltip>
     );
 }
 
@@ -98,5 +102,8 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 8,
+    },
+    unitTitle: {
+        flex: 1,
     },
 });

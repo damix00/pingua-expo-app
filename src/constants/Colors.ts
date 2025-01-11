@@ -18,6 +18,7 @@ const lightTheme = {
     outline: "#D4D0D8",
     outlineSecondary: "#E1DBED",
     error: "red",
+    backdrop: "#00000039",
 };
 
 export const Colors = {

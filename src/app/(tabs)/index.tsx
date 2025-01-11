@@ -11,6 +11,7 @@ import { Check, Circle } from "lucide-react-native";
 import { useTimeout } from "@/hooks/useTimeout";
 import UnitButton from "@/components/homescreen/UnitButton";
 import XPProgressBar from "@/components/homescreen/XPProgressBar";
+import Tooltip from "@/components/ui/modals/Tooltip";
 
 export default function Index() {
     const auth = useAuth();

@@ -1,6 +1,6 @@
 import { useAuth } from "@/context/AuthContext";
 import { Tabs, useRootNavigationState, useRouter } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { getJwt, setJwt } from "@/api/data";
@@ -15,12 +15,17 @@ import CourseSelect from "@/components/homescreen/CourseSelect";
 import {
     BottomSheetModal,
     BottomSheetModalProvider,
-    BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import { ThemedText } from "@/components/ui/ThemedText";
 import CourseSelectSheet from "@/components/homescreen/CourseSelectSheet";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import PremiumButton from "@/components/homescreen/PremiumButton";
+import Animated, {
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming,
+} from "react-native-reanimated";
+
+const AnimatedTouchableOpacity =
+    Animated.createAnimatedComponent(TouchableOpacity);
 
 export default function TabLayout() {
     const rootNavigationState = useRootNavigationState();
@@ -29,18 +34,22 @@ export default function TabLayout() {
     const colors = useThemeColors();
     const popAllAndPush = usePopAllAndPush();
     const { t } = useTranslation();
-    const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
 
     const networkState = useNetworkState();
     const executed = useRef(false);
 
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+    const backdropBackground = useSharedValue("#00000000");
 
     const handlePresentModalPress = useCallback(() => {
-        setBottomSheetVisible(true);
-
         bottomSheetModalRef.current?.present();
     }, []);
+
+    const bottomSheetAnimatedStyle = useAnimatedStyle(() => {
+        return {
+            backgroundColor: backdropBackground.value,
+        };
+    });
 
     const fetchUser = async () => {
         const me = await axios.get("/v1/auth/me");
@@ -234,11 +243,34 @@ export default function TabLayout() {
                 backgroundStyle={{
                     backgroundColor: colors.background,
                 }}
-                containerStyle={{
-                    backgroundColor: "#00000039",
-                }}
-                onDismiss={() => setBottomSheetVisible(false)}
-                ref={bottomSheetModalRef}>
+                backdropComponent={(props) => (
+                    <AnimatedTouchableOpacity
+                        {...props}
+                        onPress={() => {
+                            bottomSheetModalRef.current?.dismiss();
+                        }}
+                        activeOpacity={1}
+                        style={[
+                            bottomSheetAnimatedStyle,
+                            {
+                                flex: 1,
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                width: "100%",
+                                height: "100%",
+                            },
+                        ]}
+                    />
+                )}
+                ref={bottomSheetModalRef}
+                onAnimate={(from, to) => {
+                    if (to == -1) {
+                        backdropBackground.value = withTiming("#00000000");
+                    } else {
+                        backdropBackground.value = withTiming(colors.backdrop);
+                    }
+                }}>
                 <CourseSelectSheet />
             </BottomSheetModal>
         </BottomSheetModalProvider>
