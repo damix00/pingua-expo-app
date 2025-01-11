@@ -5,13 +5,8 @@ import { useThemeColors } from "@/hooks/useThemeColor";
 import { useEffect, useMemo, useRef } from "react";
 import { FlatList, Platform, ScrollView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Constants from "expo-constants";
-import HapticTouchableOpacity from "@/components/input/button/HapticTouchableOpacity";
-import { Check, Circle } from "lucide-react-native";
-import { useTimeout } from "@/hooks/useTimeout";
 import UnitButton from "@/components/homescreen/UnitButton";
 import XPProgressBar from "@/components/homescreen/XPProgressBar";
-import Tooltip from "@/components/ui/modals/Tooltip";
 
 export default function Index() {
     const auth = useAuth();

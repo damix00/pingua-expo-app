@@ -8,7 +8,6 @@ import { useTranslation } from "react-i18next";
 import { addZero } from "@/utils/util";
 import { useUnitTitle } from "@/hooks/course";
 import { SectionData } from "@/context/AuthContext";
-import Tooltip from "../ui/modals/Tooltip";
 import { useState } from "react";
 
 export default function UnitButton({
@@ -30,58 +29,49 @@ export default function UnitButton({
     index: number;
     sectionData: SectionData;
 }) {
-    const [tooltipVisible, setTooltipVisible] = useState(false);
     const { t } = useTranslation();
     const colors = useThemeColors();
 
     const title = useUnitTitle(sectionData, index);
 
     return (
-        <Tooltip
-            visible={tooltipVisible}
-            setVisible={setTooltipVisible}
-            content={<Text>{t("course.lockedUnit")}</Text>}
-            position="top">
-            <TouchableOpacity
-                onPress={() => {
-                    setTooltipVisible((prev) => !prev);
-                }}
-                disabled={(!shouldContinue && !completed) || completed}>
+        <TouchableOpacity
+            onPress={onPress}
+            disabled={(!shouldContinue && !completed) || completed}>
+            <View
+                style={[
+                    styles.unitButton,
+                    {
+                        opacity: shouldContinue || completed ? 1 : 0.5,
+                    },
+                ]}>
                 <View
                     style={[
-                        styles.unitButton,
                         {
-                            opacity: shouldContinue || completed ? 1 : 0.5,
+                            backgroundColor: completed
+                                ? colors.primary
+                                : colors.primaryContainer,
                         },
+                        styles.iconContainer,
                     ]}>
-                    <View
-                        style={[
-                            {
-                                backgroundColor: completed
-                                    ? colors.primary
-                                    : colors.primaryContainer,
-                            },
-                            styles.iconContainer,
-                        ]}>
-                        {completed ? (
-                            <Check size={24} color={colors.textOnPrimary} />
-                        ) : (
-                            <BrandText
-                                style={{
-                                    color: colors.primary,
-                                    fontSize: 16,
-                                }}>
-                                {addZero(index + 1)}
-                            </BrandText>
-                        )}
-                    </View>
-                    <ThemedText style={styles.unitTitle}>{title}</ThemedText>
-                    {!shouldContinue && !completed && (
-                        <LockKeyholeIcon size={20} color={colors.text} />
+                    {completed ? (
+                        <Check size={24} color={colors.textOnPrimary} />
+                    ) : (
+                        <BrandText
+                            style={{
+                                color: colors.primary,
+                                fontSize: 16,
+                            }}>
+                            {addZero(index + 1)}
+                        </BrandText>
                     )}
                 </View>
-            </TouchableOpacity>
-        </Tooltip>
+                <ThemedText style={styles.unitTitle}>{title}</ThemedText>
+                {!shouldContinue && !completed && (
+                    <LockKeyholeIcon size={20} color={colors.text} />
+                )}
+            </View>
+        </TouchableOpacity>
     );
 }
 

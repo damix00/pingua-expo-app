@@ -23,6 +23,7 @@ import Animated, {
     useSharedValue,
     withTiming,
 } from "react-native-reanimated";
+import CustomBottomSheetModal from "@/components/modal/BottomSheet";
 
 const AnimatedTouchableOpacity =
     Animated.createAnimatedComponent(TouchableOpacity);
@@ -39,17 +40,10 @@ export default function TabLayout() {
     const executed = useRef(false);
 
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-    const backdropBackground = useSharedValue("#00000000");
 
     const handlePresentModalPress = useCallback(() => {
         bottomSheetModalRef.current?.present();
     }, []);
-
-    const bottomSheetAnimatedStyle = useAnimatedStyle(() => {
-        return {
-            backgroundColor: backdropBackground.value,
-        };
-    });
 
     const fetchUser = async () => {
         const me = await axios.get("/v1/auth/me");
@@ -239,40 +233,9 @@ export default function TabLayout() {
                     }}
                 />
             </Tabs>
-            <BottomSheetModal
-                backgroundStyle={{
-                    backgroundColor: colors.background,
-                }}
-                backdropComponent={(props) => (
-                    <AnimatedTouchableOpacity
-                        {...props}
-                        onPress={() => {
-                            bottomSheetModalRef.current?.dismiss();
-                        }}
-                        activeOpacity={1}
-                        style={[
-                            bottomSheetAnimatedStyle,
-                            {
-                                flex: 1,
-                                position: "absolute",
-                                top: 0,
-                                left: 0,
-                                width: "100%",
-                                height: "100%",
-                            },
-                        ]}
-                    />
-                )}
-                ref={bottomSheetModalRef}
-                onAnimate={(from, to) => {
-                    if (to == -1) {
-                        backdropBackground.value = withTiming("#00000000");
-                    } else {
-                        backdropBackground.value = withTiming(colors.backdrop);
-                    }
-                }}>
+            <CustomBottomSheetModal ref={bottomSheetModalRef}>
                 <CourseSelectSheet />
-            </BottomSheetModal>
+            </CustomBottomSheetModal>
         </BottomSheetModalProvider>
     );
 }
