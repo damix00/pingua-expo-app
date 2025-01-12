@@ -18,15 +18,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import CourseSelectSheet from "@/components/homescreen/CourseSelectSheet";
 import PremiumButton from "@/components/homescreen/PremiumButton";
-import Animated, {
-    useAnimatedStyle,
-    useSharedValue,
-    withTiming,
-} from "react-native-reanimated";
 import CustomBottomSheetModal from "@/components/modal/BottomSheet";
-
-const AnimatedTouchableOpacity =
-    Animated.createAnimatedComponent(TouchableOpacity);
 
 export default function TabLayout() {
     const rootNavigationState = useRootNavigationState();
@@ -123,7 +115,7 @@ export default function TabLayout() {
                     // Bottom navigation bar
                     tabBarBackground: () => (
                         <IosBlurView
-                            intensity={48}
+                            intensity={36}
                             style={{
                                 ...StyleSheet.absoluteFillObject,
                                 backgroundColor:
@@ -147,7 +139,7 @@ export default function TabLayout() {
                     },
                     headerBackground: () => (
                         <IosBlurView
-                            intensity={48}
+                            intensity={36}
                             style={{
                                 ...StyleSheet.absoluteFillObject,
                                 backgroundColor:
@@ -184,6 +176,23 @@ export default function TabLayout() {
                         tabBarIcon: ({ focused }) => (
                             <Ionicons
                                 name={focused ? "sparkles" : "sparkles-outline"}
+                                size={24}
+                                color={
+                                    focused
+                                        ? colors.primary
+                                        : colors.textSecondary
+                                }
+                            />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
+                    name="translate"
+                    options={{
+                        title: t("tabs.translate"),
+                        tabBarIcon: ({ focused }) => (
+                            <Ionicons
+                                name={focused ? "language" : "language-outline"}
                                 size={24}
                                 color={
                                     focused

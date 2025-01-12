@@ -16,12 +16,35 @@ export type ThemedTextProps = TextProps & {
         | "onPrimary"
         | "onPrimarySecondary"
         | "heading";
+    fontWeight?:
+        | "100"
+        | "200"
+        | "300"
+        | "400"
+        | "500"
+        | "600"
+        | "700"
+        | "800"
+        | "900";
+};
+
+const weightMap = {
+    "100": "Thin",
+    "200": "ExtraLight",
+    "300": "Light",
+    "400": "Regular",
+    "500": "Medium",
+    "600": "SemiBold",
+    "700": "Bold",
+    "800": "ExtraBold",
+    "900": "Black",
 };
 
 export function ThemedText({
     style,
     onPrimary = false,
     type = "default",
+    fontWeight,
     ...rest
 }: ThemedTextProps) {
     const color = useThemeColor("text");
@@ -57,6 +80,9 @@ export function ThemedText({
                     : undefined,
 
                 style,
+                fontWeight && {
+                    fontFamily: `Montserrat_${fontWeight}${weightMap[fontWeight]}`,
+                },
             ]}
             {...rest}
         />

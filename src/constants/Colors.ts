@@ -10,7 +10,7 @@ const lightTheme = {
     textSecondaryOnPrimary: "#CAB4E9",
     background: "#F6F2FF",
     backgroundDarker: "#7B7980",
-    transparentBackground: "#f6f2ffbd",
+    transparentBackground: "#f6f2ffad",
     backgroundVariant: "#E1DBED",
     card: "#E8DFFF",
     icon: "#687076",

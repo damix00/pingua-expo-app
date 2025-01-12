@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { addZero } from "@/utils/util";
 import { useUnitTitle } from "@/hooks/course";
 import { SectionData } from "@/context/AuthContext";
-import { useState } from "react";
+import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 export default function UnitButton({
     currentXp,
@@ -45,28 +45,36 @@ export default function UnitButton({
                         opacity: shouldContinue || completed ? 1 : 0.5,
                     },
                 ]}>
-                <View
-                    style={[
-                        {
-                            backgroundColor: completed
-                                ? colors.primary
-                                : colors.primaryContainer,
-                        },
-                        styles.iconContainer,
-                    ]}>
-                    {completed ? (
-                        <Check size={24} color={colors.textOnPrimary} />
-                    ) : (
-                        <BrandText
-                            style={{
-                                color: colors.primary,
-                                fontSize: 16,
-                            }}>
-                            {addZero(index + 1)}
-                        </BrandText>
-                    )}
-                </View>
-                <ThemedText style={styles.unitTitle}>{title}</ThemedText>
+                <AnimatedCircularProgress
+                    duration={completed ? 0 : 500}
+                    size={56}
+                    width={4}
+                    rotation={0}
+                    childrenContainerStyle={styles.iconProgress}
+                    fill={Math.min((currentXp - (xp - 10)) * 10, 100)}
+                    tintColor={colors.primary}
+                    backgroundColor={colors.primaryContainer}>
+                    {() =>
+                        completed ? (
+                            <Check size={28} color={colors.primary} />
+                        ) : (
+                            <BrandText
+                                style={[
+                                    {
+                                        color: colors.primary,
+                                    },
+                                    styles.unitButtonText,
+                                ]}>
+                                {addZero(index + 1)}
+                            </BrandText>
+                        )
+                    }
+                </AnimatedCircularProgress>
+                <ThemedText
+                    style={[styles.unitTitle]}
+                    fontWeight={shouldContinue ? "700" : undefined}>
+                    {title}
+                </ThemedText>
                 {!shouldContinue && !completed && (
                     <LockKeyholeIcon size={20} color={colors.text} />
                 )}
@@ -81,19 +89,18 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "flex-start",
         borderRadius: 8,
-        gap: 8,
+        gap: 12,
     },
-    unitButtonIcon: {
-        marginRight: 8,
-    },
-    iconContainer: {
-        width: 40,
-        height: 40,
-        justifyContent: "center",
-        alignItems: "center",
-        borderRadius: 8,
+    unitButtonText: {
+        fontSize: 20,
+        lineHeight: 28, // size / 2
     },
     unitTitle: {
         flex: 1,
+    },
+    iconProgress: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
     },
 });

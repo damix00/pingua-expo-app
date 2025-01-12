@@ -110,6 +110,7 @@ const translations: typeof en = {
         overview: "Pregled",
         chats: "Čavrljanja",
         profile: "Profil",
+        translate: "Prevoditelj",
     },
     course: {
         completed_unit: "Jedinica {{unit}} završena!",

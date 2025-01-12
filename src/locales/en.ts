@@ -105,6 +105,7 @@ export default {
         overview: "Overview",
         chats: "Chats",
         profile: "Profile",
+        translate: "Translate",
     },
     course: {
         completed_unit: "Unit {{unit}} complete!",

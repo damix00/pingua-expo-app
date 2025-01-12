@@ -9,11 +9,8 @@ import UnitButton from "@/components/homescreen/UnitButton";
 import XPProgressBar from "@/components/homescreen/XPProgressBar";
 
 export default function Index() {
-    const auth = useAuth();
-    const colors = useThemeColors();
     const insets = useSafeAreaInsets();
     const flatListRef = useRef<FlatList>(null);
-    const jumped = useRef(false);
 
     const { currentCourse, currentCourseData } = useCurrentCourse();
     const title = useSectionTitle(currentCourseData);
@@ -40,24 +37,9 @@ export default function Index() {
         return index === -1 ? 0 : index;
     }, [units]);
 
-    useEffect(() => {
-        if (jumped.current) {
-            return;
-        }
-
-        const index = units.findIndex((unit) => !unit.completed);
-
-        if (flatListRef.current && index !== -1) {
-            flatListRef.current.scrollToIndex({
-                index,
-                animated: false,
-            });
-            jumped.current = true;
-        }
-    }, [units]);
-
     return (
         <FlatList
+            onLayout={() => {}}
             ref={flatListRef}
             style={[
                 {
@@ -68,7 +50,7 @@ export default function Index() {
             ]}
             contentContainerStyle={{
                 paddingBottom: insets.bottom + 16 + 56,
-                gap: 12,
+                gap: 16,
             }}
             data={units}
             keyExtractor={(data) => data.xp.toString()}
@@ -85,9 +67,18 @@ export default function Index() {
             )}
             renderItem={({ item, index }) => {
                 const previousItem = units[index - 1] || null;
+                const nextItem = units[index + 1] || null;
                 const lastCompletedIndex = units.findIndex(
                     (unit) => unit.completed
                 );
+
+                const shouldContinue =
+                    (previousItem?.completed &&
+                        !item.completed &&
+                        index != 0) ||
+                    (index == 0 &&
+                        !nextItem?.completed &&
+                        nextItem.xp < currentCourse.xp);
 
                 return (
                     <UnitButton
@@ -96,7 +87,7 @@ export default function Index() {
                             lastCompletedIndex == -1 ? 0 : lastCompletedIndex
                         }
                         xp={item.xp}
-                        shouldContinue={previousItem?.completed || index === 0}
+                        shouldContinue={shouldContinue}
                         completed={item.completed}
                         onPress={() => {}}
                         index={index}
@@ -111,7 +102,7 @@ export default function Index() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: 22,
+        paddingHorizontal: 24,
     },
     header: {
         marginBottom: 8,
