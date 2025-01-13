@@ -9,6 +9,7 @@ import { addZero } from "@/utils/util";
 import { useUnitTitle } from "@/hooks/course";
 import { SectionData } from "@/context/AuthContext";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+import React from "react";
 
 export default function UnitButton({
     currentXp,
@@ -70,11 +71,18 @@ export default function UnitButton({
                         )
                     }
                 </AnimatedCircularProgress>
-                <ThemedText
-                    style={[styles.unitTitle]}
-                    fontWeight={shouldContinue ? "700" : undefined}>
-                    {title}
-                </ThemedText>
+                <View style={styles.unitTitleWrapper}>
+                    <ThemedText fontWeight={shouldContinue ? "700" : undefined}>
+                        {title}
+                    </ThemedText>
+                    <ThemedText type="secondary" style={{ fontSize: 12 }}>
+                        {completed
+                            ? t("completed")
+                            : t("course.unit", { unit: index + 1 }) +
+                              " · " +
+                              t("tap_to_continue")}
+                    </ThemedText>
+                </View>
                 {!shouldContinue && !completed && (
                     <LockKeyholeIcon size={20} color={colors.text} />
                 )}
@@ -95,12 +103,15 @@ const styles = StyleSheet.create({
         fontSize: 20,
         lineHeight: 28, // size / 2
     },
-    unitTitle: {
-        flex: 1,
-    },
     iconProgress: {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
+    },
+    unitTitleWrapper: {
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "flex-start",
     },
 });

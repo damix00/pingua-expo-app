@@ -7,6 +7,8 @@ export default {
     finish: "Finish",
     back: "Back",
     change: "Change",
+    tap_to_continue: "Tap to continue",
+    completed: "Completed",
     languages: {
         en: "English",
         de: "German",

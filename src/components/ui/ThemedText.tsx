@@ -1,7 +1,6 @@
 import { Text, type TextProps, StyleSheet, Platform } from "react-native";
 
 import { useThemeColor, useThemeColors } from "@/hooks/useThemeColor";
-import Autolink, { AutolinkProps } from "react-native-autolink";
 
 export type ThemedTextProps = TextProps & {
     onPrimary?: boolean;

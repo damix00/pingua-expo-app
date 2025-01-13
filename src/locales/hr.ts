@@ -9,6 +9,8 @@ const translations: typeof en = {
     finish: "Završi",
     back: "Natrag",
     change: "Promijeni",
+    tap_to_continue: "Dodirni za nastavak",
+    completed: "Završeno",
     languages: {
         en: "Engleski",
         de: "Njemački",
