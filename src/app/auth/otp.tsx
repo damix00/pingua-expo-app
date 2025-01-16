@@ -10,12 +10,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ONBOARDING_APPBAR_HEIGHT } from "../onboarding/OnboardingAppbar";
 import { useTranslation } from "react-i18next";
 import { OtpInput, OtpInputRef } from "react-native-otp-entry";
-import {
-    router,
-    useLocalSearchParams,
-    useNavigation,
-    useRootNavigation,
-} from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useRef, useState } from "react";
 import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";

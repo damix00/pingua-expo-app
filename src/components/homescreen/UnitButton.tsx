@@ -78,9 +78,11 @@ export default function UnitButton({
                     <ThemedText type="secondary" style={{ fontSize: 12 }}>
                         {completed
                             ? t("completed")
-                            : t("course.unit", { unit: index + 1 }) +
-                              " · " +
-                              t("tap_to_continue")}
+                            : `${t("course.unit", { unit: index + 1 })}${
+                                  shouldContinue
+                                      ? " · " + t("tap_to_continue")
+                                      : ""
+                              }`}
                     </ThemedText>
                 </View>
                 {!shouldContinue && !completed && (

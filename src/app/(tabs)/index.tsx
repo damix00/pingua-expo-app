@@ -7,6 +7,8 @@ import { FlatList, Platform, ScrollView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import UnitButton from "@/components/homescreen/UnitButton";
 import XPProgressBar from "@/components/homescreen/XPProgressBar";
+import { getJwt } from "@/api/data";
+import { router } from "expo-router";
 
 export default function Index() {
     const insets = useSafeAreaInsets();
@@ -76,9 +78,7 @@ export default function Index() {
                     (previousItem?.completed &&
                         !item.completed &&
                         index != 0) ||
-                    (index == 0 &&
-                        !nextItem?.completed &&
-                        nextItem.xp < currentCourse.xp);
+                    (index == 0 && !nextItem?.completed && !item.completed);
 
                 return (
                     <UnitButton
@@ -89,7 +89,9 @@ export default function Index() {
                         xp={item.xp}
                         shouldContinue={shouldContinue}
                         completed={item.completed}
-                        onPress={() => {}}
+                        onPress={() => {
+                            router.push("/lessons/loading");
+                        }}
                         index={index}
                         sectionData={currentCourseData}
                     />

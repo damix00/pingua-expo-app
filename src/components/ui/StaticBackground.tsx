@@ -13,9 +13,11 @@ import React from "react";
 export default function StaticBackground({
     children,
     showAura = true,
+    style,
 }: {
     children?: React.ReactNode;
     showAura?: boolean;
+    style?: any;
 }) {
     const colors = useThemeColors();
 
@@ -23,7 +25,11 @@ export default function StaticBackground({
         <>
             <StatusBar style="light" />
             <View
-                style={[styles.container, { backgroundColor: colors.primary }]}>
+                style={[
+                    styles.container,
+                    { backgroundColor: colors.primary },
+                    style,
+                ]}>
                 {showAura && (
                     <Image
                         resizeMode="cover"

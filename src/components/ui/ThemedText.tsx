@@ -1,6 +1,7 @@
 import { Text, type TextProps, StyleSheet, Platform } from "react-native";
 
 import { useThemeColor, useThemeColors } from "@/hooks/useThemeColor";
+import { forwardRef } from "react";
 
 export type ThemedTextProps = TextProps & {
     onPrimary?: boolean;
@@ -39,54 +40,64 @@ const weightMap = {
     "900": "Black",
 };
 
-export function ThemedText({
-    style,
-    onPrimary = false,
-    type = "default",
-    fontWeight,
-    ...rest
-}: ThemedTextProps) {
-    const color = useThemeColor("text");
-    const colors = useThemeColors();
+const ThemedText = forwardRef(
+    (
+        {
+            style,
+            onPrimary = false,
+            type = "default",
+            fontWeight,
+            ...rest
+        }: ThemedTextProps,
+        ref: any
+    ) => {
+        const color = useThemeColor("text");
+        const colors = useThemeColors();
 
-    return (
-        <Text
-            style={[
-                { color: onPrimary ? colors.textOnPrimary : color },
-                type === "default" ? styles.default : undefined,
-                type === "primary"
-                    ? { color: colors.primary, ...styles.primary }
-                    : undefined,
-                type == "secondary"
-                    ? { ...styles.default, color: colors.textSecondary }
-                    : undefined,
-                type === "title" ? styles.title : undefined,
-                type === "defaultSemiBold" ? styles.defaultSemiBold : undefined,
-                type === "subtitle" ? styles.subtitle : undefined,
-                type === "link" ? styles.link : undefined,
-                type === "heading" ? styles.heading : undefined,
-                type === "onPrimary"
-                    ? {
-                          ...styles.default,
-                          color: colors.textOnPrimary,
-                      }
-                    : undefined,
-                type === "onPrimarySecondary"
-                    ? {
-                          ...styles.default,
-                          color: colors.textSecondaryOnPrimary,
-                      }
-                    : undefined,
+        return (
+            <Text
+                ref={ref}
+                style={[
+                    { color: onPrimary ? colors.textOnPrimary : color },
+                    type === "default" ? styles.default : undefined,
+                    type === "primary"
+                        ? { color: colors.primary, ...styles.primary }
+                        : undefined,
+                    type == "secondary"
+                        ? { ...styles.default, color: colors.textSecondary }
+                        : undefined,
+                    type === "title" ? styles.title : undefined,
+                    type === "defaultSemiBold"
+                        ? styles.defaultSemiBold
+                        : undefined,
+                    type === "subtitle" ? styles.subtitle : undefined,
+                    type === "link" ? styles.link : undefined,
+                    type === "heading" ? styles.heading : undefined,
+                    type === "onPrimary"
+                        ? {
+                              ...styles.default,
+                              color: colors.textOnPrimary,
+                          }
+                        : undefined,
+                    type === "onPrimarySecondary"
+                        ? {
+                              ...styles.default,
+                              color: colors.textSecondaryOnPrimary,
+                          }
+                        : undefined,
 
-                style,
-                fontWeight && {
-                    fontFamily: `Montserrat_${fontWeight}${weightMap[fontWeight]}`,
-                },
-            ]}
-            {...rest}
-        />
-    );
-}
+                    style,
+                    fontWeight && {
+                        fontFamily: `Montserrat_${fontWeight}${weightMap[fontWeight]}`,
+                    },
+                ]}
+                {...rest}
+            />
+        );
+    }
+);
+
+export { ThemedText };
 
 const styles = StyleSheet.create({
     default: {

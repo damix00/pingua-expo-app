@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 8,
-        boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.2)",
+        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)",
     },
     itemText: {
         flex: 1,

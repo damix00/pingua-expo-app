@@ -85,6 +85,8 @@ export function findFlag(code: string) {
     return courseLanguages.find((lang) => lang.code === code)?.flag;
 }
 
+let localizations: any;
+
 export default async function loadLocales() {
     let savedLanguage = await AsyncStorage.getItem("language");
 
@@ -109,6 +111,8 @@ export default async function loadLocales() {
         return value.charAt(0).toUpperCase() + value.slice(1);
     });
 }
+
+export { localizations };
 
 export async function saveLocale(language: string | null) {
     if (!language) {

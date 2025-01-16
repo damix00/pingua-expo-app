@@ -118,4 +118,11 @@ export default {
         xp: "{{xp}} XP",
         xpToUnit: "{{xp}} XP to Unit {{unit}}",
     },
+    lesson: {
+        loading: "Loading...",
+        loading_description: "Hang tight! This won't take long.",
+        story: {
+            continue: "Next",
+        },
+    },
 };

@@ -124,6 +124,13 @@ const translations: typeof en = {
         xp: "{{xp}} XP",
         xpToUnit: "{{xp}} XP do Jedinice {{unit}}",
     },
+    lesson: {
+        loading: "Učitavanje...",
+        loading_description: "Samo trenutak! Ovo neće dugo trajati.",
+        story: {
+            continue: "Dalje",
+        },
+    },
 };
 
 export default translations;

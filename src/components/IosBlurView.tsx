@@ -1,14 +1,22 @@
 import { BlurView, BlurViewProps } from "expo-blur";
+import { forwardRef } from "react";
 import { Platform, View } from "react-native";
 
-export default function IosBlurView({
-    children,
-    intensity,
-    ...props
-}: BlurViewProps) {
-    if (Platform.OS == "android") {
-        return <View {...props}>{children}</View>;
+const IosBlurView = forwardRef<View, BlurViewProps>(
+    ({ children, intensity, ...props }, ref: any) => {
+        if (Platform.OS === "android") {
+            return (
+                <View ref={ref} {...props}>
+                    {children}
+                </View>
+            );
+        }
+        return (
+            <BlurView ref={ref} intensity={intensity} {...props}>
+                {children}
+            </BlurView>
+        );
     }
+);
 
-    return <BlurView intensity={intensity} {...props} />;
-}
+export default IosBlurView;

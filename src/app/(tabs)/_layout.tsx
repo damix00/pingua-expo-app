@@ -19,8 +19,10 @@ import {
 import CourseSelectSheet from "@/components/homescreen/CourseSelectSheet";
 import PremiumButton from "@/components/homescreen/PremiumButton";
 import CustomBottomSheetModal from "@/components/modal/BottomSheet";
+import { useBottomSheet } from "@/context/BottomSheetContext";
 
 export default function TabLayout() {
+    const bottomSheet = useBottomSheet();
     const rootNavigationState = useRootNavigationState();
     const router = useRouter();
     const auth = useAuth();
@@ -31,10 +33,8 @@ export default function TabLayout() {
     const networkState = useNetworkState();
     const executed = useRef(false);
 
-    const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-
     const handlePresentModalPress = useCallback(() => {
-        bottomSheetModalRef.current?.present();
+        bottomSheet.setBottomSheet(<CourseSelectSheet />);
     }, []);
 
     const fetchUser = async () => {
@@ -242,9 +242,6 @@ export default function TabLayout() {
                     }}
                 />
             </Tabs>
-            <CustomBottomSheetModal ref={bottomSheetModalRef}>
-                <CourseSelectSheet />
-            </CustomBottomSheetModal>
         </BottomSheetModalProvider>
     );
 }
