@@ -27,6 +27,7 @@ import StoryProgressBar from "@/components/lessons/story/StoryProgressBar";
 import { X } from "lucide-react-native";
 import { useBottomSheet } from "@/context/BottomSheetContext";
 import ExitBottomSheet from "@/components/lessons/ExitBottomSheet";
+import DialogueItem from "@/components/lessons/story/DialogueItem";
 
 const AnimatedIosBlurView = Animated.createAnimatedComponent(IosBlurView);
 const AnimatedThemedText = Animated.createAnimatedComponent(ThemedText);
@@ -40,11 +41,12 @@ export default function StoryLessonScreen() {
     const insets = useSafeAreaInsets();
     const [lines, setLines] = useState<DialogueLine[]>([]);
     const listRef = useRef<FlatList<DialogueLine>>(null);
+    const [buttonEnabled, setButtonEnabled] = useState(false);
     const bottomSheet = useBottomSheet();
 
     const scrollY = useSharedValue(0);
     const MIN_HEIGHT = 64 + insets.top;
-    const MAX_HEIGHT = 180;
+    const MAX_HEIGHT = 100 + insets.top;
 
     const animatedHeaderStyle = useAnimatedStyle(() => ({
         height: interpolate(
@@ -58,12 +60,13 @@ export default function StoryLessonScreen() {
 
     const animatedListStyle = useAnimatedStyle(
         () => ({
-            paddingTop: interpolate(
-                scrollY.value,
-                [0, 100],
-                [MAX_HEIGHT, MIN_HEIGHT + 100],
-                Extrapolation.CLAMP
-            ),
+            paddingTop:
+                interpolate(
+                    scrollY.value,
+                    [0, 100],
+                    [MAX_HEIGHT, MIN_HEIGHT],
+                    Extrapolation.CLAMP
+                ) + 16,
         }),
         [insets.top]
     );
@@ -86,6 +89,30 @@ export default function StoryLessonScreen() {
         ),
     }));
 
+    const updateLines = () => {
+        let shouldUpdateState = false;
+
+        setLines((prev) => {
+            const len = prev.length;
+
+            if (len == parsed.dialogue.length) {
+                return prev;
+            }
+
+            const item = parsed.dialogue[len];
+
+            if (item.audio) {
+                shouldUpdateState = true;
+            }
+
+            return parsed.dialogue.slice(0, len + 1);
+        });
+
+        if (shouldUpdateState) {
+            setButtonEnabled(false);
+        }
+    };
+
     const parsed = useMemo(() => JSON.parse(data || "") as Story, [data]);
 
     if (!data || !parsed) {
@@ -97,9 +124,17 @@ export default function StoryLessonScreen() {
     }
 
     useEffect(() => {
-        if (lines.length == 0) {
-            setLines(parsed.dialogue.slice(0, 1));
-        }
+        const fn = () => {
+            if (lines.length == 0) {
+                updateLines();
+            }
+        };
+
+        const timeout = setTimeout(fn, 1000);
+
+        return () => {
+            clearTimeout(timeout);
+        };
     }, [parsed]);
 
     return (
@@ -151,6 +186,7 @@ export default function StoryLessonScreen() {
                 style={[animatedListStyle]}
                 contentContainerStyle={{
                     marginBottom: insets.bottom + 64,
+                    gap: 8,
                 }}
                 onScroll={(e) => {
                     scrollY.value = e.nativeEvent.contentOffset.y;
@@ -158,9 +194,12 @@ export default function StoryLessonScreen() {
                 data={lines}
                 keyExtractor={(item) => item.text}
                 renderItem={({ item }) => (
-                    <View style={styles.item} key={item.id}>
-                        <ThemedText>{item.text}</ThemedText>
-                    </View>
+                    <DialogueItem
+                        data={item}
+                        onAudioEnd={() => {
+                            setButtonEnabled(true);
+                        }}
+                    />
                 )}
             />
             <View
@@ -171,14 +210,9 @@ export default function StoryLessonScreen() {
                     },
                 ]}>
                 <Button
+                    disabled={!buttonEnabled}
                     style={[styles.button]}
-                    onPress={() => {
-                        setLines((prev) => {
-                            const len = prev.length;
-
-                            return parsed.dialogue.slice(0, len + 1);
-                        });
-                    }}>
+                    onPress={updateLines}>
                     <ButtonText>{t("lesson.story.continue")}</ButtonText>
                 </Button>
             </View>
@@ -213,11 +247,6 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         width: "100%",
-    },
-    item: {
-        padding: 16,
-        marginVertical: 8,
-        borderRadius: 8,
     },
     buttonWrapper: {
         position: "absolute",

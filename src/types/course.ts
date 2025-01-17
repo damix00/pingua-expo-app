@@ -8,8 +8,10 @@ export enum Character {
 
 export type DialogueLine = {
     id: string;
-    character: Character;
+    character: Character | "narrator" | "user";
     text: string;
+    text_app_language?: string;
+    audio?: string;
     answers: {
         id: string;
         text: string;

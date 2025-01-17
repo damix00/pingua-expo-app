@@ -121,6 +121,13 @@ export default {
     lesson: {
         loading: "Loading...",
         loading_description: "Hang tight! This won't take long.",
+        modal: {
+            title: "Please don't go!",
+            subtitle:
+                "You haven't finished this lesson yet. Are you sure you want to exit?",
+            exit: "Exit",
+            cancel: "Return",
+        },
         story: {
             continue: "Next",
         },

@@ -127,6 +127,13 @@ const translations: typeof en = {
     lesson: {
         loading: "Učitavanje...",
         loading_description: "Samo trenutak! Ovo neće dugo trajati.",
+        modal: {
+            title: "Molim te ostani!",
+            subtitle:
+                "Ako izađete, Vaš napredak neće biti spremljen. Jeste li sigurni da želite izaći?",
+            exit: "Izađi",
+            cancel: "Odustani",
+        },
         story: {
             continue: "Dalje",
         },

@@ -61,6 +61,12 @@
                         "usesCleartextTraffic": true
                     }
                 }
+            ],
+            [
+                "expo-av",
+                {
+                    "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone. This is required for text-to-speech functionality."
+                }
             ]
         ],
         "experiments": {
