@@ -2,7 +2,7 @@ import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { DialogueLine, Story } from "@/types/course";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -39,10 +39,14 @@ export default function StoryLessonScreen() {
     const { t } = useTranslation();
     const colors = useThemeColors();
     const insets = useSafeAreaInsets();
-    const [lines, setLines] = useState<DialogueLine[]>([]);
+    const [lines, setLines] = useState<(DialogueLine & { show: boolean })[]>(
+        []
+    );
+    const [shownList, setShownList] = useState<typeof lines>(lines);
     const listRef = useRef<FlatList<DialogueLine>>(null);
     const [buttonEnabled, setButtonEnabled] = useState(false);
     const bottomSheet = useBottomSheet();
+    const [progress, setProgress] = useState<number>(0);
 
     const scrollY = useSharedValue(0);
     const MIN_HEIGHT = 64 + insets.top;
@@ -90,7 +94,8 @@ export default function StoryLessonScreen() {
     }));
 
     const updateLines = () => {
-        let shouldUpdateState = false;
+        let shouldDisableBtn = false;
+        let shouldChangeProgress = true;
 
         setLines((prev) => {
             const len = prev.length;
@@ -102,26 +107,27 @@ export default function StoryLessonScreen() {
             const item = parsed.dialogue[len];
 
             if (item.audio) {
-                shouldUpdateState = true;
+                shouldDisableBtn = true;
             }
 
-            return parsed.dialogue.slice(0, len + 1);
+            if (item.character == "user") {
+                shouldChangeProgress = false;
+                shouldDisableBtn = true;
+            }
+
+            return [...prev, { ...item, show: true }];
         });
 
-        if (shouldUpdateState) {
+        if (shouldDisableBtn) {
             setButtonEnabled(false);
+        }
+
+        if (shouldChangeProgress) {
+            setProgress((prev) => prev + 1);
         }
     };
 
     const parsed = useMemo(() => JSON.parse(data || "") as Story, [data]);
-
-    if (!data || !parsed) {
-        return (
-            <ThemedView>
-                <ThemedText>{t("errors.something_went_wrong")}</ThemedText>
-            </ThemedView>
-        );
-    }
 
     useEffect(() => {
         const fn = () => {
@@ -136,6 +142,21 @@ export default function StoryLessonScreen() {
             clearTimeout(timeout);
         };
     }, [parsed]);
+
+    useEffect(() => {
+        if (progress == parsed.dialogue.length) {
+            // The story is finished
+            router.replace(`/lessons/story?xp=7`);
+        }
+    }, [progress]);
+
+    if (!data || !parsed) {
+        return (
+            <ThemedView>
+                <ThemedText>{t("errors.something_went_wrong")}</ThemedText>
+            </ThemedView>
+        );
+    }
 
     return (
         <View
@@ -177,7 +198,7 @@ export default function StoryLessonScreen() {
                 </View>
                 <StoryProgressBar
                     style={progressBarStyle}
-                    progress={(lines.length / parsed.dialogue.length) * 100}
+                    progress={(progress / parsed.dialogue.length) * 100}
                 />
             </AnimatedIosBlurView>
             <Animated.FlatList
@@ -191,13 +212,19 @@ export default function StoryLessonScreen() {
                 onScroll={(e) => {
                     scrollY.value = e.nativeEvent.contentOffset.y;
                 }}
-                data={lines}
+                data={lines.filter((item) => item.show)}
                 keyExtractor={(item) => item.text}
                 renderItem={({ item }) => (
                     <DialogueItem
                         data={item}
                         onAudioEnd={() => {
                             setButtonEnabled(true);
+                        }}
+                        onQuestionEnd={() => {
+                            setTimeout(() => {
+                                setButtonEnabled(true);
+                                updateLines();
+                            }, 500);
                         }}
                     />
                 )}

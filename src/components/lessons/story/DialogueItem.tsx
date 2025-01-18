@@ -10,15 +10,70 @@ import Animated, {
 } from "react-native-reanimated";
 import HapticTouchableOpacity from "@/components/input/button/HapticTouchableOpacity";
 import { useThemeColors } from "@/hooks/useThemeColor";
-import { AudioLines, Volume, Volume2 } from "lucide-react-native";
+import { AudioLines, Volume, Volume2, X } from "lucide-react-native";
 import TranslatedText from "../TranslatedText";
+import React from "react";
+import useHaptics from "@/hooks/useHaptics";
+import { NotificationFeedbackType } from "expo-haptics";
+
+function AnswerItem({
+    data,
+    onPress,
+}: {
+    data: DialogueLine["answers"][0];
+    onPress: () => void;
+}) {
+    const [disabled, setDisabled] = useState(false);
+    const haptics = useHaptics();
+    const colors = useThemeColors();
+
+    const opacity = useSharedValue(1);
+
+    useEffect(() => {
+        if (disabled) {
+            opacity.value = withTiming(0.25, { duration: 500 });
+        }
+    }, [disabled]);
+
+    return (
+        <Animated.View style={{ opacity, overflow: "hidden" }}>
+            <TouchableOpacity
+                disabled={disabled}
+                onPress={() => {
+                    if (!data.correct) {
+                        haptics.notificationAsync(
+                            NotificationFeedbackType.Error
+                        );
+                        setDisabled(true);
+                    } else {
+                        haptics.notificationAsync(
+                            NotificationFeedbackType.Success
+                        );
+                    }
+
+                    onPress();
+                }}
+                style={[
+                    styles.answer,
+                    {
+                        backgroundColor: colors.primaryContainer,
+                    },
+                ]}>
+                {/* {disabled && <X size={20} color={colors.error} />} */}
+                <ThemedText>{data.text}</ThemedText>
+            </TouchableOpacity>
+        </Animated.View>
+    );
+}
 
 export default function DialogueItem({
     data,
     onAudioEnd,
+    onQuestionEnd,
 }: {
     data: DialogueLine;
     onAudioEnd: () => void;
+    onQuestionEnd: () => void;
 }) {
     const [sound, setSound] = useState<Audio.Sound | undefined>();
     const opacity = useSharedValue(0);
@@ -117,7 +172,25 @@ export default function DialogueItem({
                 </HapticTouchableOpacity>
             )}
             {data.character == "user" ? (
-                <ThemedText>{data.text}</ThemedText>
+                <View style={styles.userQuestionNrapper}>
+                    <ThemedText type="subtitle">{data.text}</ThemedText>
+                    <View style={styles.answers}>
+                        {data.answers.map((item) => (
+                            <AnswerItem
+                                key={item.text}
+                                data={item}
+                                onPress={() => {
+                                    if (item.correct) {
+                                        opacity.value = withTiming(0, {
+                                            duration,
+                                        });
+                                        onQuestionEnd();
+                                    }
+                                }}
+                            />
+                        ))}
+                    </View>
+                </View>
             ) : (
                 <TranslatedText
                     text={data.text}
@@ -142,5 +215,23 @@ const styles = StyleSheet.create({
         height: 36,
         justifyContent: "center",
         alignItems: "center",
+        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+    },
+    answer: {
+        padding: 12,
+        borderRadius: 8,
+        alignSelf: "flex-start",
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 4,
+    },
+    userQuestionNrapper: {
+        flexDirection: "column",
+        gap: 8,
+        width: "100%",
+    },
+    answers: {
+        flexDirection: "column",
+        gap: 8,
     },
 });

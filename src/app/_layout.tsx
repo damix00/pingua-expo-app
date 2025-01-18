@@ -343,6 +343,15 @@ export default function RootLayout() {
                                                 animationDuration: 300,
                                             }}
                                         />
+                                        <Stack.Screen
+                                            name="lessons/success"
+                                            options={{
+                                                gestureEnabled: false,
+                                                headerShown: false,
+                                                animation: "fade",
+                                                animationDuration: 300,
+                                            }}
+                                        />
 
                                         {/* Modals */}
                                         <Stack.Screen
