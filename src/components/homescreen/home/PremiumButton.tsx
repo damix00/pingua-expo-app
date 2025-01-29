@@ -1,9 +1,9 @@
 import { useAuth } from "@/context/AuthContext";
 import React from "react";
-import Chip from "../ui/Chip";
-import { ThemedText } from "../ui/ThemedText";
+import Chip from "../../ui/Chip";
+import { ThemedText } from "../../ui/ThemedText";
 import { StyleSheet, View } from "react-native";
-import HapticTouchableOpacity from "../input/button/HapticTouchableOpacity";
+import HapticTouchableOpacity from "../../input/button/HapticTouchableOpacity";
 import { router } from "expo-router";
 import { Gem } from "lucide-react-native";
 import { useThemeColors } from "@/hooks/useThemeColor";

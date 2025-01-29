@@ -1,9 +1,9 @@
 import { useThemeColors } from "@/hooks/useThemeColor";
-import HapticTouchableOpacity from "../input/button/HapticTouchableOpacity";
+import HapticTouchableOpacity from "../../input/button/HapticTouchableOpacity";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Check, LockKeyholeIcon } from "lucide-react-native";
-import BrandText from "../ui/BrandText";
-import { ThemedText } from "../ui/ThemedText";
+import BrandText from "../../ui/BrandText";
+import { ThemedText } from "../../ui/ThemedText";
 import { useTranslation } from "react-i18next";
 import { addZero } from "@/utils/util";
 import { useUnitTitle } from "@/hooks/course";

@@ -57,6 +57,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import CustomBottomSheetModal from "@/components/modal/BottomSheet";
 import { I18nextProvider } from "react-i18next";
+import { Chat, ChatProvider } from "@/context/ChatContext";
 
 // Disable auto-hide and manage it manually
 SplashScreen.preventAutoHideAsync();
@@ -86,6 +87,7 @@ export default function RootLayout() {
     // Track if preferences and other assets are loaded
     const [loadedPrefs, setLoadedPrefs] = useState(false);
     const [loadedAll, setLoadedAll] = useState(false);
+    const [initialized, setInitialized] = useState(false);
 
     // Store preferences and user data
     const [prefs, setPrefs] = useState<PreferencesType | null>(null);
@@ -93,7 +95,7 @@ export default function RootLayout() {
     const [courses, setCourses] = useState<Course[]>([]);
     const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
     const [sectionData, setSectionData] = useState<SectionData[]>([]);
-    const [initialized, setInitialized] = useState(false);
+    const [chats, setChats] = useState<Chat[]>([]);
 
     const scheme = useColorScheme();
     const colors = useThemeColors();
@@ -142,6 +144,7 @@ export default function RootLayout() {
         setJwt(userCache.jwt ?? "");
         setCourses(userCache.courses);
         setSelectedCourse(userCache.selectedCourse);
+        setChats(userCache.chats);
 
         setSectionData(userCache.sectionData);
 
@@ -205,189 +208,198 @@ export default function RootLayout() {
                             setCourses={setCourses}
                             loggedIn={loggedIn}
                             setLoggedIn={setLoggedIn}>
-                            <ThemeProvider
-                                value={
-                                    scheme === "dark" ? DarkTheme : DefaultTheme
-                                }>
-                                <BottomSheetModalProvider>
-                                    <StatusBar style="auto" />
+                            <ChatProvider
+                                chats={chats}
+                                setChats={setChats}>
+                                <ThemeProvider
+                                    value={
+                                        scheme === "dark"
+                                            ? DarkTheme
+                                            : DefaultTheme
+                                    }>
+                                    <BottomSheetModalProvider>
+                                        <StatusBar style="auto" />
 
-                                    {/* Stack for handling navigation between screens */}
-                                    <Stack
-                                        initialRouteName={
-                                            loggedIn
-                                                ? "(tabs)"
-                                                : "onboarding/index"
-                                        }
-                                        screenOptions={{
-                                            animation: Platform.select({
-                                                android: "simple_push",
-                                                ios: "ios_from_right",
-                                            }),
-                                        }}>
-                                        <Stack.Screen
-                                            name="onboarding/index"
-                                            options={{
-                                                animation: "none",
-                                                headerShown: false,
-                                            }}
-                                        />
-                                        <Stack.Screen
-                                            name="onboarding/choose-languages"
-                                            options={{
-                                                headerShown: true,
-                                                headerTransparent: true,
-                                                header: () => (
-                                                    <OnboardingAppbar />
-                                                ),
-                                            }}
-                                        />
-                                        <Stack.Screen
-                                            name="onboarding/app-language"
-                                            options={{
-                                                headerShown: true,
-                                                headerTransparent: true,
-                                                header: () => (
-                                                    <OnboardingAppbar />
-                                                ),
-                                            }}
-                                        />
-                                        <Stack.Screen
-                                            name="onboarding/choose-fluency"
-                                            options={{
-                                                headerShown: true,
-                                                headerTransparent: true,
-                                                header: () => (
-                                                    <OnboardingAppbar />
-                                                ),
-                                            }}
-                                        />
-                                        <Stack.Screen
-                                            name="onboarding/configuring-course"
-                                            options={{
-                                                headerShown: false,
-                                                gestureEnabled: false,
-                                            }}
-                                        />
-                                        <Stack.Screen
-                                            name="onboarding/choose-goal"
-                                            options={{
-                                                headerShown: true,
-                                                headerTransparent: true,
-                                                header: () => (
-                                                    <OnboardingAppbar />
-                                                ),
-                                            }}
-                                        />
-                                        <Stack.Screen
-                                            name="onboarding/no-account"
-                                            options={{
-                                                headerShown: true,
-                                                headerTransparent: true,
-                                                header: () => (
-                                                    <OnboardingAppbar />
-                                                ),
-                                            }}
-                                        />
-                                        <Stack.Screen
-                                            name="auth/index"
-                                            options={{
-                                                headerShown: true,
-                                                headerTransparent: true,
-                                                header: () => (
-                                                    <OnboardingAppbar
-                                                        darkText
+                                        {/* Stack for handling navigation between screens */}
+                                        <Stack
+                                            initialRouteName={
+                                                loggedIn
+                                                    ? "(tabs)"
+                                                    : "onboarding/index"
+                                            }
+                                            screenOptions={{
+                                                animation: Platform.select({
+                                                    android: "simple_push",
+                                                    ios: "ios_from_right",
+                                                }),
+                                            }}>
+                                            <Stack.Screen
+                                                name="onboarding/index"
+                                                options={{
+                                                    animation: "none",
+                                                    headerShown: false,
+                                                }}
+                                            />
+                                            <Stack.Screen
+                                                name="onboarding/choose-languages"
+                                                options={{
+                                                    headerShown: true,
+                                                    headerTransparent: true,
+                                                    header: () => (
+                                                        <OnboardingAppbar />
+                                                    ),
+                                                }}
+                                            />
+                                            <Stack.Screen
+                                                name="onboarding/app-language"
+                                                options={{
+                                                    headerShown: true,
+                                                    headerTransparent: true,
+                                                    header: () => (
+                                                        <OnboardingAppbar />
+                                                    ),
+                                                }}
+                                            />
+                                            <Stack.Screen
+                                                name="onboarding/choose-fluency"
+                                                options={{
+                                                    headerShown: true,
+                                                    headerTransparent: true,
+                                                    header: () => (
+                                                        <OnboardingAppbar />
+                                                    ),
+                                                }}
+                                            />
+                                            <Stack.Screen
+                                                name="onboarding/configuring-course"
+                                                options={{
+                                                    headerShown: false,
+                                                    gestureEnabled: false,
+                                                }}
+                                            />
+                                            <Stack.Screen
+                                                name="onboarding/choose-goal"
+                                                options={{
+                                                    headerShown: true,
+                                                    headerTransparent: true,
+                                                    header: () => (
+                                                        <OnboardingAppbar />
+                                                    ),
+                                                }}
+                                            />
+                                            <Stack.Screen
+                                                name="onboarding/no-account"
+                                                options={{
+                                                    headerShown: true,
+                                                    headerTransparent: true,
+                                                    header: () => (
+                                                        <OnboardingAppbar />
+                                                    ),
+                                                }}
+                                            />
+                                            <Stack.Screen
+                                                name="auth/index"
+                                                options={{
+                                                    headerShown: true,
+                                                    headerTransparent: true,
+                                                    header: () => (
+                                                        <OnboardingAppbar
+                                                            darkText
+                                                        />
+                                                    ),
+                                                }}
+                                            />
+                                            <Stack.Screen
+                                                name="auth/otp"
+                                                options={{
+                                                    headerShown: true,
+                                                    headerTransparent: true,
+                                                    header: () => (
+                                                        <OnboardingAppbar
+                                                            darkText
+                                                        />
+                                                    ),
+                                                }}
+                                            />
+                                            <Stack.Screen
+                                                name="auth/profile-setup"
+                                                options={{
+                                                    headerShown: false,
+                                                }}
+                                            />
+                                            <Stack.Screen
+                                                name="(tabs)"
+                                                options={{ headerShown: false }}
+                                            />
+
+                                            {/* Lessons */}
+                                            <Stack.Screen
+                                                name="lessons/loading"
+                                                options={{
+                                                    gestureEnabled: false,
+                                                    headerShown: false,
+                                                    animation: "fade",
+                                                    animationDuration: 300,
+                                                }}
+                                            />
+                                            <Stack.Screen
+                                                name="lessons/story"
+                                                options={{
+                                                    gestureEnabled: false,
+                                                    headerShown: false,
+                                                    animation: "fade",
+                                                    animationDuration: 300,
+                                                }}
+                                            />
+                                            <Stack.Screen
+                                                name="lessons/success"
+                                                options={{
+                                                    gestureEnabled: false,
+                                                    headerShown: false,
+                                                    animation: "fade",
+                                                    animationDuration: 300,
+                                                }}
+                                            />
+
+                                            {/* Modals */}
+                                            <Stack.Screen
+                                                name="modals/subscription"
+                                                options={{
+                                                    gestureEnabled: false,
+                                                    presentation: "modal",
+                                                    headerShown: false,
+                                                    animation:
+                                                        Platform.OS == "android"
+                                                            ? "slide_from_bottom"
+                                                            : "default",
+                                                }}
+                                            />
+                                        </Stack>
+
+                                        <CustomBottomSheetModal
+                                            ref={bottomSheetRef}>
+                                            {bottomSheetComponent}
+                                        </CustomBottomSheetModal>
+
+                                        {/* Toast notifications */}
+                                        <Toast
+                                            config={{
+                                                success: BaseToast,
+                                                error: (props) => (
+                                                    <BaseToast
+                                                        error
+                                                        {...props}
                                                     />
                                                 ),
+                                                info: BaseToast,
+                                                any_custom_type: BaseToast,
                                             }}
+                                            topOffset={0}
+                                            bottomOffset={0}
                                         />
-                                        <Stack.Screen
-                                            name="auth/otp"
-                                            options={{
-                                                headerShown: true,
-                                                headerTransparent: true,
-                                                header: () => (
-                                                    <OnboardingAppbar
-                                                        darkText
-                                                    />
-                                                ),
-                                            }}
-                                        />
-                                        <Stack.Screen
-                                            name="auth/profile-setup"
-                                            options={{
-                                                headerShown: false,
-                                            }}
-                                        />
-                                        <Stack.Screen
-                                            name="(tabs)"
-                                            options={{ headerShown: false }}
-                                        />
-
-                                        {/* Lessons */}
-                                        <Stack.Screen
-                                            name="lessons/loading"
-                                            options={{
-                                                gestureEnabled: false,
-                                                headerShown: false,
-                                                animation: "fade",
-                                                animationDuration: 300,
-                                            }}
-                                        />
-                                        <Stack.Screen
-                                            name="lessons/story"
-                                            options={{
-                                                gestureEnabled: false,
-                                                headerShown: false,
-                                                animation: "fade",
-                                                animationDuration: 300,
-                                            }}
-                                        />
-                                        <Stack.Screen
-                                            name="lessons/success"
-                                            options={{
-                                                gestureEnabled: false,
-                                                headerShown: false,
-                                                animation: "fade",
-                                                animationDuration: 300,
-                                            }}
-                                        />
-
-                                        {/* Modals */}
-                                        <Stack.Screen
-                                            name="modals/subscription"
-                                            options={{
-                                                gestureEnabled: false,
-                                                presentation: "modal",
-                                                headerShown: false,
-                                                animation:
-                                                    Platform.OS == "android"
-                                                        ? "slide_from_bottom"
-                                                        : "default",
-                                            }}
-                                        />
-                                    </Stack>
-
-                                    <CustomBottomSheetModal
-                                        ref={bottomSheetRef}>
-                                        {bottomSheetComponent}
-                                    </CustomBottomSheetModal>
-
-                                    {/* Toast notifications */}
-                                    <Toast
-                                        config={{
-                                            success: BaseToast,
-                                            error: (props) => (
-                                                <BaseToast error {...props} />
-                                            ),
-                                            info: BaseToast,
-                                            any_custom_type: BaseToast,
-                                        }}
-                                        topOffset={0}
-                                        bottomOffset={0}
-                                    />
-                                </BottomSheetModalProvider>
-                            </ThemeProvider>
+                                    </BottomSheetModalProvider>
+                                </ThemeProvider>
+                            </ChatProvider>
                         </AuthProvider>
                     </PreferencesProvider>
                 </View>

@@ -11,13 +11,13 @@ import { Platform, StyleSheet, TouchableOpacity } from "react-native";
 import IosBlurView from "@/components/IosBlurView";
 import { usePopAllAndPush } from "@/hooks/navigation";
 import { useTranslation } from "react-i18next";
-import CourseSelect from "@/components/homescreen/CourseSelect";
+import CourseSelect from "@/components/homescreen/home/CourseSelect";
 import {
     BottomSheetModal,
     BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
-import CourseSelectSheet from "@/components/homescreen/CourseSelectSheet";
-import PremiumButton from "@/components/homescreen/PremiumButton";
+import CourseSelectSheet from "@/components/homescreen/home/CourseSelectSheet";
+import PremiumButton from "@/components/homescreen/home/PremiumButton";
 import CustomBottomSheetModal from "@/components/modal/BottomSheet";
 import { useBottomSheet } from "@/context/BottomSheetContext";
 

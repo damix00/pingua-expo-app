@@ -132,4 +132,8 @@ export default {
             continue: "Next",
         },
     },
+    chats: {
+        tapToChat: "Tap to chat",
+        youChat: "You: {{message}}",
+    },
 };

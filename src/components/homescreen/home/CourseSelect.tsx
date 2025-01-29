@@ -3,8 +3,8 @@ import { CachedSvgUri } from "@/utils/cache/SVGCache";
 import { findFlag } from "@/utils/i18n";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import HapticTouchableOpacity from "../input/button/HapticTouchableOpacity";
-import { ThemedText } from "../ui/ThemedText";
+import HapticTouchableOpacity from "../../input/button/HapticTouchableOpacity";
+import { ThemedText } from "../../ui/ThemedText";
 import React from "react";
 
 export default function CourseSelect({ onPress }: { onPress?: () => void }) {

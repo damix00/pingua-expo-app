@@ -1,5 +1,5 @@
 import { BottomSheetView } from "@gorhom/bottom-sheet";
-import { ThemedText } from "../ui/ThemedText";
+import { ThemedText } from "../../ui/ThemedText";
 import { useAuth } from "@/context/AuthContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMemo } from "react";
@@ -8,8 +8,8 @@ import { useThemeColors } from "@/hooks/useThemeColor";
 import { CachedSvgUri } from "@/utils/cache/SVGCache";
 import { findFlag } from "@/utils/i18n";
 import { StyleSheet, View } from "react-native";
-import Button from "../input/button/Button";
-import ButtonText from "../input/button/ButtonText";
+import Button from "../../input/button/Button";
+import ButtonText from "../../input/button/ButtonText";
 
 export default function CourseSelectSheet() {
     const auth = useAuth();

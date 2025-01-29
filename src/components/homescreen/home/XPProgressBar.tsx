@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { ThemedText } from "../ui/ThemedText";
+import { ThemedText } from "../../ui/ThemedText";
 import { useTranslation } from "react-i18next";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { StyleSheet } from "react-native";

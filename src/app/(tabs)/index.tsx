@@ -4,14 +4,14 @@ import { useCurrentCourse, useSectionTitle } from "@/hooks/course";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { useEffect, useMemo, useRef } from "react";
 import { FlatList, Platform, ScrollView, StyleSheet, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import UnitButton from "@/components/homescreen/UnitButton";
-import XPProgressBar from "@/components/homescreen/XPProgressBar";
+import UnitButton from "@/components/homescreen/home/UnitButton";
+import XPProgressBar from "@/components/homescreen/home/XPProgressBar";
 import { getJwt } from "@/api/data";
 import { router } from "expo-router";
+import useAppbarSafeAreaInsets from "@/hooks/useAppbarSafeAreaInsets";
 
 export default function Index() {
-    const insets = useSafeAreaInsets();
+    const insets = useAppbarSafeAreaInsets();
     const flatListRef = useRef<FlatList>(null);
 
     const { currentCourse, currentCourseData } = useCurrentCourse();
@@ -45,8 +45,7 @@ export default function Index() {
             ref={flatListRef}
             style={[
                 {
-                    paddingTop:
-                        insets.top + (Platform.OS === "ios" ? 54 : 72) + 16,
+                    paddingTop: insets.top + 16,
                 },
                 styles.container,
             ]}

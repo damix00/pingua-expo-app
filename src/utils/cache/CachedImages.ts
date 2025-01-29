@@ -3,4 +3,16 @@ const staticBg = require("@/assets/ui/static.png");
 const mascot = require("@/assets/images/mascot.png");
 const mascotSad = require("@/assets/images/mascot.png");
 
-export { auraBg, staticBg, mascot, mascotSad };
+const fujioAvatar = mascot;
+const jaxonAvatar = mascot;
+const saraAvatar = mascot;
+
+export {
+    auraBg,
+    staticBg,
+    mascot,
+    mascotSad,
+    fujioAvatar,
+    jaxonAvatar,
+    saraAvatar,
+};

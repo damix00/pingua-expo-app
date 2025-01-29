@@ -138,6 +138,10 @@ const translations: typeof en = {
             continue: "Dalje",
         },
     },
+    chats: {
+        tapToChat: "Dodirni za chat",
+        youChat: "Vi: {{message}}",
+    },
 };
 
 export default translations;
