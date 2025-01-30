@@ -1,3 +1,5 @@
+import { Platform } from "react-native";
+
 export function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -14,4 +16,8 @@ export function addZero(num: number) {
 
 export function clamp(num: number, min: number, max: number) {
     return Math.min(Math.max(num, min), max);
+}
+
+export function getPlatformHeaderHeight() {
+    return Platform.OS === "ios" ? 38 : 56;
 }

@@ -108,6 +108,10 @@ export default function TabLayout() {
                         elevation: 0,
                         position: "absolute",
                     },
+                    headerTitleStyle: {
+                        color: colors.text,
+                        fontFamily: "Montserrat_600SemiBold",
+                    },
                     headerLeft: () => (
                         <CourseSelect onPress={handlePresentModalPress} />
                     ),
@@ -118,10 +122,6 @@ export default function TabLayout() {
                             intensity={36}
                             style={{
                                 ...StyleSheet.absoluteFillObject,
-                                backgroundColor:
-                                    Platform.OS == "ios"
-                                        ? colors.transparentBackground
-                                        : colors.background,
                             }}
                         />
                     ),
@@ -142,10 +142,6 @@ export default function TabLayout() {
                             intensity={36}
                             style={{
                                 ...StyleSheet.absoluteFillObject,
-                                backgroundColor:
-                                    Platform.OS == "ios"
-                                        ? colors.transparentBackground
-                                        : colors.background,
                                 borderBottomWidth: 1,
                                 borderColor: colors.outline,
                             }}

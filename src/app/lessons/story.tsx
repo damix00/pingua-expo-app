@@ -22,14 +22,13 @@ import {
 } from "react-native-reanimated";
 import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
-import IosBlurView from "@/components/IosBlurView";
+import IosBlurView, { AnimatedIosBlurView } from "@/components/IosBlurView";
 import StoryProgressBar from "@/components/lessons/story/StoryProgressBar";
 import { X } from "lucide-react-native";
 import { useBottomSheet } from "@/context/BottomSheetContext";
 import ExitBottomSheet from "@/components/lessons/ExitBottomSheet";
 import DialogueItem from "@/components/lessons/story/DialogueItem";
 
-const AnimatedIosBlurView = Animated.createAnimatedComponent(IosBlurView);
 const AnimatedThemedText = Animated.createAnimatedComponent(ThemedText);
 
 export default function StoryLessonScreen() {

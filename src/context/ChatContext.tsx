@@ -1,4 +1,9 @@
 import { Character } from "@/types/course";
+import {
+    fujioAvatar,
+    jaxonAvatar,
+    saraAvatar,
+} from "@/utils/cache/CachedImages";
 import { createContext, useContext } from "react";
 
 export enum AttachmentType {
@@ -46,6 +51,34 @@ export const ChatContext = createContext<ChatContextType>({
     setChats: () => {},
     updateChat: () => {},
 });
+
+export const chats: {
+    character: Character;
+    name: string;
+    image: any;
+}[] = [
+    {
+        character: Character.Fujio,
+        name: "Fujio",
+        image: fujioAvatar,
+    },
+    {
+        character: Character.Jaxon,
+        name: "Jaxon",
+        image: jaxonAvatar,
+    },
+    {
+        character: Character.Sara,
+        name: "Sara",
+        image: saraAvatar,
+    },
+];
+
+export const chatCharacters = {
+    [Character.Fujio]: chats[0],
+    [Character.Jaxon]: chats[1],
+    [Character.Sara]: chats[2],
+};
 
 export function ChatProvider({
     chats,

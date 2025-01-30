@@ -1,5 +1,6 @@
 import ChatTile from "@/components/homescreen/chats/ChatTile";
 import { ThemedView } from "@/components/ThemedView";
+import { chats, useChats } from "@/context/ChatContext";
 import useAppbarSafeAreaInsets from "@/hooks/useAppbarSafeAreaInsets";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { Character } from "@/types/course";
@@ -8,41 +9,55 @@ import {
     jaxonAvatar,
     saraAvatar,
 } from "@/utils/cache/CachedImages";
-import { FlatList, Platform, StyleSheet, View } from "react-native";
-
-const chats: {
-    character: Character;
-    name: string;
-    image: any;
-}[] = [
-    {
-        character: Character.Fujio,
-        name: "Fujio",
-        image: fujioAvatar,
-    },
-    {
-        character: Character.Jaxon,
-        name: "Jaxon",
-        image: jaxonAvatar,
-    },
-    {
-        character: Character.Sara,
-        name: "Sara",
-        image: saraAvatar,
-    },
-];
+import { sleep } from "@/utils/util";
+import { useTheme } from "@react-navigation/native";
+import axios from "axios";
+import { useCallback, useState } from "react";
+import {
+    FlatList,
+    Platform,
+    RefreshControl,
+    StyleSheet,
+    Text,
+    View,
+} from "react-native";
 
 export default function ChatsTab() {
     const colors = useThemeColors();
     const insets = useAppbarSafeAreaInsets();
+    const [refreshing, setRefreshing] = useState(false);
+    const chatsData = useChats();
+
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+
+        try {
+            const data = await axios.get("/v1/chats");
+
+            if (data.status == 200) {
+                console.log("Refreshed chats data");
+                chatsData.setChats(data.data.chats);
+            }
+        } finally {
+            setRefreshing(false);
+        }
+    }, []);
 
     return (
         <ThemedView style={styles.container}>
             <FlatList
+                refreshControl={
+                    <RefreshControl
+                        tintColor={colors.primary}
+                        progressViewOffset={insets.top}
+                        onRefresh={onRefresh}
+                        refreshing={refreshing}
+                    />
+                }
                 style={[
                     styles.list,
                     {
-                        paddingTop: insets.top + 12,
+                        paddingTop: insets.top + 8,
                         paddingBottom: insets.bottom,
                     },
                 ]}

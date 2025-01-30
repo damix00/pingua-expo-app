@@ -8,7 +8,7 @@ import { useThemeColors } from "@/hooks/useThemeColor";
 import { useTranslation } from "react-i18next";
 import { StatusBar } from "expo-status-bar";
 import TextInput from "@/components/input/TextInput";
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Autolink from "react-native-autolink";
 import { openBrowserAsync } from "expo-web-browser";
@@ -32,6 +32,80 @@ export default function Auth() {
     const unmountSignal = useUnmountSignal();
 
     const { code, fluency, goal } = useLocalSearchParams();
+
+    const onButtonPress = useCallback(async () => {
+        Keyboard.dismiss();
+
+        if (email.current == "") {
+            await haptics.notificationAsync(
+                Haptics.NotificationFeedbackType.Error
+            );
+
+            setEmailError("errors.email_empty");
+            return;
+        }
+
+        if (!email.current.includes("@")) {
+            await haptics.notificationAsync(
+                Haptics.NotificationFeedbackType.Error
+            );
+
+            setEmailError("errors.email_invalid");
+            return;
+        }
+
+        setLoading(true);
+
+        setEmailError("");
+
+        try {
+            const result = await axios.post(
+                "/v1/auth/email/send-code",
+                {
+                    email: email.current,
+                },
+                {
+                    signal: unmountSignal,
+                }
+            );
+
+            if (result.status == 200) {
+                await haptics.notificationAsync(
+                    Haptics.NotificationFeedbackType.Success
+                );
+
+                if (!code) {
+                    router.push(`/auth/otp?email=${email.current}`);
+                } else {
+                    router.push(
+                        `/auth/otp?email=${email.current}&code=${code}&fluency=${fluency}&goal=${goal}`
+                    );
+                }
+            } else {
+                await haptics.notificationAsync(
+                    Haptics.NotificationFeedbackType.Error
+                );
+
+                Toast.show({
+                    type: "error",
+                    text1: t("errors.oh_no"),
+                    text2: t("errors.email_sending_fail"),
+                });
+            }
+        } catch (e) {
+            await haptics.notificationAsync(
+                Haptics.NotificationFeedbackType.Error
+            );
+
+            Toast.show({
+                type: "error",
+                text1: t("errors.oh_no"),
+                text2: t("errors.email_sending_fail"),
+            });
+        } finally {
+            setLoading(false);
+        }
+    }, [email.current, code, fluency, goal]);
 
     return (
         <>
@@ -75,81 +149,7 @@ export default function Auth() {
                     <Button
                         loading={loading}
                         haptic={false}
-                        onPress={async () => {
-                            Keyboard.dismiss();
-
-                            if (email.current == "") {
-                                await haptics.notificationAsync(
-                                    Haptics.NotificationFeedbackType.Error
-                                );
-
-                                setEmailError("errors.email_empty");
-                                return;
-                            }
-
-                            if (!email.current.includes("@")) {
-                                await haptics.notificationAsync(
-                                    Haptics.NotificationFeedbackType.Error
-                                );
-
-                                setEmailError("errors.email_invalid");
-                                return;
-                            }
-
-                            setLoading(true);
-
-                            setEmailError("");
-
-                            try {
-                                const result = await axios.post(
-                                    "/v1/auth/email/send-code",
-                                    {
-                                        email: email.current,
-                                    },
-                                    {
-                                        signal: unmountSignal,
-                                    }
-                                );
-
-                                if (result.status == 200) {
-                                    await haptics.notificationAsync(
-                                        Haptics.NotificationFeedbackType.Success
-                                    );
-
-                                    if (!code) {
-                                        router.push(
-                                            `/auth/otp?email=${email.current}`
-                                        );
-                                    } else {
-                                        router.push(
-                                            `/auth/otp?email=${email.current}&code=${code}&fluency=${fluency}&goal=${goal}`
-                                        );
-                                    }
-                                } else {
-                                    await haptics.notificationAsync(
-                                        Haptics.NotificationFeedbackType.Error
-                                    );
-
-                                    Toast.show({
-                                        type: "error",
-                                        text1: t("errors.oh_no"),
-                                        text2: t("errors.email_sending_fail"),
-                                    });
-                                }
-                            } catch (e) {
-                                await haptics.notificationAsync(
-                                    Haptics.NotificationFeedbackType.Error
-                                );
-
-                                Toast.show({
-                                    type: "error",
-                                    text1: t("errors.oh_no"),
-                                    text2: t("errors.email_sending_fail"),
-                                });
-                            } finally {
-                                setLoading(false);
-                            }
-                        }}>
+                        onPress={onButtonPress}>
                         <ButtonText>{t("continue")}</ButtonText>
                     </Button>
                     <Autolink

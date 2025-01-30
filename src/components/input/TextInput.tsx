@@ -18,18 +18,23 @@ import {
     useState,
 } from "react";
 import { useTranslation } from "react-i18next";
+import { ViewStyle } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
 
 const AnimatedRNTextInput = Animated.createAnimatedComponent(RNTextInput);
 
 export default function TextInput({
     style,
+    containerStyle,
     title,
     errorKey,
     errorParams,
+    highlightOnFocus = true,
     ...props
 }: TextInputProps & {
+    containerStyle?: ViewStyle;
     title?: string;
     errorKey?: string;
+    highlightOnFocus?: boolean;
     errorParams?: Record<string, any>;
 }) {
     const { t } = useTranslation();
@@ -75,7 +80,7 @@ export default function TextInput({
     });
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, containerStyle]}>
             <View style={styles.textWrapper}>
                 {title && <ThemedText>{title}</ThemedText>}
                 {errorKey && (
@@ -85,8 +90,14 @@ export default function TextInput({
                 )}
             </View>
             <AnimatedRNTextInput
-                onFocus={() => setFocused(true)}
-                onBlur={() => setFocused(false)}
+                onFocus={() => {
+                    if (highlightOnFocus) {
+                        setFocused(true);
+                    }
+                }}
+                onBlur={() => {
+                    setFocused(false);
+                }}
                 placeholderTextColor={colors.textSecondary}
                 style={[
                     styles.input,

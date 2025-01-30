@@ -11,7 +11,7 @@ import { ONBOARDING_APPBAR_HEIGHT } from "../onboarding/OnboardingAppbar";
 import { useTranslation } from "react-i18next";
 import { OtpInput, OtpInputRef } from "react-native-otp-entry";
 import { router, useLocalSearchParams } from "expo-router";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
 import Toast from "react-native-toast-message";
@@ -32,7 +32,7 @@ export default function AuthOtpPage() {
     const auth = useAuth();
     const popAllAndPush = usePopAllAndPush();
 
-    const verifyOtp = async (code: string) => {
+    const verifyOtp = useCallback(async (code: string) => {
         setLoading(true);
 
         try {
@@ -92,7 +92,7 @@ export default function AuthOtpPage() {
         }
 
         setLoading(false);
-    };
+    }, []);
 
     return (
         <KeyboardAvoidingView

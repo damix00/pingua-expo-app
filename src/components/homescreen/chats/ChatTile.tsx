@@ -1,7 +1,8 @@
 import { ThemedText } from "@/components/ui/ThemedText";
 import { useChat } from "@/context/ChatContext";
 import { Character } from "@/types/course";
-import { useMemo } from "react";
+import { router } from "expo-router";
+import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 
@@ -20,8 +21,12 @@ export default function ChatTile({ name, image, character }: ChatTileProps) {
     const exists = useMemo(() => chat != null, [chat]);
     const lastMessage = useMemo(() => chat?.lastMessage, [chat]);
 
+    const handlePress = useCallback(() => {
+        router.push(`/chats/${character}`);
+    }, [character]);
+
     return (
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handlePress}>
             <View style={styles.item}>
                 <View style={styles.imageParent}>
                     <Image source={image} style={styles.image} />

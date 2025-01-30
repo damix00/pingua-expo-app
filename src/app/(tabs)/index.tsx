@@ -2,7 +2,7 @@ import { ThemedText } from "@/components/ui/ThemedText";
 import { useAuth } from "@/context/AuthContext";
 import { useCurrentCourse, useSectionTitle } from "@/hooks/course";
 import { useThemeColors } from "@/hooks/useThemeColor";
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { FlatList, Platform, ScrollView, StyleSheet, View } from "react-native";
 import UnitButton from "@/components/homescreen/home/UnitButton";
 import XPProgressBar from "@/components/homescreen/home/XPProgressBar";

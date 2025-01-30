@@ -12,7 +12,7 @@ import {
     ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack, useNavigation, usePathname } from "expo-router";
+import { SplashScreen, Stack, usePathname } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Platform, useColorScheme, View } from "react-native";
 // Font imports
@@ -46,9 +46,8 @@ import loadLocales from "../utils/i18n";
 import { initAxios } from "@/api/config";
 import Toast from "react-native-toast-message";
 import BaseToast from "@/components/ui/toast/BaseToast";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { loadUserCache, UserCacheType } from "@/utils/cache/user-cache";
-import { getJwt, setJwt } from "@/api/data";
+import { loadUserCache } from "@/utils/cache/user-cache";
+import { setJwt } from "@/api/data";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { GlobalBottomSheetProvider } from "@/context/BottomSheetContext";
 import {
@@ -56,8 +55,8 @@ import {
     BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import CustomBottomSheetModal from "@/components/modal/BottomSheet";
-import { I18nextProvider } from "react-i18next";
 import { Chat, ChatProvider } from "@/context/ChatContext";
+import ChatHeader from "@/components/homescreen/chats/ChatHeader";
 
 // Disable auto-hide and manage it manually
 SplashScreen.preventAutoHideAsync();
@@ -208,9 +207,7 @@ export default function RootLayout() {
                             setCourses={setCourses}
                             loggedIn={loggedIn}
                             setLoggedIn={setLoggedIn}>
-                            <ChatProvider
-                                chats={chats}
-                                setChats={setChats}>
+                            <ChatProvider chats={chats} setChats={setChats}>
                                 <ThemeProvider
                                     value={
                                         scheme === "dark"
@@ -232,6 +229,11 @@ export default function RootLayout() {
                                                     android: "simple_push",
                                                     ios: "ios_from_right",
                                                 }),
+                                                headerTitleStyle: {
+                                                    color: colors.text,
+                                                    fontFamily:
+                                                        "Montserrat_600SemiBold",
+                                                },
                                             }}>
                                             <Stack.Screen
                                                 name="onboarding/index"
@@ -358,6 +360,21 @@ export default function RootLayout() {
                                                     headerShown: false,
                                                     animation: "fade",
                                                     animationDuration: 300,
+                                                }}
+                                            />
+
+                                            {/* Chat */}
+                                            <Stack.Screen
+                                                name="chats/[character]"
+                                                options={{
+                                                    header: () => (
+                                                        <ChatHeader />
+                                                    ),
+                                                    headerTransparent: true,
+                                                    headerStyle: {
+                                                        backgroundColor:
+                                                            "transparent",
+                                                    },
                                                 }}
                                             />
 

@@ -1,6 +1,6 @@
 import { ThemedText } from "@/components/ui/ThemedText";
 import { Character, DialogueLine } from "@/types/course";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from "expo-av";
 import Animated, {
@@ -35,24 +35,22 @@ function AnswerItem({
         }
     }, [disabled]);
 
+    const handlePress = useCallback(() => {
+        if (!data.correct) {
+            haptics.notificationAsync(NotificationFeedbackType.Error);
+            setDisabled(true);
+        } else {
+            haptics.notificationAsync(NotificationFeedbackType.Success);
+        }
+
+        onPress();
+    }, [data]);
+
     return (
         <Animated.View style={{ opacity, overflow: "hidden" }}>
             <TouchableOpacity
                 disabled={disabled}
-                onPress={() => {
-                    if (!data.correct) {
-                        haptics.notificationAsync(
-                            NotificationFeedbackType.Error
-                        );
-                        setDisabled(true);
-                    } else {
-                        haptics.notificationAsync(
-                            NotificationFeedbackType.Success
-                        );
-                    }
-
-                    onPress();
-                }}
+                onPress={handlePress}
                 style={[
                     styles.answer,
                     {
