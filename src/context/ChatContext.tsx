@@ -113,7 +113,28 @@ export function useChats() {
 }
 
 export function useChat(character: string) {
-    const { chats } = useChats();
+    const { chats, setChats } = useChats();
 
-    return chats.find((chat) => chat.character == character);
+    const found = chats.find((chat) => chat.character == character);
+
+    if (!found) {
+        return null;
+    }
+
+    return {
+        ...found,
+        addMessage: (message: Message) => {
+            setChats(
+                chats.map((chat) =>
+                    chat.character == character
+                        ? {
+                              ...chat,
+                              messages: [...chat.messages, message],
+                              lastMessage: message,
+                          }
+                        : chat
+                )
+            );
+        },
+    };
 }

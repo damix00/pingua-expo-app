@@ -36,6 +36,7 @@ export default {
         field_required: "This field is required.",
         min_characters: "Must be at least {{count}} characters.",
         something_went_wrong: "Something went wrong. Please try again.",
+        failed_to_create_chat: "Could not load chat.",
     },
     onboarding: {
         page_1_title: "Speak with confidence.",

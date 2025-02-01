@@ -40,6 +40,7 @@ const translations: typeof en = {
         min_characters: "Mora sadržavati najmanje {{count}} znakova.",
         something_went_wrong:
             "Nešto je pošlo po zlu. Molimo pokušajte ponovno.",
+        failed_to_create_chat: "Nismo mogli učitati chat.",
     },
     onboarding: {
         page_1_title: "Pričaj s povjerenjem.",

@@ -7,19 +7,16 @@ import { getJwt, setJwt } from "@/api/data";
 import axios from "axios";
 import { clearUserCache, saveUserCache } from "@/utils/cache/user-cache";
 import { useNetworkState } from "expo-network";
-import { Platform, StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import IosBlurView from "@/components/IosBlurView";
 import { usePopAllAndPush } from "@/hooks/navigation";
 import { useTranslation } from "react-i18next";
 import CourseSelect from "@/components/homescreen/home/CourseSelect";
-import {
-    BottomSheetModal,
-    BottomSheetModalProvider,
-} from "@gorhom/bottom-sheet";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import CourseSelectSheet from "@/components/homescreen/home/CourseSelectSheet";
 import PremiumButton from "@/components/homescreen/home/PremiumButton";
-import CustomBottomSheetModal from "@/components/modal/BottomSheet";
 import { useBottomSheet } from "@/context/BottomSheetContext";
+import { useChats } from "@/context/ChatContext";
 
 export default function TabLayout() {
     const bottomSheet = useBottomSheet();
@@ -29,6 +26,7 @@ export default function TabLayout() {
     const colors = useThemeColors();
     const popAllAndPush = usePopAllAndPush();
     const { t } = useTranslation();
+    const appChats = useChats();
 
     const networkState = useNetworkState();
     const executed = useRef(false);
@@ -40,6 +38,7 @@ export default function TabLayout() {
     const fetchUser = async () => {
         const me = await axios.get("/v1/auth/me");
         const refreshed = await axios.post("/v1/auth/refresh-token");
+        const chats = await axios.get("/v1/chats");
 
         if (me.status == 200 && refreshed.status == 200) {
             setJwt(refreshed.data.jwt);
@@ -47,11 +46,17 @@ export default function TabLayout() {
             auth.setCourses(me.data.courses);
             auth.setSectionData(me.data.section_data);
 
+            if (chats.status == 200) {
+                appChats.setChats(chats.data.chats);
+            }
+
             await saveUserCache(
                 me.data.user,
                 refreshed.data.jwt,
                 me.data.courses,
-                me.data.section_data
+                me.data.section_data,
+                me.data.selected_course,
+                chats.data?.chats ?? []
             );
         } else if (me.status == 401) {
             await clearUserCache();

@@ -50,7 +50,9 @@ export default function MessageInput({
                 onSubmitEditing={sendMessage}
                 returnKeyType="send"
             />
-            <HapticTouchableOpacity onPress={sendMessage}>
+            <HapticTouchableOpacity
+                style={styles.buttton}
+                onPress={sendMessage}>
                 <Ionicons name="send" size={24} color={colors.primary} />
             </HapticTouchableOpacity>
         </AnimatedIosBlurView>
@@ -69,10 +71,16 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 12,
         padding: 8,
+        paddingRight: 0,
         height: 36,
         fontSize: 13,
         marginRight: 8,
+        backgroundColor: "transparent",
         fontFamily:
             Platform.OS == "android" ? "Montserrat_500Medium" : undefined,
+    },
+    buttton: {
+        padding: 8,
+        borderRadius: 12,
     },
 });
