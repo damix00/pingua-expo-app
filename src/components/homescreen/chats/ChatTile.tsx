@@ -35,6 +35,8 @@ export default function ChatTile({ name, image, character }: ChatTileProps) {
                     <ThemedText fontWeight="700">{name}</ThemedText>
                     <ThemedText
                         type="secondary"
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
                         style={{
                             fontSize: 12,
                         }}>

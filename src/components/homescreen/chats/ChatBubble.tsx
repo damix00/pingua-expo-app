@@ -1,6 +1,7 @@
 import { ThemedText } from "@/components/ui/ThemedText";
 import { Message } from "@/context/ChatContext";
 import { useThemeColors } from "@/hooks/useThemeColor";
+import { HoldItem } from "@/lib/react-native-context-menu";
 import { SendHorizonal } from "lucide-react-native";
 import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
@@ -36,40 +37,64 @@ export default function ChatBubble({
     }, []);
 
     return (
-        <View
-            style={[
-                styles.parent,
+        <HoldItem
+            closeOnTap
+            items={[
                 {
-                    alignSelf: userMessage ? "flex-end" : "flex-start",
+                    text: "Actions",
+                    icon: "home",
+                    isTitle: true,
+                    onPress: () => {},
+                },
+                { text: "Action 1", icon: "edit", onPress: () => {} },
+                {
+                    text: "Action 2",
+                    icon: "map-pin",
+                    withSeparator: true,
+                    onPress: () => {},
+                },
+                {
+                    text: "Action 3",
+                    icon: "trash",
+                    isDestructive: true,
+                    onPress: () => {},
                 },
             ]}>
             <View
                 style={[
-                    styles.bubble,
+                    styles.parent,
                     {
-                        backgroundColor: userMessage
-                            ? colors.primary
-                            : colors.card,
-                        opacity: loading ? 0.5 : 1,
+                        alignSelf: userMessage ? "flex-end" : "flex-start",
                     },
                 ]}>
-                <ThemedText type={userMessage ? "onPrimary" : undefined}>
-                    {content}
-                </ThemedText>
+                <View
+                    style={[
+                        styles.bubble,
+                        {
+                            backgroundColor: userMessage
+                                ? colors.primary
+                                : colors.card,
+                            opacity: loading ? 0.5 : 1,
+                        },
+                    ]}>
+                    <ThemedText type={userMessage ? "onPrimary" : undefined}>
+                        {content}
+                    </ThemedText>
+                </View>
+                <Animated.View
+                    style={{
+                        transform: [{ translateY: offset }],
+                    }}>
+                    {loading && (
+                        <SendHorizonal
+                            color={colors.textSecondary}
+                            size={16}
+                            style={styles.sendingIndicator}
+                        />
+                    )}
+                </Animated.View>
             </View>
-            <Animated.View
-                style={{
-                    transform: [{ translateY: offset }],
-                }}>
-                {loading && (
-                    <SendHorizonal
-                        color={colors.textSecondary}
-                        size={16}
-                        style={styles.sendingIndicator}
-                    />
-                )}
-            </Animated.View>
-        </View>
+        </HoldItem>
     );
 }
 
@@ -77,6 +102,7 @@ const styles = StyleSheet.create({
     parent: {
         flexDirection: "row",
         alignItems: "flex-end",
+        maxWidth: "80%",
     },
     sendingIndicator: {
         marginBottom: 4,
@@ -85,6 +111,6 @@ const styles = StyleSheet.create({
     bubble: {
         padding: 8,
         paddingHorizontal: 12,
-        borderRadius: 12,
+        borderRadius: 16,
     },
 });

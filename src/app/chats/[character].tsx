@@ -1,23 +1,26 @@
+import { apiConfig } from "@/api/config";
+import { getJwt } from "@/api/data";
 import ChatBubble from "@/components/homescreen/chats/ChatBubble";
 import MessageInput from "@/components/homescreen/chats/MessageInput";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { Chat, chatCharacters, useChat, useChats } from "@/context/ChatContext";
+import { useCurrentCourse } from "@/hooks/course";
 import useAppbarSafeAreaInsets from "@/hooks/useAppbarSafeAreaInsets";
 import useKeyboardHeight from "@/hooks/useKeyboardHeight";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import axios from "axios";
 import { useNetworkState } from "expo-network";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import Animated, {
-    Easing,
     LinearTransition,
     useAnimatedStyle,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
+import { fetch } from "expo/fetch";
 
 export default function ChatScreen() {
     const colors = useThemeColors();
@@ -34,6 +37,8 @@ export default function ChatScreen() {
     const chats = useChats();
     const [loadingMessages, setLoadingMessages] = useState<string[]>([]);
     const networkState = useNetworkState();
+    const [loading, setLoading] = useState(false);
+    const messagesRef = useRef<Chat["messages"]>(chat?.messages || []);
 
     const animatedListPadding = useAnimatedStyle(
         () => ({
@@ -42,6 +47,7 @@ export default function ChatScreen() {
         }),
         [keyboardHeight, insets]
     );
+    const course = useCurrentCourse();
 
     const fetchData = async () => {
         try {
@@ -55,6 +61,7 @@ export default function ChatScreen() {
             if (data.status == 200) {
                 // @ts-ignore
                 chats.setChats((prev) => [...prev, data.data.chat]);
+                messagesRef.current = data.data.chat.messages;
                 return;
             }
 
@@ -66,6 +73,7 @@ export default function ChatScreen() {
             if (created.status == 201) {
                 // @ts-ignore
                 chats.setChats((prev) => [...prev, created.data.chat]);
+                messagesRef.current = [];
                 return;
             }
         } catch (error) {
@@ -112,11 +120,11 @@ export default function ChatScreen() {
             ]}>
             <Animated.FlatList
                 inverted
-                contentInset={{ bottom: insets.top }}
+                contentInset={{ bottom: insets.top + 16 }}
                 contentContainerStyle={styles.contentContainer}
                 showsVerticalScrollIndicator={false}
                 style={[styles.list, animatedListPadding]}
-                data={[...chat.messages, ...loadingMessages]}
+                data={[...loadingMessages, ...chat.messages]}
                 numColumns={1}
                 renderItem={({ item }) => {
                     if (typeof item === "string") {
@@ -140,20 +148,95 @@ export default function ChatScreen() {
             />
             <View style={styles.input}>
                 <MessageInput
-                    onSend={(message) => {
-                        setLoadingMessages((prev) => [...prev, message]);
-                        axios
-                            .post("/v1/chats/messages", {
-                                chatId: chat.id,
-                                content: message,
-                            })
-                            .then((response) => {
-                                if (response.status == 201) {
+                    onSend={async (message) => {
+                        setLoadingMessages((prev) => [message, ...prev]);
+                        setLoading(true);
+
+                        console.log("Sending message", message);
+
+                        // Have to use fetch because axios doesn't support streaming
+                        const resp = await fetch(
+                            `${apiConfig.baseUrl}/v1/chats/${chat.id}/messages`,
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    Authorization: getJwt(),
+                                },
+                                body: JSON.stringify({
+                                    content: message,
+                                    language: course.currentCourse.languageCode,
+                                }),
+                            }
+                        );
+
+                        const stream = resp.body?.getReader();
+
+                        if (!stream) {
+                            setLoading(false);
+                            return;
+                        }
+
+                        while (true) {
+                            const { done, value } = await stream.read();
+
+                            if (done) {
+                                setLoading(false);
+                                break;
+                            }
+
+                            try {
+                                const chunk = new TextDecoder().decode(value);
+
+                                const parsed = JSON.parse(chunk);
+
+                                if (parsed?.sent) {
                                     setLoadingMessages((prev) =>
-                                        prev.filter((m) => m !== message)
+                                        prev.filter((msg) => msg !== message)
                                     );
+
+                                    const updatedChat = {
+                                        ...chat,
+                                        messages: [
+                                            {
+                                                id: parsed.id,
+                                                chatId: chat.id,
+                                                userMessage: true,
+                                                content: message,
+                                                createdAt: new Date(),
+                                                attachments: [],
+                                            },
+                                            ...messagesRef.current,
+                                        ],
+                                    };
+
+                                    messagesRef.current = updatedChat.messages;
+
+                                    chats.updateChat(updatedChat);
+                                } else if (parsed?.content) {
+                                    const updatedChat = {
+                                        ...chat,
+                                        messages: [
+                                            {
+                                                id: Math.random().toString(),
+                                                chatId: chat.id,
+                                                userMessage: false,
+                                                content: parsed.content,
+                                                createdAt: new Date(),
+                                                attachments: [],
+                                            },
+                                            ...messagesRef.current,
+                                        ],
+                                    };
+
+                                    messagesRef.current = updatedChat.messages;
+
+                                    chats.updateChat(updatedChat);
                                 }
-                            });
+                            } catch (e) {
+                                console.error(e);
+                            }
+                        }
                     }}
                 />
             </View>

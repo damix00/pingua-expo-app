@@ -1,7 +1,10 @@
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ui/ThemedText";
+import { useTranslation } from "react-i18next";
 
 export default function TranslateTab() {
+    const { t } = useTranslation();
+
     return (
         <ThemedView
             style={{
