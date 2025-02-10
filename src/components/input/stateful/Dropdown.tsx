@@ -22,6 +22,7 @@ interface DropdownProps {
         right?: number;
     };
     fontSize?: number;
+    children?: React.ReactNode;
 }
 
 export default function Dropdown({
@@ -32,6 +33,7 @@ export default function Dropdown({
     style,
     position,
     fontSize,
+    children,
 }: DropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
     const rotation = useSharedValue(0);
@@ -57,22 +59,26 @@ export default function Dropdown({
 
     return (
         <View style={{ position: "relative" }}>
-            <TouchableOpacity
-                style={[styles.button, style]}
-                onPress={() => {
-                    setIsOpen(!isOpen);
-                }}>
-                <ThemedText
-                    style={{
-                        color: textColor,
-                        fontSize: fontSize || 16,
+            {children ? (
+                children
+            ) : (
+                <TouchableOpacity
+                    style={[styles.button, style]}
+                    onPress={() => {
+                        setIsOpen(!isOpen);
                     }}>
-                    {selectedValue}
-                </ThemedText>
-                <Animated.View style={[animatedArrowStyle]}>
-                    <ChevronDown color={textColor} size={20} />
-                </Animated.View>
-            </TouchableOpacity>
+                    <ThemedText
+                        style={{
+                            color: textColor,
+                            fontSize: fontSize || 16,
+                        }}>
+                        {selectedValue}
+                    </ThemedText>
+                    <Animated.View style={[animatedArrowStyle]}>
+                        <ChevronDown color={textColor} size={20} />
+                    </Animated.View>
+                </TouchableOpacity>
+            )}
             <Animated.View
                 style={[
                     styles.contentContainer,

@@ -19,6 +19,7 @@ const lightTheme = {
     outlineSecondary: "#E1DBED",
     error: "red",
     backdrop: "#00000039",
+    iosBackdrop: "rgba(0,0,0,0.2)",
 };
 
 export const Colors = {

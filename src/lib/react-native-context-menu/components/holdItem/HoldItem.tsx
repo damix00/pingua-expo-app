@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from "react";
-import { ViewProps } from "react-native";
+import { Keyboard, ViewProps } from "react-native";
 
 //#region reanimated & gesture handler
 import {

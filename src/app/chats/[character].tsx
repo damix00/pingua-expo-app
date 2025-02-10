@@ -12,15 +12,16 @@ import { useThemeColors } from "@/hooks/useThemeColor";
 import axios from "axios";
 import { useNetworkState } from "expo-network";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Platform, StyleSheet, View } from "react-native";
 import Animated, {
     LinearTransition,
     useAnimatedStyle,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
-import { fetch } from "expo/fetch";
+import { fetch } from "expo/fetch"; // Import the polyfilled expo fetch
+import { Ellipsis } from "lucide-react-native";
 
 export default function ChatScreen() {
     const colors = useThemeColors();
@@ -39,6 +40,8 @@ export default function ChatScreen() {
     const networkState = useNetworkState();
     const [loading, setLoading] = useState(false);
     const messagesRef = useRef<Chat["messages"]>(chat?.messages || []);
+    const [lazyLoading, setLazyLoading] = useState(false);
+    const [reachedEnd, setReachedEnd] = useState(false);
 
     const animatedListPadding = useAnimatedStyle(
         () => ({
@@ -87,6 +90,48 @@ export default function ChatScreen() {
         }
     };
 
+    const fetchMore = useCallback(async () => {
+        if (chat && !loading && !lazyLoading && !reachedEnd) {
+            const last = chat.messages.findLast((msg) => msg.id);
+
+            setLazyLoading(true);
+
+            const data = await axios.get(`/v1/chats/`, {
+                params: {
+                    character: charName,
+                    last: last?.id || null,
+                },
+            });
+
+            if (data.status == 200) {
+                const messages = data.data.chat.messages;
+
+                if (messages.length == 0) {
+                    setReachedEnd(true);
+                }
+
+                const newMessages = [...chat.messages, ...messages];
+
+                // Remove duplicates by id
+                const uniqueMessages = newMessages.filter(
+                    (msg, index, self) =>
+                        self.findIndex((m) => m.id === msg.id) === index
+                );
+
+                const updatedChat = {
+                    ...chat,
+                    messages: uniqueMessages,
+                };
+
+                messagesRef.current = updatedChat.messages;
+
+                chats.updateChat(updatedChat);
+            }
+
+            setLazyLoading(false);
+        }
+    }, [chat, loading, lazyLoading, reachedEnd]);
+
     useEffect(() => {
         if (networkState.isConnected && !chat) {
             // Fetch chat data
@@ -119,40 +164,111 @@ export default function ChatScreen() {
                 },
             ]}>
             <Animated.FlatList
+                initialNumToRender={20}
                 inverted
-                contentInset={{ bottom: insets.top + 16 }}
-                contentContainerStyle={styles.contentContainer}
+                onEndReached={fetchMore}
+                onEndReachedThreshold={0.3} // % from the end because list is inverted
+                contentContainerStyle={[
+                    styles.contentContainer,
+                    {
+                        paddingBottom:
+                            Platform.OS == "android"
+                                ? insets.top * 2
+                                : insets.top + 16,
+                    },
+                ]}
                 showsVerticalScrollIndicator={false}
                 style={[styles.list, animatedListPadding]}
-                data={[...loadingMessages, ...chat.messages]}
+                data={[
+                    ...loadingMessages,
+                    ...chat.messages,
+                    ...(lazyLoading
+                        ? [
+                              {
+                                  _internal_loading: true,
+                              },
+                          ]
+                        : []),
+                ]}
                 numColumns={1}
                 renderItem={({ item }) => {
+                    if (
+                        typeof item == "object" &&
+                        "_internal_loading" in item
+                    ) {
+                        return (
+                            <ActivityIndicator
+                                style={styles.loader}
+                                color={colors.primary}
+                            />
+                        );
+                    }
+
                     if (typeof item === "string") {
                         return (
-                            <ChatBubble loading content={item} userMessage />
+                            <ChatBubble
+                                messageId="loading"
+                                chatId={chat.id}
+                                loading
+                                content={item}
+                                userMessage
+                            />
                         );
                     }
 
                     return (
                         <ChatBubble
+                            messageId={item.id}
+                            chatId={chat.id}
                             content={item.content}
                             userMessage={item.userMessage}
+                            onDelete={async () => {
+                                const resp = await axios.delete(
+                                    `/v1/chats/${chat.id}/messages/${item.id}`
+                                );
+
+                                if (resp.status != 204) {
+                                    Toast.show({
+                                        type: "error",
+                                        text1: t("errors.something_went_wrong"),
+                                    });
+                                    return;
+                                }
+
+                                const filtered = chat.messages.filter(
+                                    (msg) => msg.id !== item.id
+                                );
+
+                                const updatedChat = {
+                                    ...chat,
+                                    lastMessage: filtered[0],
+                                    messages: filtered,
+                                };
+
+                                messagesRef.current = updatedChat.messages;
+
+                                chats.updateChat(updatedChat);
+                            }}
                         />
                     );
                 }}
-                itemLayoutAnimation={LinearTransition}
                 initialScrollIndex={0}
                 keyExtractor={(item, index) =>
-                    typeof item === "string" ? item + index : item.id
+                    typeof item === "string"
+                        ? item + index
+                        : "_internal_loading" in item
+                        ? "loading"
+                        : item.id
                 }
             />
             <View style={styles.input}>
                 <MessageInput
                     onSend={async (message) => {
+                        if (message.trim() == "") {
+                            return;
+                        }
                         setLoadingMessages((prev) => [message, ...prev]);
                         setLoading(true);
-
-                        console.log("Sending message", message);
 
                         // Have to use fetch because axios doesn't support streaming
                         const resp = await fetch(
@@ -195,17 +311,20 @@ export default function ChatScreen() {
                                         prev.filter((msg) => msg !== message)
                                     );
 
+                                    const newMessage = {
+                                        id: parsed.id,
+                                        chatId: chat.id,
+                                        userMessage: true,
+                                        content: message,
+                                        createdAt: new Date(),
+                                        attachments: [],
+                                    };
+
                                     const updatedChat = {
                                         ...chat,
+                                        lastMessage: newMessage,
                                         messages: [
-                                            {
-                                                id: parsed.id,
-                                                chatId: chat.id,
-                                                userMessage: true,
-                                                content: message,
-                                                createdAt: new Date(),
-                                                attachments: [],
-                                            },
+                                            newMessage,
                                             ...messagesRef.current,
                                         ],
                                     };
@@ -214,22 +333,41 @@ export default function ChatScreen() {
 
                                     chats.updateChat(updatedChat);
                                 } else if (parsed?.content) {
+                                    const newMessage = {
+                                        tmp: true,
+                                        id: Math.random().toString(),
+                                        chatId: chat.id,
+                                        userMessage: false,
+                                        content: parsed.content,
+                                        createdAt: new Date(),
+                                        attachments: [],
+                                    };
+
                                     const updatedChat = {
                                         ...chat,
+                                        lastMessage: newMessage,
                                         messages: [
-                                            {
-                                                id: Math.random().toString(),
-                                                chatId: chat.id,
-                                                userMessage: false,
-                                                content: parsed.content,
-                                                createdAt: new Date(),
-                                                attachments: [],
-                                            },
+                                            newMessage,
                                             ...messagesRef.current,
                                         ],
                                     };
 
                                     messagesRef.current = updatedChat.messages;
+
+                                    chats.updateChat(updatedChat);
+                                } else if (parsed?.finished) {
+                                    const messages = parsed.messages;
+
+                                    const updatedChat = {
+                                        ...chat,
+                                        messages: [
+                                            ...messages,
+                                            ...messagesRef.current.filter(
+                                                // @ts-ignore
+                                                (msg) => !msg.tmp
+                                            ),
+                                        ],
+                                    };
 
                                     chats.updateChat(updatedChat);
                                 }
@@ -247,9 +385,9 @@ export default function ChatScreen() {
 const styles = StyleSheet.create({
     page: {
         flex: 1,
+        flexGrow: 1,
     },
     list: {
-        flex: 1,
         paddingHorizontal: 16,
     },
     input: {
@@ -260,10 +398,14 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         gap: 8,
+        flexGrow: 1,
     },
     centered: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+    },
+    loader: {
+        paddingVertical: 24,
     },
 });

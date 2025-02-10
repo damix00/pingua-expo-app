@@ -4,7 +4,7 @@ import { AnimatedIosBlurView } from "@/components/IosBlurView";
 import useKeyboardHeight from "@/hooks/useKeyboardHeight";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
     Keyboard,
     Platform,
@@ -12,7 +12,13 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import Animated, { useAnimatedStyle } from "react-native-reanimated";
+import Animated, {
+    Easing,
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring,
+    withTiming,
+} from "react-native-reanimated";
 
 export default function MessageInput({
     onSend,
@@ -23,14 +29,32 @@ export default function MessageInput({
     const colors = useThemeColors();
     const keyboardHeight = useKeyboardHeight();
 
+    const BTN_WIDTH = 40;
+
+    const maxWidthValue = useSharedValue(message.length > 0 ? BTN_WIDTH : 0);
+
     const animatedStyle = useAnimatedStyle(() => ({
         paddingBottom: keyboardHeight.value + 8,
     }));
+
+    useEffect(() => {
+        maxWidthValue.value = withTiming(message.length > 0 ? BTN_WIDTH : 0, {
+            duration: 500,
+            easing: Easing.out(Easing.exp),
+        });
+    }, [message]);
 
     const sendMessage = useCallback(() => {
         setMessage("");
         onSend(message);
     }, [message]);
+
+    const animatedSendButtonStyle = useAnimatedStyle(
+        () => ({
+            maxWidth: maxWidthValue.value,
+        }),
+        [maxWidthValue]
+    );
 
     return (
         <AnimatedIosBlurView style={[styles.container, animatedStyle]}>
@@ -50,11 +74,13 @@ export default function MessageInput({
                 onSubmitEditing={sendMessage}
                 returnKeyType="send"
             />
-            <HapticTouchableOpacity
-                style={styles.buttton}
-                onPress={sendMessage}>
-                <Ionicons name="send" size={24} color={colors.primary} />
-            </HapticTouchableOpacity>
+            <Animated.View style={[animatedSendButtonStyle]}>
+                <HapticTouchableOpacity
+                    style={styles.buttton}
+                    onPress={sendMessage}>
+                    <Ionicons name="send" size={24} color={colors.primary} />
+                </HapticTouchableOpacity>
+            </Animated.View>
         </AnimatedIosBlurView>
     );
 }

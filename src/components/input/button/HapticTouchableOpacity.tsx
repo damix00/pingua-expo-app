@@ -1,6 +1,7 @@
 import { usePreferences } from "@/context/PreferencesContext";
 import * as Haptics from "expo-haptics";
 import { TouchableOpacity, TouchableOpacityProps } from "react-native";
+import Animated from "react-native-reanimated";
 
 export default function HapticTouchableOpacity({
     enableHaptics = true,

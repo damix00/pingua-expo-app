@@ -9,6 +9,12 @@ export default {
     change: "Change",
     tap_to_continue: "Tap to continue",
     completed: "Completed",
+    message: "Message",
+    delete_text: "Delete",
+    copy: "Copy",
+    translate: "Translate",
+    copied: "Copied!",
+    listen: "Listen",
     languages: {
         en: "English",
         de: "German",
@@ -136,5 +142,9 @@ export default {
     chats: {
         tapToChat: "Tap to chat",
         youChat: "You: {{message}}",
+    },
+    translation: {
+        from: "From",
+        to: "To",
     },
 };

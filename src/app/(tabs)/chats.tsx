@@ -3,16 +3,9 @@ import { ThemedView } from "@/components/ThemedView";
 import { chats, useChats } from "@/context/ChatContext";
 import useAppbarSafeAreaInsets from "@/hooks/useAppbarSafeAreaInsets";
 import { useThemeColors } from "@/hooks/useThemeColor";
-import { Character } from "@/types/course";
-import {
-    fujioAvatar,
-    jaxonAvatar,
-    saraAvatar,
-} from "@/utils/cache/CachedImages";
-import { sleep } from "@/utils/util";
-import { useTheme } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 import axios from "axios";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
     FlatList,
     Platform,
@@ -27,6 +20,10 @@ export default function ChatsTab() {
     const insets = useAppbarSafeAreaInsets();
     const [refreshing, setRefreshing] = useState(false);
     const chatsData = useChats();
+
+    // Force a re-render when the user navigates back to this screen
+    // Because all the chat data is stored in the context.
+    const isFocused = useIsFocused();
 
     const onRefresh = useCallback(async () => {
         setRefreshing(true);

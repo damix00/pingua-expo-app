@@ -11,6 +11,12 @@ const translations: typeof en = {
     change: "Promijeni",
     tap_to_continue: "Dodirni za nastavak",
     completed: "Završeno",
+    message: "Poruka",
+    delete_text: "Obriši",
+    copy: "Kopiraj",
+    translate: "Prevedi",
+    copied: "Kopirano!",
+    listen: "Poslušaj",
     languages: {
         en: "Engleski",
         de: "Njemački",
@@ -142,6 +148,10 @@ const translations: typeof en = {
     chats: {
         tapToChat: "Dodirni za chat",
         youChat: "Vi: {{message}}",
+    },
+    translation: {
+        from: "Sa",
+        to: "Na",
     },
 };
 

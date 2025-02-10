@@ -1,7 +1,12 @@
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { forwardRef, useRef } from "react";
-import { TouchableOpacity, View } from "react-native";
+import {
+    Dimensions,
+    TouchableOpacity,
+    useColorScheme,
+    View,
+} from "react-native";
 import Animated, {
     useAnimatedStyle,
     useSharedValue,
@@ -21,6 +26,7 @@ const CustomBottomSheetModal = forwardRef(function CustomBottomSheetModal(
 ) {
     const colors = useThemeColors();
     const backdropBackground = useSharedValue("#00000000");
+    const scheme = useColorScheme();
 
     const bottomSheetAnimatedStyle = useAnimatedStyle(() => {
         return {
@@ -30,9 +36,21 @@ const CustomBottomSheetModal = forwardRef(function CustomBottomSheetModal(
 
     return (
         <BottomSheetModal
+            maxDynamicContentSize={Dimensions.get("window").height * 0.75}
             backgroundStyle={{
                 backgroundColor: colors.background,
             }}
+            style={
+                scheme == "light" && {
+                    shadowColor: "#000",
+                    shadowOffset: {
+                        width: 0,
+                        height: 5,
+                    },
+                    shadowOpacity: 0.36,
+                    shadowRadius: 6.68,
+                }
+            }
             backdropComponent={(props) => (
                 <AnimatedTouchableOpacity
                     {...props}
