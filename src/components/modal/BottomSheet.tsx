@@ -36,6 +36,9 @@ const CustomBottomSheetModal = forwardRef(function CustomBottomSheetModal(
 
     return (
         <BottomSheetModal
+            handleIndicatorStyle={{
+                backgroundColor: colors.text,
+            }}
             maxDynamicContentSize={Dimensions.get("window").height * 0.75}
             backgroundStyle={{
                 backgroundColor: colors.background,

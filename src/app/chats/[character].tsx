@@ -399,6 +399,7 @@ const styles = StyleSheet.create({
     contentContainer: {
         gap: 8,
         flexGrow: 1,
+        paddingTop: Platform.OS == "android" ? 8 : 0,
     },
     centered: {
         flex: 1,

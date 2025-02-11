@@ -182,7 +182,7 @@ export default function RootLayout() {
 
     // Provide preferences, authentication, and theme to the rest of the app
     return (
-        <HoldMenuProvider safeAreaInsets={insets} theme="light">
+        <HoldMenuProvider safeAreaInsets={insets} theme={scheme ?? "light"}>
             <GlobalBottomSheetProvider
                 setBottomSheet={setBottomSheetComponent}
                 showBottomSheet={showBottomSheet}

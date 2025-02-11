@@ -111,7 +111,7 @@ export default function OverlayDropdown({
                     activeOpacity={1}
                     onPress={() => setShowDropdown(false)}>
                     <AnimatedIosBlurView
-                        intensity={35}
+                        intensity={50}
                         style={[
                             styles.overlay,
                             {
@@ -134,6 +134,10 @@ export default function OverlayDropdown({
                             alwaysBounceVertical={false}
                             data={items}
                             keyExtractor={(item) => item.value}
+                            contentInset={{
+                                top: 4,
+                                bottom: 4,
+                            }}
                             ItemSeparatorComponent={() => (
                                 <View
                                     style={{
@@ -177,9 +181,9 @@ const styles = StyleSheet.create({
     overlay: {
         overflow: "hidden",
         position: "absolute",
-        width: "80%",
+        minWidth: 256,
+        maxWidth: Dimensions.get("window").width * 0.8,
         borderRadius: 12,
-        padding: 8,
     },
     header: {
         flexDirection: "row",
@@ -196,6 +200,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
         paddingVertical: 12,
-        paddingHorizontal: 8,
+        paddingHorizontal: 16,
     },
 });

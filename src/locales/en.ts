@@ -111,7 +111,7 @@ export default {
     },
     tabs: {
         home: "Home",
-        overview: "Overview",
+        scenarios: "Scenarios",
         chats: "Chats",
         profile: "Profile",
         translate: "Translate",

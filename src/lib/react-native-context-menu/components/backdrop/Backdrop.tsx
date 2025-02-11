@@ -84,10 +84,7 @@ const BackdropComponent = () => {
 
     const animatedInnerContainerStyle = useAnimatedStyle(
         () => ({
-            backgroundColor:
-                theme.value === "light"
-                    ? BACKDROP_LIGHT_BACKGROUND_COLOR
-                    : BACKDROP_DARK_BACKGROUND_COLOR,
+            backgroundColor: BACKDROP_LIGHT_BACKGROUND_COLOR,
         }),
         [theme]
     );

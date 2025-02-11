@@ -142,6 +142,7 @@ export default function TabLayout() {
                         elevation: 0,
                         borderBottomWidth: 0,
                     },
+                    tabBarInactiveTintColor: colors.textSecondary,
                     headerBackground: () => (
                         <IosBlurView
                             intensity={36}
@@ -171,9 +172,9 @@ export default function TabLayout() {
                     }}
                 />
                 <Tabs.Screen
-                    name="overview"
+                    name="scenarios"
                     options={{
-                        title: t("tabs.overview"),
+                        title: t("tabs.scenarios"),
                         tabBarIcon: ({ focused }) => (
                             <Ionicons
                                 name={focused ? "sparkles" : "sparkles-outline"}

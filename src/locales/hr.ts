@@ -116,7 +116,7 @@ const translations: typeof en = {
     },
     tabs: {
         home: "Početna",
-        overview: "Pregled",
+        scenarios: "Scenariji",
         chats: "Čavrljanja",
         profile: "Profil",
         translate: "Prevoditelj",

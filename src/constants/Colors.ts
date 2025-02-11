@@ -22,7 +22,31 @@ const lightTheme = {
     iosBackdrop: "rgba(0,0,0,0.2)",
 };
 
+const darkTheme = {
+    primary: "#7d51ef",
+    primaryContainer: "#2D2240",
+    primaryVariant: "#895ef3",
+    link: "#7D51EF",
+    linkOnPrimary: "#38C4F6",
+    text: "#FFFFFF",
+    textOnPrimary: "#F3EAFF",
+    textSecondary: "#887f94",
+    textSecondaryOnPrimary: "#CAB4E9",
+    background: "#1c1a1f",
+    backgroundDarker: "#181818",
+    transparentBackground: "#1c1a1fad",
+    backgroundVariant: "#242229",
+    card: "#2D2240",
+    icon: "#C5C5C5",
+    tabIconDefault: "#C5C5C5",
+    outline: "#444444",
+    outlineSecondary: "#333333",
+    error: "red",
+    backdrop: "#00000080",
+    iosBackdrop: "rgba(0,0,0,0.4)",
+};
+
 export const Colors = {
     light: lightTheme,
-    dark: lightTheme,
+    dark: darkTheme,
 };
