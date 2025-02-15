@@ -4,6 +4,7 @@ import ButtonText from "@/components/input/button/ButtonText";
 import HapticTouchableOpacity from "@/components/input/button/HapticTouchableOpacity";
 import StaticBackground from "@/components/ui/StaticBackground";
 import { ThemedText } from "@/components/ui/ThemedText";
+import { useThemeColors } from "@/hooks/useThemeColor";
 import { useTimeout } from "@/hooks/useTimeout";
 import { mascot } from "@/utils/cache/CachedImages";
 import { objectToQueryString } from "@/utils/util";
@@ -17,6 +18,7 @@ export default function OnboardingConfiguringCourse() {
     const params = useLocalSearchParams();
     const { t } = useTranslation();
     const insets = useSafeAreaInsets();
+    const colors = useThemeColors();
 
     return (
         <StaticBackground showAura={false}>
@@ -53,7 +55,9 @@ export default function OnboardingConfiguringCourse() {
                         onPress={() => {
                             router.back();
                         }}>
-                        <ButtonText>{t("back")}</ButtonText>
+                        <ButtonText style={{ color: colors.textOnPrimary }}>
+                            {t("back")}
+                        </ButtonText>
                     </Button>
                 </View>
             </ScrollView>

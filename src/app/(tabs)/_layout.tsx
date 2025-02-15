@@ -54,7 +54,7 @@ export default function TabLayout() {
                 refreshed.data.jwt,
                 me.data.courses,
                 me.data.section_data,
-                me.data.selected_course,
+                me.data.courses[0].id,
                 chats.data?.chats ?? []
             );
         } else if (me.status == 401) {

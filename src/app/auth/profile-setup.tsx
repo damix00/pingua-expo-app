@@ -168,7 +168,9 @@ export default function ProfileSetupPage() {
                                     response.data.user,
                                     response.data.jwt,
                                     response.data.courses,
-                                    response.data.section_data
+                                    response.data.section_data,
+                                    response.data.courses[0].id,
+                                    []
                                 );
 
                                 popAllAndPush("(tabs)");

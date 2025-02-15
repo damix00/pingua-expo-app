@@ -4,7 +4,6 @@ import { useBottomSheet } from "@/context/BottomSheetContext";
 import { Message } from "@/context/ChatContext";
 import { useCurrentCourse } from "@/hooks/course";
 import { useThemeColors } from "@/hooks/useThemeColor";
-import { HoldItem } from "@/lib/react-native-context-menu";
 import {
     Copy,
     Languages,
@@ -12,7 +11,7 @@ import {
     Trash2,
     Volume2,
 } from "lucide-react-native";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import Animated, {
@@ -25,6 +24,7 @@ import * as Clipboard from "expo-clipboard";
 import Toast from "react-native-toast-message";
 import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from "expo-av";
 import axios from "axios";
+import SelectItem from "@/components/input/stateful/select/SelectItem";
 
 export default function ChatBubble({
     content,
@@ -95,7 +95,7 @@ export default function ChatBubble({
                         });
                     }
                 },
-                icon: () => <Copy size={iconSize} color={colors.text} />,
+                icon: <Copy size={iconSize} color={colors.text} />,
             },
             ...(userMessage
                 ? []
@@ -131,29 +131,27 @@ export default function ChatBubble({
 
                               await sound.playAsync();
                           },
-                          icon: () => (
-                              <Volume2 size={iconSize} color={colors.text} />
-                          ),
+                          icon: <Volume2 size={iconSize} color={colors.text} />,
                       },
                   ]),
             {
                 text: t("translate"),
                 onPress: onTranslateBtnPress,
                 withSeparator: true,
-                icon: () => <Languages size={iconSize} color={colors.text} />,
+                icon: <Languages size={iconSize} color={colors.text} />,
             },
             {
                 text: t("delete_text"),
                 isDestructive: true,
                 onPress: onDelete,
-                icon: () => <Trash2 size={iconSize} color={colors.error} />,
+                icon: <Trash2 size={iconSize} color={colors.error} />,
             },
         ],
         [content, userMessage]
     );
 
     return (
-        <HoldItem i18nIsDynamicList closeOnTap items={items}>
+        <SelectItem items={items}>
             <View
                 style={[
                     styles.parent,
@@ -190,7 +188,7 @@ export default function ChatBubble({
                     )}
                 </Animated.View>
             </View>
-        </HoldItem>
+        </SelectItem>
     );
 }
 

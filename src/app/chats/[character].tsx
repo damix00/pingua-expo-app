@@ -20,7 +20,7 @@ import Animated, {
     useAnimatedStyle,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
-import { fetch } from "expo/fetch"; // Import the polyfilled expo fetch
+import { fetch as expoFetch } from "expo/fetch"; // Import the polyfilled expo fetch
 import { Ellipsis } from "lucide-react-native";
 
 export default function ChatScreen() {
@@ -52,7 +52,7 @@ export default function ChatScreen() {
     );
     const course = useCurrentCourse();
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
             // Try to fetch chat data
             const data = await axios.get("/v1/chats", {
@@ -88,7 +88,7 @@ export default function ChatScreen() {
                 text2: t("errors.something_went_wrong"),
             });
         }
-    };
+    }, []);
 
     const fetchMore = useCallback(async () => {
         if (chat && !loading && !lazyLoading && !reachedEnd) {
@@ -235,7 +235,7 @@ export default function ChatScreen() {
                                     return;
                                 }
 
-                                const filtered = chat.messages.filter(
+                                const filtered = messagesRef.current.filter(
                                     (msg) => msg.id !== item.id
                                 );
 
@@ -271,12 +271,13 @@ export default function ChatScreen() {
                         setLoading(true);
 
                         // Have to use fetch because axios doesn't support streaming
-                        const resp = await fetch(
+                        const resp = await expoFetch(
                             `${apiConfig.baseUrl}/v1/chats/${chat.id}/messages`,
                             {
                                 method: "POST",
                                 headers: {
                                     "Content-Type": "application/json",
+                                    "X-Accel-Buffering": "no",
                                     Authorization: getJwt(),
                                 },
                                 body: JSON.stringify({
@@ -345,7 +346,6 @@ export default function ChatScreen() {
 
                                     const updatedChat = {
                                         ...chat,
-                                        lastMessage: newMessage,
                                         messages: [
                                             newMessage,
                                             ...messagesRef.current,
@@ -360,6 +360,7 @@ export default function ChatScreen() {
 
                                     const updatedChat = {
                                         ...chat,
+                                        lastMessage: messages[0],
                                         messages: [
                                             ...messages,
                                             ...messagesRef.current.filter(

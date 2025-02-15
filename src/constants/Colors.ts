@@ -1,3 +1,5 @@
+import { Platform } from "react-native";
+
 const lightTheme = {
     primary: "#7d51ef",
     primaryContainer: "#E8DFFF",
@@ -18,8 +20,7 @@ const lightTheme = {
     outline: "#D4D0D8",
     outlineSecondary: "#E1DBED",
     error: "red",
-    backdrop: "#00000039",
-    iosBackdrop: "rgba(0,0,0,0.2)",
+    backdrop: Platform.OS == "ios" ? "#00000039" : "#000000B7",
 };
 
 const darkTheme = {
@@ -43,7 +44,6 @@ const darkTheme = {
     outlineSecondary: "#333333",
     error: "red",
     backdrop: "#00000080",
-    iosBackdrop: "rgba(0,0,0,0.4)",
 };
 
 export const Colors = {

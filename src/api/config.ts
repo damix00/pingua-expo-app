@@ -1,9 +1,10 @@
 import axios from "axios";
 
 export const apiConfig = {
-    baseUrl: __DEV__
-        ? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:9500"
-        : "https://pingua-api.latinary.com",
+    // baseUrl: __DEV__
+    //     ? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:9500"
+    //     : "https://pingua-api.latinary.com",
+    baseUrl: "https://pingua-api.latinary.com",
 };
 
 export function initAxios() {

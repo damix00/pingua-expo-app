@@ -3,12 +3,20 @@ import { useAuth } from "@/context/AuthContext";
 import { useCurrentCourse, useSectionTitle } from "@/hooks/course";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { FlatList, Platform, ScrollView, StyleSheet, View } from "react-native";
+import {
+    ActivityIndicator,
+    FlatList,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    View,
+} from "react-native";
 import UnitButton from "@/components/homescreen/home/UnitButton";
 import XPProgressBar from "@/components/homescreen/home/XPProgressBar";
 import { getJwt } from "@/api/data";
 import { router } from "expo-router";
 import useAppbarSafeAreaInsets from "@/hooks/useAppbarSafeAreaInsets";
+import { ThemedView } from "@/components/ThemedView";
 
 export default function Index() {
     const insets = useAppbarSafeAreaInsets();

@@ -166,7 +166,6 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start",
         alignItems: "center",
         gap: 12,
-        height: 56,
     },
     icon: {
         width: 40,
