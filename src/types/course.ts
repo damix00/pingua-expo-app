@@ -1,10 +1,16 @@
 export enum Character {
     Penguin = "penguin",
-    Glorp = "glorp",
     Fujio = "fujio",
     Jaxon = "jaxon",
     Sara = "sara",
 }
+
+export const characterNames = {
+    penguin: "Pingua",
+    fujio: "Fujio",
+    jaxon: "Jaxon",
+    sara: "Sara",
+};
 
 export type DialogueLine = {
     id: string;

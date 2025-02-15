@@ -17,6 +17,8 @@ const translations: typeof en = {
     translate: "Prevedi",
     copied: "Kopirano!",
     listen: "Poslušaj",
+    great: "Odlično!",
+    narrator: "Pripovjedač",
     languages: {
         en: "Engleski",
         de: "Njemački",
@@ -143,6 +145,11 @@ const translations: typeof en = {
         },
         story: {
             continue: "Dalje",
+        },
+        success: {
+            title: "Svaka čast!",
+            description: "Završili ste ovu lekciju.",
+            xp: "+{{xp}} XP",
         },
     },
     chats: {

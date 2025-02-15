@@ -1,6 +1,6 @@
 import { ThemedText } from "@/components/ui/ThemedText";
-import { Character, DialogueLine } from "@/types/course";
-import { useCallback, useEffect, useState } from "react";
+import { Character, characterNames, DialogueLine } from "@/types/course";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from "expo-av";
 import Animated, {
@@ -15,6 +15,8 @@ import TranslatedText from "../TranslatedText";
 import React from "react";
 import useHaptics from "@/hooks/useHaptics";
 import { NotificationFeedbackType } from "expo-haptics";
+import { useTranslation } from "react-i18next";
+import DialogueTranslation from "./DialogueTranslation";
 
 function AnswerItem({
     data,
@@ -77,6 +79,7 @@ export default function DialogueItem({
     const opacity = useSharedValue(0);
     const colors = useThemeColors();
     const [isPlaying, setIsPlaying] = useState(false);
+    const { t } = useTranslation();
 
     const duration = 500;
 
@@ -87,6 +90,14 @@ export default function DialogueItem({
     const animatedStyle = useAnimatedStyle(() => ({
         opacity: opacity.value,
     }));
+
+    const characterName = useMemo(() => {
+        if (data.character == "narrator") {
+            return t("narrator");
+        }
+
+        return characterNames[data.character as keyof typeof characterNames];
+    }, [data.character, t]);
 
     const initSound = async () => {
         if (!data.audio) {
@@ -190,10 +201,20 @@ export default function DialogueItem({
                     </View>
                 </View>
             ) : (
-                <TranslatedText
-                    text={data.text}
-                    translation={data.text_app_language || ""}
-                />
+                <DialogueTranslation translation={data.text_app_language || ""}>
+                    <View style={styles.itemInner}>
+                        <ThemedText
+                            style={{ fontSize: 10 }}
+                            fontWeight="600"
+                            type="secondary">
+                            {characterName}
+                        </ThemedText>
+                        <TranslatedText
+                            text={data.text}
+                            translation={data.text_app_language || ""}
+                        />
+                    </View>
+                </DialogueTranslation>
             )}
         </Animated.View>
     );
@@ -231,5 +252,10 @@ const styles = StyleSheet.create({
     answers: {
         flexDirection: "column",
         gap: 8,
+    },
+    itemInner: {
+        flexDirection: "column",
+        gap: 2,
+        flex: 1,
     },
 });

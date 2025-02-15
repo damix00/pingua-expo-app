@@ -65,7 +65,7 @@ export default function OverlayDropdown({
             duration: 150,
             easing: showDropdown
                 ? Easing.out(Easing.exp)
-                : Easing.in(Easing.exp),
+                : Easing.in(Easing.ease),
         });
     }, [showDropdown]);
 

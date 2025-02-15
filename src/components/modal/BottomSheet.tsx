@@ -1,3 +1,4 @@
+import { useBoxShadow } from "@/hooks/useBoxShadow";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { forwardRef, useRef } from "react";
@@ -26,7 +27,7 @@ const CustomBottomSheetModal = forwardRef(function CustomBottomSheetModal(
 ) {
     const colors = useThemeColors();
     const backdropBackground = useSharedValue("#00000000");
-    const scheme = useColorScheme();
+    const shadow = useBoxShadow();
 
     const bottomSheetAnimatedStyle = useAnimatedStyle(() => {
         return {
@@ -43,17 +44,7 @@ const CustomBottomSheetModal = forwardRef(function CustomBottomSheetModal(
             backgroundStyle={{
                 backgroundColor: colors.background,
             }}
-            style={
-                scheme == "light" && {
-                    shadowColor: "#000",
-                    shadowOffset: {
-                        width: 0,
-                        height: 5,
-                    },
-                    shadowOpacity: 0.36,
-                    shadowRadius: 6.68,
-                }
-            }
+            style={shadow}
             backdropComponent={(props) => (
                 <AnimatedTouchableOpacity
                     {...props}

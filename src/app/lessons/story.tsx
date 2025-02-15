@@ -145,7 +145,7 @@ export default function StoryLessonScreen() {
     useEffect(() => {
         if (progress == parsed.dialogue.length) {
             // The story is finished
-            router.replace(`/lessons/story?xp=7`);
+            router.replace(`/lessons/success?xp=7`);
         }
     }, [progress]);
 

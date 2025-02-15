@@ -15,6 +15,8 @@ export default {
     translate: "Translate",
     copied: "Copied!",
     listen: "Listen",
+    great: "Great!",
+    narrator: "Narrator",
     languages: {
         en: "English",
         de: "German",
@@ -137,6 +139,11 @@ export default {
         },
         story: {
             continue: "Next",
+        },
+        success: {
+            title: "Congratulations!",
+            description: "You've completed this lesson.",
+            xp: "+{{xp}} XP",
         },
     },
     chats: {
