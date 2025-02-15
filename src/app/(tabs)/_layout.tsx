@@ -20,7 +20,6 @@ import { useChats } from "@/context/ChatContext";
 
 export default function TabLayout() {
     const bottomSheet = useBottomSheet();
-    const rootNavigationState = useRootNavigationState();
     const router = useRouter();
     const auth = useAuth();
     const colors = useThemeColors();
@@ -76,23 +75,24 @@ export default function TabLayout() {
             return;
         }
 
-        // If the navigation isn't mounted yet, don't do anything
-        if (!rootNavigationState.key) {
-            return;
-        }
-
         const jwt = getJwt();
 
         executed.current = true;
 
+        // Have to use setTimeout because in the newest version of Expo the useRootNavigationState causes an infinite loop
+
         if (!auth.loggedIn || !jwt) {
-            router.replace("/onboarding");
+            setTimeout(() => {
+                router.replace("/onboarding");
+            }, 100);
         }
 
         if (auth.loggedIn && auth.user?.plan == "FREE") {
-            router.push("/modals/subscription");
+            setTimeout(() => {
+                router.push("/modals/subscription");
+            }, 100);
         }
-    }, [auth, rootNavigationState]);
+    }, [auth]);
 
     if (!auth.loggedIn) {
         return null;

@@ -128,7 +128,7 @@ export default function RootLayout() {
     const loading = useRef(false);
 
     // Async loading routine for preferences, locales, user data
-    const load = async () => {
+    const load = useCallback(async () => {
         initAxios();
         setPrefs(await loadPreferences());
         setLoadedPrefs(true);
@@ -157,7 +157,7 @@ export default function RootLayout() {
         }
 
         setInitialized(true);
-    };
+    }, []);
 
     // Hide splash once fonts and preferences load
     useEffect(() => {
