@@ -2,6 +2,7 @@ import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ui/ThemedText";
+import { useCurrentCourse } from "@/hooks/course";
 import useHaptics from "@/hooks/useHaptics";
 import { NotificationFeedbackType } from "expo-haptics";
 import { router, useLocalSearchParams } from "expo-router";
@@ -18,6 +19,7 @@ export default function LessonSuccessPage() {
 
     const insets = useSafeAreaInsets();
     const haptics = useHaptics();
+    const currentCourse = useCurrentCourse();
 
     const { t } = useTranslation();
 
@@ -53,12 +55,12 @@ export default function LessonSuccessPage() {
             ]}>
             <View style={styles.textContainer}>
                 <Animated.View style={[{ opacity: opacity1 }, styles.item]}>
-                    <ThemedText type="heading">
+                    <ThemedText type="heading" style={styles.text}>
                         {t("lesson.success.title")}
                     </ThemedText>
                 </Animated.View>
                 <Animated.View style={[{ opacity: opacity2 }, styles.item]}>
-                    <ThemedText type="secondary">
+                    <ThemedText type="secondary" style={styles.text}>
                         {t("lesson.success.description")}
                     </ThemedText>
                 </Animated.View>
@@ -72,6 +74,11 @@ export default function LessonSuccessPage() {
                 style={[{ opacity: opacity4 }, styles.item, styles.button]}>
                 <Button
                     onPress={() => {
+                        currentCourse.updateCurrentCourse({
+                            ...currentCourse.currentCourse,
+                            xp: currentCourse.currentCourse.xp + parseInt(xp),
+                        });
+
                         router.back();
                     }}>
                     <ButtonText>{t("great")}</ButtonText>
@@ -98,6 +105,9 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         gap: 4,
     },
+    text: {
+        textAlign: "center",
+    },
     button: {
         marginTop: 24,
         marginBottom: 8,
@@ -105,5 +115,6 @@ const styles = StyleSheet.create({
     xp: {
         fontSize: 48,
         marginTop: 12,
+        textAlign: "center",
     },
 });

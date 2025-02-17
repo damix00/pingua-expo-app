@@ -6,10 +6,12 @@ import { useRef, useState } from "react";
 import {
     Dimensions,
     Modal,
+    Platform,
     StyleSheet,
     TouchableOpacity,
     View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const TRIANGLE_SIZE = 8;
 
@@ -24,7 +26,7 @@ export default function DialogueTranslation({
     const [visible, setVisible] = useState(false);
     const triggerRef = useRef<View>(null);
     const colors = useThemeColors();
-    const shadow = useBoxShadow();
+    const insets = useSafeAreaInsets();
 
     return (
         <View style={styles.container}>
@@ -49,6 +51,7 @@ export default function DialogueTranslation({
                 {children}
             </TouchableOpacity>
             <Modal
+                statusBarTranslucent
                 animationType="fade"
                 transparent
                 visible={visible}
@@ -70,7 +73,16 @@ export default function DialogueTranslation({
                         />
                         <IosBlurView
                             intensity={15}
-                            style={[styles.modal, { top: y + TRIANGLE_SIZE }]}>
+                            style={[
+                                styles.modal,
+                                {
+                                    top: y + TRIANGLE_SIZE,
+                                    backgroundColor:
+                                        Platform.OS == "ios"
+                                            ? colors.transparentBackground
+                                            : colors.backgroundVariant,
+                                },
+                            ]}>
                             <ThemedText>{translation}</ThemedText>
                         </IosBlurView>
                     </View>

@@ -28,6 +28,9 @@ import { X } from "lucide-react-native";
 import { useBottomSheet } from "@/context/BottomSheetContext";
 import ExitBottomSheet from "@/components/lessons/ExitBottomSheet";
 import DialogueItem from "@/components/lessons/story/DialogueItem";
+import axios from "axios";
+import { useCurrentCourse } from "@/hooks/course";
+import Toast from "react-native-toast-message";
 
 const AnimatedThemedText = Animated.createAnimatedComponent(ThemedText);
 
@@ -38,14 +41,17 @@ export default function StoryLessonScreen() {
     const { t } = useTranslation();
     const colors = useThemeColors();
     const insets = useSafeAreaInsets();
+    const course = useCurrentCourse();
     const [lines, setLines] = useState<(DialogueLine & { show: boolean })[]>(
         []
     );
-    const [shownList, setShownList] = useState<typeof lines>(lines);
     const listRef = useRef<FlatList<DialogueLine>>(null);
     const [buttonEnabled, setButtonEnabled] = useState(false);
     const bottomSheet = useBottomSheet();
     const [progress, setProgress] = useState<number>(0);
+
+    const incorrectAnswers = useRef(0);
+    const finished = useRef(false);
 
     const scrollY = useSharedValue(0);
     const MIN_HEIGHT = 64 + insets.top;
@@ -142,10 +148,30 @@ export default function StoryLessonScreen() {
         };
     }, [parsed]);
 
+    const onEnd = useCallback(async () => {
+        const data = await axios.patch(
+            `/v1/courses/${course.currentCourse.id}/lessons/${parsed.id}`,
+            {
+                mistakes: incorrectAnswers.current,
+                type: "story",
+            }
+        );
+
+        if (data.status != 200) {
+            Toast.show({
+                type: "error",
+                text1: t("errors.something_went_wrong"),
+            });
+        }
+
+        router.replace(`/lessons/success?xp=${data.data.xp}`);
+    }, []);
+
     useEffect(() => {
-        if (progress == parsed.dialogue.length) {
+        if (progress == parsed.dialogue.length && !finished.current) {
             // The story is finished
-            router.replace(`/lessons/success?xp=7`);
+            finished.current = true;
+            onEnd();
         }
     }, [progress]);
 
@@ -219,6 +245,9 @@ export default function StoryLessonScreen() {
                         onAudioEnd={() => {
                             setButtonEnabled(true);
                         }}
+                        onIncorrectAnswer={() => {
+                            incorrectAnswers.current++;
+                        }}
                         onQuestionEnd={() => {
                             setTimeout(() => {
                                 setButtonEnabled(true);
@@ -236,7 +265,9 @@ export default function StoryLessonScreen() {
                     },
                 ]}>
                 <Button
-                    disabled={!buttonEnabled}
+                    disabled={
+                        !buttonEnabled || progress == parsed.dialogue.length
+                    }
                     style={[styles.button]}
                     onPress={updateLines}>
                     <ButtonText>{t("lesson.story.continue")}</ButtonText>

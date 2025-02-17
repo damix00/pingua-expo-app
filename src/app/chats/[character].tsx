@@ -14,7 +14,13 @@ import { useNetworkState } from "expo-network";
 import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ActivityIndicator, Platform, StyleSheet, View } from "react-native";
+import {
+    ActivityIndicator,
+    FlatList,
+    Platform,
+    StyleSheet,
+    View,
+} from "react-native";
 import Animated, {
     LinearTransition,
     useAnimatedStyle,
@@ -171,10 +177,12 @@ export default function ChatScreen() {
                 contentContainerStyle={[
                     styles.contentContainer,
                     {
+                        paddingTop:
+                            Platform.OS == "android" ? insets.bottom : 0,
                         paddingBottom:
                             Platform.OS == "android"
                                 ? insets.top * 2
-                                : insets.top + 16,
+                                : insets.top,
                     },
                 ]}
                 showsVerticalScrollIndicator={false}

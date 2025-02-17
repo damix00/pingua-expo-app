@@ -14,6 +14,7 @@ import {
     TouchableHighlight,
     TouchableOpacity,
     TouchableWithoutFeedback,
+    useColorScheme,
     View,
 } from "react-native";
 import {
@@ -34,11 +35,13 @@ import {
     SafeAreaView,
     useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import MenuBar from "./MenuBar";
 
 const ITEM_SIZE = 42;
 
 export default function SelectItem({
     items,
+    activationDelay = 100,
     children,
 }: {
     items: {
@@ -49,6 +52,7 @@ export default function SelectItem({
         isDestructive?: boolean;
         withSeparator?: boolean;
     }[];
+    activationDelay?: number;
     children: React.ReactNode;
 }) {
     const [shown, setShown] = useState(false);
@@ -60,13 +64,12 @@ export default function SelectItem({
     const scale = useSharedValue(100);
     const insets = useSafeAreaInsets();
     const haptics = useHaptics();
+    const timeout = useRef<NodeJS.Timeout | null>(null);
+    const scheme = useColorScheme();
 
     const colors = useThemeColors();
 
     const triggerRef = useRef<View>(null);
-    const [menuBarAlignment, setMenuBarAlignment] = useState<"left" | "right">(
-        "left"
-    );
 
     const onLongPress = useCallback(() => {
         Keyboard.dismiss();
@@ -90,33 +93,30 @@ export default function SelectItem({
                 }
             }
 
-            let yVal = 0;
-
-            if (Platform.OS === "android") {
-                yVal = py - insets.top;
-            } else {
-                yVal = py;
-            }
+            let yVal = py;
 
             if (yVal + height + menuBarHeight > windowHeight - insets.bottom) {
                 yVal =
-                    windowHeight - insets.bottom - height - menuBarHeight - 24;
+                    windowHeight -
+                    (Platform.OS == "android" ? 0 : insets.bottom) -
+                    height -
+                    menuBarHeight -
+                    24;
             }
 
             x.value = px;
-            y.value = yVal;
+            y.value = py;
 
-            if (px > windowWidth / 2) {
-                setMenuBarAlignment("right");
-            } else {
-                setMenuBarAlignment("left");
-            }
+            y.value = withTiming(yVal, {
+                duration: 250,
+                easing: Easing.out(Easing.sin),
+            });
 
             itemWidth.value = width;
             itemHeight.value = height;
-            setTimeout(() => {
-                itemOpacity.value = 0;
-            }, 100);
+            itemOpacity.value = withTiming(0, {
+                duration: 200,
+            });
             setShown(true);
         });
     }, [triggerRef]);
@@ -128,41 +128,58 @@ export default function SelectItem({
     }, [scale]);
 
     const onClose = useCallback(() => {
-        itemOpacity.value = 1;
+        itemOpacity.value = withTiming(1, {
+            duration: 200,
+        });
         setShown(false);
     }, []);
 
-    const longPress = Gesture.LongPress()
-        .onBegin(() => {
+    const onBegin = useCallback(() => {
+        timeout.current = setTimeout(() => {
             scale.value = withTiming(90, {
                 duration: 500,
                 easing: Easing.bezier(0.31, 0.04, 0.03, 1.04),
             });
+        }, activationDelay);
+    }, [activationDelay]);
+
+    const onFinalize = useCallback(() => {
+        if (timeout.current) {
+            clearTimeout(timeout.current);
+            timeout.current = null;
+        }
+    }, []);
+
+    const longPress = Gesture.LongPress()
+        .minDuration(activationDelay + 500)
+        .onBegin(() => {
+            runOnJS(onBegin)();
         })
         .onStart(() => {
             runOnJS(onLongPress)();
             scale.value = withSpring(100);
         })
         .onFinalize(() => {
+            runOnJS(onFinalize)();
             scale.value = withSpring(100);
         });
 
+    const opacityStyle = useAnimatedStyle(() => {
+        return {
+            opacity: itemOpacity.value,
+        };
+    });
+
     return (
         <>
-            <Animated.View
-                ref={triggerRef}
-                style={[
-                    {
-                        opacity: itemOpacity,
-                    },
-                    scaleStyle,
-                ]}>
+            <Animated.View ref={triggerRef} style={[opacityStyle, scaleStyle]}>
                 <GestureDetector gesture={longPress}>
                     {children}
                 </GestureDetector>
             </Animated.View>
             <GestureHandlerRootView>
                 <Modal
+                    statusBarTranslucent
                     animationType="fade"
                     visible={shown}
                     transparent
@@ -171,7 +188,16 @@ export default function SelectItem({
                         activeOpacity={1}
                         style={{ flex: 1 }}
                         onPress={onClose}>
-                        <AnimatedIosBlurView
+                        <BlurView
+                            intensity={50}
+                            tint={
+                                Platform.OS == "android"
+                                    ? scheme == "dark"
+                                        ? "light"
+                                        : "dark"
+                                    : "default"
+                            }
+                            experimentalBlurMethod="dimezisBlurView"
                             style={[
                                 {
                                     flex: 1,
@@ -195,95 +221,13 @@ export default function SelectItem({
                                     }}>
                                     {children}
                                 </Animated.View>
-                                <View
-                                    style={[
-                                        styles.menuBar,
-                                        {
-                                            backgroundColor: colors.background,
-                                        },
-                                    ]}>
-                                    {items.map((item, index) => (
-                                        <TouchableHighlight
-                                            disabled={
-                                                !item.onPress || item.isTitle
-                                            }
-                                            underlayColor={
-                                                colors.backgroundVariant
-                                            }
-                                            style={{
-                                                borderTopRightRadius:
-                                                    index === 0 ? 8 : 0,
-                                                borderTopLeftRadius:
-                                                    index === 0 ? 8 : 0,
-                                                borderBottomRightRadius:
-                                                    index === items.length - 1
-                                                        ? 8
-                                                        : 0,
-                                                borderBottomLeftRadius:
-                                                    index === items.length - 1
-                                                        ? 8
-                                                        : 0,
-                                            }}
-                                            key={index}
-                                            onPress={() => {
-                                                item.onPress?.();
-                                                onClose();
-                                            }}>
-                                            <View
-                                                style={[
-                                                    styles.item,
-                                                    {
-                                                        borderBottomWidth:
-                                                            item.withSeparator ||
-                                                            item.isTitle
-                                                                ? 1
-                                                                : 0,
-                                                        borderBottomColor:
-                                                            colors.outline,
-                                                        height: item.isTitle
-                                                            ? undefined
-                                                            : ITEM_SIZE,
-                                                        paddingVertical:
-                                                            item.isTitle
-                                                                ? 8
-                                                                : undefined,
-                                                    },
-                                                ]}>
-                                                <View
-                                                    style={{
-                                                        flexDirection: "row",
-                                                        alignItems: "center",
-                                                        justifyContent:
-                                                            "space-between",
-                                                        flex: 1,
-                                                    }}>
-                                                    <ThemedText
-                                                        style={{
-                                                            color: item.isDestructive
-                                                                ? colors.error
-                                                                : item.isTitle
-                                                                ? colors.textSecondary
-                                                                : colors.text,
-                                                            flex: 1,
-                                                            textAlign:
-                                                                item.isTitle
-                                                                    ? "center"
-                                                                    : "left",
-                                                            fontSize:
-                                                                item.isTitle
-                                                                    ? 12
-                                                                    : undefined,
-                                                        }}>
-                                                        {item.text}
-                                                    </ThemedText>
-                                                    {item.icon}
-                                                </View>
-                                            </View>
-                                        </TouchableHighlight>
-                                    ))}
-                                </View>
+                                <MenuBar
+                                    itemSize={ITEM_SIZE}
+                                    items={items}
+                                    onClose={onClose}
+                                />
                             </Animated.View>
-                        </AnimatedIosBlurView>
+                        </BlurView>
                     </TouchableOpacity>
                 </Modal>
             </GestureHandlerRootView>
@@ -295,15 +239,5 @@ const styles = StyleSheet.create({
     itemWrapper: {
         flexDirection: "column",
         gap: 8,
-    },
-    menuBar: {
-        borderRadius: 8,
-        minWidth: 200,
-        alignSelf: "center",
-    },
-    item: {
-        padding: 12,
-        height: ITEM_SIZE,
-        flexDirection: "row",
     },
 });

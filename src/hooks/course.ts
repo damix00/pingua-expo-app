@@ -1,5 +1,5 @@
-import { SectionData, useAuth } from "@/context/AuthContext";
-import { useMemo } from "react";
+import { Course, SectionData, useAuth } from "@/context/AuthContext";
+import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 export function useCurrentCourse() {
@@ -20,7 +20,18 @@ export function useCurrentCourse() {
         [auth.sectionData, auth.selectedCourse]
     );
 
-    return { currentCourse, currentCourseData };
+    const updateCurrentCourse = useCallback(
+        (data: Course) => {
+            auth.setCourses(
+                auth.courses.map((course) =>
+                    course.id === data.id ? data : course
+                )
+            );
+        },
+        [auth]
+    );
+
+    return { currentCourse, currentCourseData, updateCurrentCourse };
 }
 
 export function useSectionTitle(sectionData: SectionData) {

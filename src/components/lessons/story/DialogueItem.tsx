@@ -1,6 +1,6 @@
 import { ThemedText } from "@/components/ui/ThemedText";
 import { Character, characterNames, DialogueLine } from "@/types/course";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from "expo-av";
 import Animated, {
@@ -11,19 +11,21 @@ import Animated, {
 import HapticTouchableOpacity from "@/components/input/button/HapticTouchableOpacity";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { AudioLines, Volume, Volume2, X } from "lucide-react-native";
-import TranslatedText from "../TranslatedText";
 import React from "react";
 import useHaptics from "@/hooks/useHaptics";
 import { NotificationFeedbackType } from "expo-haptics";
 import { useTranslation } from "react-i18next";
 import DialogueTranslation from "./DialogueTranslation";
+import DashedLine from "@/components/ui/Dashes";
 
 function AnswerItem({
     data,
     onPress,
+    onIncorrect,
 }: {
     data: DialogueLine["answers"][0];
     onPress: () => void;
+    onIncorrect: () => void;
 }) {
     const [disabled, setDisabled] = useState(false);
     const haptics = useHaptics();
@@ -40,6 +42,7 @@ function AnswerItem({
     const handlePress = useCallback(() => {
         if (!data.correct) {
             haptics.notificationAsync(NotificationFeedbackType.Error);
+            onIncorrect();
             setDisabled(true);
         } else {
             haptics.notificationAsync(NotificationFeedbackType.Success);
@@ -70,16 +73,19 @@ export default function DialogueItem({
     data,
     onAudioEnd,
     onQuestionEnd,
+    onIncorrectAnswer,
 }: {
     data: DialogueLine;
     onAudioEnd: () => void;
     onQuestionEnd: () => void;
+    onIncorrectAnswer: () => void;
 }) {
     const [sound, setSound] = useState<Audio.Sound | undefined>();
     const opacity = useSharedValue(0);
     const colors = useThemeColors();
     const [isPlaying, setIsPlaying] = useState(false);
     const { t } = useTranslation();
+    const incorrectPressed = useRef(false);
 
     const duration = 500;
 
@@ -188,6 +194,12 @@ export default function DialogueItem({
                             <AnswerItem
                                 key={item.text}
                                 data={item}
+                                onIncorrect={() => {
+                                    if (!incorrectPressed.current) {
+                                        incorrectPressed.current = true;
+                                        onIncorrectAnswer();
+                                    }
+                                }}
                                 onPress={() => {
                                     if (item.correct) {
                                         opacity.value = withTiming(0, {
@@ -209,10 +221,10 @@ export default function DialogueItem({
                             type="secondary">
                             {characterName}
                         </ThemedText>
-                        <TranslatedText
-                            text={data.text}
-                            translation={data.text_app_language || ""}
-                        />
+                        <View style={styles.textInner}>
+                            <ThemedText>{data.text}</ThemedText>
+                            <DashedLine dashColor={colors.outline} />
+                        </View>
                     </View>
                 </DialogueTranslation>
             )}
@@ -257,5 +269,10 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         gap: 2,
         flex: 1,
+    },
+    textInner: {
+        // Width fit
+        gap: 2,
+        alignSelf: "flex-start",
     },
 });
