@@ -28,6 +28,12 @@ export default function LessonLoading() {
                     JSON.stringify(response.data.data)
                 )}`
             );
+        } else if (response.data.type == "questions") {
+            router.replace(
+                `/lessons/questions?data=${encodeURIComponent(
+                    JSON.stringify(response.data.data)
+                )}`
+            );
         }
     }, 250);
 

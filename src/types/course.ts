@@ -30,3 +30,15 @@ export type Story = {
     title: string;
     dialogue: DialogueLine[];
 };
+
+export type Question = {
+    id: string;
+    type: string;
+    question: string;
+    audio: string;
+    answers?: {
+        answer: string;
+        correct: boolean;
+    };
+    correctAnswer?: string;
+};
