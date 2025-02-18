@@ -23,7 +23,6 @@ import {
 import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
 import IosBlurView, { AnimatedIosBlurView } from "@/components/IosBlurView";
-import StoryProgressBar from "@/components/lessons/story/StoryProgressBar";
 import { X } from "lucide-react-native";
 import { useBottomSheet } from "@/context/BottomSheetContext";
 import ExitBottomSheet from "@/components/lessons/ExitBottomSheet";
@@ -31,6 +30,7 @@ import DialogueItem from "@/components/lessons/story/DialogueItem";
 import axios from "axios";
 import { useCurrentCourse } from "@/hooks/course";
 import Toast from "react-native-toast-message";
+import ProgressBar from "@/components/lessons/story/ProgressBar";
 
 const AnimatedThemedText = Animated.createAnimatedComponent(ThemedText);
 
@@ -221,7 +221,7 @@ export default function StoryLessonScreen() {
                         <X size={20} color={colors.textSecondary} />
                     </TouchableOpacity>
                 </View>
-                <StoryProgressBar
+                <ProgressBar
                     style={progressBarStyle}
                     progress={(progress / parsed.dialogue.length) * 100}
                 />

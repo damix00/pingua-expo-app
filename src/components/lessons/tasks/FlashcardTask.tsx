@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import Animated, {
     useSharedValue,
@@ -10,11 +10,22 @@ import HapticTouchableOpacity from "@/components/input/button/HapticTouchableOpa
 import { ThemedText } from "@/components/ui/ThemedText";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { Question } from "@/types/course";
+import { useTranslation } from "react-i18next";
+import Button from "@/components/input/button/Button";
+import ButtonText from "@/components/input/button/ButtonText";
 
-export default function FlashcardTask({ data }: { data: Question }) {
+export default function FlashcardTask({
+    data,
+    onComplete,
+}: {
+    data: Question;
+    onComplete: () => any;
+}) {
     const isFlipped = useSharedValue(false);
     const duration = 500;
     const colors = useThemeColors();
+    const { t } = useTranslation();
+    const [flipped, setFlipped] = useState(false);
 
     const regularCardAnimatedStyle = useAnimatedStyle(() => {
         const spinValue = interpolate(
@@ -43,6 +54,9 @@ export default function FlashcardTask({ data }: { data: Question }) {
     });
 
     const handlePress = useCallback(() => {
+        if (!flipped) {
+            setFlipped(true);
+        }
         isFlipped.value = !isFlipped.value;
     }, [isFlipped]);
 
@@ -51,33 +65,73 @@ export default function FlashcardTask({ data }: { data: Question }) {
     };
 
     return (
-        <HapticTouchableOpacity onPress={handlePress}>
-            <Animated.View
-                style={[
-                    styles.regularCard,
-                    styles.card,
-                    regularCardAnimatedStyle,
-                    cardStyle,
-                ]}>
-                <ThemedText>{data.question}</ThemedText>
-            </Animated.View>
-            <Animated.View
-                style={[
-                    styles.flippedCard,
-                    styles.card,
-                    flippedCardAnimatedStyle,
-                    cardStyle,
-                    {
-                        backgroundColor: colors.card,
-                    },
-                ]}>
-                <ThemedText>{data.correctAnswer}</ThemedText>
-            </Animated.View>
-        </HapticTouchableOpacity>
+        <View style={styles.container}>
+            <View style={styles.textWrapper}>
+                <ThemedText
+                    type="secondary"
+                    fontWeight="800"
+                    style={{
+                        fontSize: 12,
+                    }}>
+                    {t("lesson.questions.new_word")}
+                </ThemedText>
+                <ThemedText
+                    style={{
+                        fontSize: 16,
+                    }}>
+                    {t("lesson.questions.tap_to_see_translation")}
+                </ThemedText>
+            </View>
+            <View style={styles.cardWrapper}>
+                <HapticTouchableOpacity onPress={handlePress}>
+                    <Animated.View
+                        style={[
+                            styles.regularCard,
+                            styles.card,
+                            regularCardAnimatedStyle,
+                            cardStyle,
+                        ]}>
+                        <ThemedText>{data.question}</ThemedText>
+                    </Animated.View>
+                    <Animated.View
+                        style={[
+                            styles.flippedCard,
+                            styles.card,
+                            flippedCardAnimatedStyle,
+                            cardStyle,
+                            {
+                                backgroundColor: colors.card,
+                            },
+                        ]}>
+                        <ThemedText>{data.correctAnswer}</ThemedText>
+                    </Animated.View>
+                </HapticTouchableOpacity>
+            </View>
+            <Button disabled={!flipped} onPress={onComplete}>
+                <ButtonText>Continue</ButtonText>
+            </Button>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: "space-between",
+        alignContent: "center",
+        flexDirection: "column",
+    },
+    textWrapper: {
+        gap: 4,
+        marginBottom: 16,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    cardWrapper: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
     card: {
         width: 200,
         height: 300,

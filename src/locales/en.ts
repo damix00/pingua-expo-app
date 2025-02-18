@@ -145,6 +145,10 @@ export default {
             description: "You've completed this lesson.",
             xp: "+{{xp}} XP",
         },
+        questions: {
+            new_word: "New word!",
+            tap_to_see_translation: "Tap to see the translation.",
+        },
     },
     chats: {
         tapToChat: "Tap to chat",

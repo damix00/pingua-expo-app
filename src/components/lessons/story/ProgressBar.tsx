@@ -11,24 +11,20 @@ import Animated, {
     withTiming,
 } from "react-native-reanimated";
 
-export default function StoryProgressBar({
+export default function ProgressBar({
     progress,
     style,
+    containerStyle,
 }: {
     progress: number;
-    style: Animated.View["props"]["style"];
+    style?: Animated.View["props"]["style"];
+    containerStyle?: Animated.View["props"]["style"];
 }) {
     const colors = useThemeColors();
 
     const animatedProgress = useSharedValue(progress);
 
     useEffect(() => {
-        // animatedProgress.value = withSpring(progress, {
-        //     duration: 1000,
-        //     clamp: {
-        //         max: 100,
-        //     },
-        // });
         animatedProgress.value = withTiming(progress, {
             easing: Easing.out(Easing.exp),
             duration: 500,
@@ -40,7 +36,7 @@ export default function StoryProgressBar({
     }));
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, containerStyle]}>
             <Animated.View
                 style={[
                     styles.progressContainer,
@@ -53,6 +49,7 @@ export default function StoryProgressBar({
                     style={[
                         styles.progress,
                         animatedStyle,
+                        style,
                         {
                             backgroundColor: colors.primary,
                         },

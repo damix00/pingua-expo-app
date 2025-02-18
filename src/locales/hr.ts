@@ -151,6 +151,10 @@ const translations: typeof en = {
             description: "Završili ste ovu lekciju.",
             xp: "+{{xp}} XP",
         },
+        questions: {
+            new_word: "Nova riječ!",
+            tap_to_see_translation: "Dodirni za prijevod.",
+        },
     },
     chats: {
         tapToChat: "Dodirni za chat",
