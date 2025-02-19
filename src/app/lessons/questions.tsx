@@ -1,5 +1,6 @@
 import FlashcardTask from "@/components/lessons/tasks/FlashcardTask";
 import QuestionsAppbar from "@/components/lessons/tasks/QuestionsAppbar";
+import RecordVoiceTask from "@/components/lessons/tasks/RecordVoice";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { useBottomSheet } from "@/context/BottomSheetContext";
 import { useThemeColors } from "@/hooks/useThemeColor";
@@ -49,17 +50,27 @@ export default function QuestionsLessonScreen() {
 
     const getChild = useCallback(() => {
         const q = questions[0];
-        if (q?.type === "flashcard") {
-            return (
-                <FlashcardTask
-                    key={q.id}
-                    onComplete={handleComplete}
-                    data={q as any}
-                />
-            );
-        } else {
-            console.log("Unknown question type", q);
-            return <></>;
+
+        switch (q?.type) {
+            case "flashcard":
+                return (
+                    <FlashcardTask
+                        key={q.id}
+                        onComplete={handleComplete}
+                        data={q as any}
+                    />
+                );
+            case "record-voice":
+                return (
+                    <RecordVoiceTask
+                        key={q.id}
+                        onComplete={handleComplete}
+                        data={q}
+                    />
+                );
+            default:
+                console.log("Unknown question type", q);
+                return <></>;
         }
     }, [questions]);
 

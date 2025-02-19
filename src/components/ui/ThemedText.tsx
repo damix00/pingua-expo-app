@@ -2,6 +2,7 @@ import { Text, type TextProps, StyleSheet, Platform } from "react-native";
 
 import { useThemeColor, useThemeColors } from "@/hooks/useThemeColor";
 import { forwardRef } from "react";
+import Animated from "react-native-reanimated";
 
 export type ThemedTextProps = TextProps & {
     onPrimary?: boolean;
@@ -97,7 +98,9 @@ const ThemedText = forwardRef(
     }
 );
 
-export { ThemedText };
+const AnimatedThemedText = Animated.createAnimatedComponent(ThemedText);
+
+export { ThemedText, AnimatedThemedText };
 
 const styles = StyleSheet.create({
     default: {

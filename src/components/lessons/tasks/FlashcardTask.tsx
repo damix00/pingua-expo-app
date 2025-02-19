@@ -108,7 +108,7 @@ export default function FlashcardTask({
                 </HapticTouchableOpacity>
             </View>
             <Button disabled={!flipped} onPress={onComplete}>
-                <ButtonText>Continue</ButtonText>
+                <ButtonText>{t("continue")}</ButtonText>
             </Button>
         </View>
     );
