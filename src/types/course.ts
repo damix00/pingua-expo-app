@@ -39,6 +39,6 @@ export type Question = {
     answers?: {
         answer: string;
         correct: boolean;
-    };
+    }[];
     correctAnswer?: string;
 };

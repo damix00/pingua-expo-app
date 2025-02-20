@@ -154,8 +154,10 @@ const translations: typeof en = {
         questions: {
             new_word: "Nova riječ!",
             tap_to_see_translation: "Dodirni za prijevod.",
-            speak: "Izgovori sljedeću rečenicu.",
+            speak: "Izgovori sljedeću rečenicu",
             tap_to_record: "Drži za snimanje",
+            voice_loading: "Obrada...",
+            multiple_choice: "Odaberi točan prijevod",
         },
     },
     chats: {

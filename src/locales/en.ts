@@ -148,8 +148,10 @@ export default {
         questions: {
             new_word: "New word!",
             tap_to_see_translation: "Tap to see the translation.",
-            speak: "Speak the following sentence.",
+            speak: "Speak the following sentence",
             tap_to_record: "Hold to record",
+            voice_loading: "Processing...",
+            multiple_choice: "Choose the correct translation",
         },
     },
     chats: {

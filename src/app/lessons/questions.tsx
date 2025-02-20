@@ -1,4 +1,5 @@
 import FlashcardTask from "@/components/lessons/tasks/FlashcardTask";
+import MultipleChoiceTask from "@/components/lessons/tasks/MultipleChoice";
 import QuestionsAppbar from "@/components/lessons/tasks/QuestionsAppbar";
 import RecordVoiceTask from "@/components/lessons/tasks/RecordVoice";
 import { ThemedText } from "@/components/ui/ThemedText";
@@ -27,6 +28,7 @@ export default function QuestionsLessonScreen() {
     const insets = useSafeAreaInsets();
     const colors = useThemeColors();
     const bottomSheet = useBottomSheet();
+    const [touchEnabled, setTouchEnabled] = useState(true);
 
     const [progress, setProgress] = useState(0);
     const [questions, setQuestions] = useState<Question[]>(() =>
@@ -68,6 +70,14 @@ export default function QuestionsLessonScreen() {
                         data={q}
                     />
                 );
+            case "multiple-choice":
+                return (
+                    <MultipleChoiceTask
+                        key={q.id}
+                        onComplete={handleComplete}
+                        data={q}
+                    />
+                );
             default:
                 console.log("Unknown question type", q);
                 return <></>;
@@ -78,11 +88,13 @@ export default function QuestionsLessonScreen() {
         opacity.value = withTiming(0, {
             duration: 250,
         });
+        setTouchEnabled(false);
         setTimeout(() => {
             setQuestions((prev) => prev.slice(1));
             opacity.value = withTiming(1, {
                 duration: 250,
             });
+            setTouchEnabled(true);
         }, 250);
     }, []);
 
@@ -105,6 +117,7 @@ export default function QuestionsLessonScreen() {
             }}>
             <QuestionsAppbar progress={progress} />
             <Animated.ScrollView
+                pointerEvents={touchEnabled ? "auto" : "none"}
                 alwaysBounceVertical={false}
                 contentContainerStyle={styles.container}
                 style={[
