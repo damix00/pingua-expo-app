@@ -17,6 +17,7 @@ export default {
     listen: "Listen",
     great: "Great!",
     narrator: "Narrator",
+    skip: "Skip",
     languages: {
         en: "English",
         de: "German",
@@ -33,6 +34,9 @@ export default {
         sv: "Swedish",
         currently_learning:
             "You're currently learning {{language}}, with the base language set to {{base}}.",
+    },
+    permissions: {
+        denied_mic: "Microphone access is required to use speech recognition.",
     },
     errors: {
         email_empty: "Email cannot be empty.",
@@ -152,6 +156,8 @@ export default {
             tap_to_record: "Hold to record",
             voice_loading: "Processing...",
             multiple_choice: "Choose the correct translation",
+            correct: "Correct!",
+            incorrect: "Incorrect :(",
         },
     },
     chats: {

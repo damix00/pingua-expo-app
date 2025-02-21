@@ -7,7 +7,7 @@ import { useBottomSheet } from "@/context/BottomSheetContext";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { Question } from "@/types/course";
 import { router, useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -43,6 +43,7 @@ export default function QuestionsLessonScreen() {
     );
 
     const [child, setChild] = useState<JSX.Element | null>(null);
+    const mistakes = useRef(0);
 
     useEffect(() => {
         if (questions.length === 0) {
@@ -84,7 +85,11 @@ export default function QuestionsLessonScreen() {
         }
     }, [questions]);
 
-    const handleComplete = useCallback(() => {
+    const handleComplete = useCallback((mistake?: boolean) => {
+        if (mistake) {
+            mistakes.current++;
+        }
+
         opacity.value = withTiming(0, {
             duration: 250,
         });
@@ -116,19 +121,24 @@ export default function QuestionsLessonScreen() {
                 backgroundColor: colors.background,
             }}>
             <QuestionsAppbar progress={progress} />
-            <Animated.ScrollView
-                pointerEvents={touchEnabled ? "auto" : "none"}
-                alwaysBounceVertical={false}
-                contentContainerStyle={styles.container}
-                style={[
-                    {
-                        paddingTop: insets.top + 16 + 56,
-                        paddingBottom: insets.bottom + 16,
-                        opacity,
-                    },
-                ]}>
-                {child}
-            </Animated.ScrollView>
+            <View
+                style={{
+                    flex: 1,
+                }}
+                pointerEvents={touchEnabled ? "auto" : "none"}>
+                <Animated.ScrollView
+                    alwaysBounceVertical={false}
+                    contentContainerStyle={styles.container}
+                    style={[
+                        {
+                            paddingTop: insets.top + 16 + 56,
+                            paddingBottom: insets.bottom + 16,
+                            opacity,
+                        },
+                    ]}>
+                    {child}
+                </Animated.ScrollView>
+            </View>
         </View>
     );
 }

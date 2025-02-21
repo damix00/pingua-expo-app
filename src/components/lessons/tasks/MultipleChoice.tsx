@@ -30,7 +30,7 @@ function AnswerCard({
 }: {
     answer: string;
     correct: boolean;
-    onPress: () => void;
+    onPress: (mistake: boolean) => void;
     shouldTakeFullWidth: boolean;
 }) {
     const colors = useThemeColors();
@@ -40,13 +40,13 @@ function AnswerCard({
     const [disabled, setDisabled] = useState(false);
 
     const handlePress = useCallback(() => {
+        onPress(!correct);
         if (!correct && !pressed.current) {
             setDisabled(true);
             haptics.notificationAsync(NotificationFeedbackType.Error);
             isIncorrect.value = withTiming(1, { duration: 200 });
         } else if (correct && !pressed.current) {
             setDisabled(true);
-            onPress();
             haptics.notificationAsync(NotificationFeedbackType.Success);
             isIncorrect.value = withTiming(-1, { duration: 200 });
         }
@@ -113,18 +113,22 @@ export default function MultipleChoiceTask({
     onComplete,
 }: {
     data: Question;
-    onComplete: () => any;
+    onComplete: (mistake: boolean) => any;
 }) {
     const { t } = useTranslation();
     const colors = useThemeColors();
     const [buttonDisabled, setButtonDisabled] = useState(true);
+    const [madeMistake, setMadeMistake] = useState(false);
 
     if (!data.answers && data.type !== "multiple_choice") {
         return null;
     }
 
-    const handlePress = useCallback(() => {
-        setButtonDisabled(false);
+    const handlePress = useCallback((mistake: boolean) => {
+        setMadeMistake(mistake);
+        if (!mistake) {
+            setButtonDisabled(false);
+        }
     }, []);
 
     return (
@@ -148,7 +152,9 @@ export default function MultipleChoiceTask({
                         />
                     ))}
                 </View>
-                <Button disabled={buttonDisabled} onPress={onComplete}>
+                <Button
+                    disabled={buttonDisabled}
+                    onPress={() => onComplete(madeMistake)}>
                     <ButtonText>{t("continue")}</ButtonText>
                 </Button>
             </View>

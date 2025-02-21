@@ -1,4 +1,5 @@
 import { Platform } from "react-native";
+import * as FileSystem from "expo-file-system";
 
 export function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));

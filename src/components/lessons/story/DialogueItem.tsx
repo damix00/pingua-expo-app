@@ -1,22 +1,25 @@
-import { ThemedText } from "@/components/ui/ThemedText";
-import { Character, characterNames, DialogueLine } from "@/types/course";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from "expo-av";
 import Animated, {
     useAnimatedStyle,
     useSharedValue,
     withTiming,
 } from "react-native-reanimated";
-import HapticTouchableOpacity from "@/components/input/button/HapticTouchableOpacity";
+import { ThemedText } from "@/components/ui/ThemedText";
+import { Character, characterNames, DialogueLine } from "@/types/course";
 import { useThemeColors } from "@/hooks/useThemeColor";
-import { AudioLines, Volume, Volume2, X } from "lucide-react-native";
-import React from "react";
-import useHaptics from "@/hooks/useHaptics";
-import { NotificationFeedbackType } from "expo-haptics";
 import { useTranslation } from "react-i18next";
+import { NotificationFeedbackType } from "expo-haptics";
+import useHaptics from "@/hooks/useHaptics";
 import DialogueTranslation from "./DialogueTranslation";
 import DashedLine from "@/components/ui/Dashes";
+import AudioButton from "@/components/input/button/AudioButton";
 
 function AnswerItem({
     data,
@@ -62,7 +65,6 @@ function AnswerItem({
                         backgroundColor: colors.primaryContainer,
                     },
                 ]}>
-                {/* {disabled && <X size={20} color={colors.error} />} */}
                 <ThemedText>{data.text}</ThemedText>
             </TouchableOpacity>
         </Animated.View>
@@ -80,10 +82,8 @@ export default function DialogueItem({
     onQuestionEnd: () => void;
     onIncorrectAnswer: () => void;
 }) {
-    const [sound, setSound] = useState<Audio.Sound | undefined>();
     const opacity = useSharedValue(0);
     const colors = useThemeColors();
-    const [isPlaying, setIsPlaying] = useState(false);
     const { t } = useTranslation();
     const incorrectPressed = useRef(false);
 
@@ -105,86 +105,10 @@ export default function DialogueItem({
         return characterNames[data.character as keyof typeof characterNames];
     }, [data.character, t]);
 
-    const initSound = async () => {
-        if (!data.audio) {
-            return;
-        }
-
-        const { sound } = await Audio.Sound.createAsync({ uri: data.audio });
-        await Audio.setAudioModeAsync({
-            playsInSilentModeIOS: true,
-            allowsRecordingIOS: false,
-            interruptionModeIOS: InterruptionModeIOS.DoNotMix,
-            shouldDuckAndroid: true,
-            interruptionModeAndroid: InterruptionModeAndroid.DoNotMix,
-        });
-
-        const status = await sound.getStatusAsync();
-
-        if (status.isLoaded) {
-            setTimeout(() => {
-                onAudioEnd();
-            }, status.durationMillis);
-        }
-
-        setSound(sound);
-    };
-
-    useEffect(() => {
-        const fn = () => {
-            if (sound) {
-                sound.playAsync();
-
-                sound.setOnPlaybackStatusUpdate((status) => {
-                    if (status.isLoaded) {
-                        setIsPlaying(status.isPlaying);
-                    }
-                });
-            }
-        };
-
-        const timeout = setTimeout(fn, duration);
-
-        return () => {
-            clearTimeout(timeout);
-        };
-    }, [sound]);
-
-    useEffect(() => {
-        if (!data.audio) {
-            return;
-        }
-
-        initSound();
-    }, [data.audio]);
-
-    useEffect(() => {
-        return sound
-            ? () => {
-                  sound.unloadAsync();
-              }
-            : undefined;
-    }, [sound]);
-
     return (
         <Animated.View style={[styles.item, animatedStyle]}>
             {data.audio && (
-                <HapticTouchableOpacity
-                    onPress={() => {
-                        sound?.replayAsync();
-                    }}
-                    style={[
-                        styles.iconBtn,
-                        {
-                            backgroundColor: colors.primaryContainer,
-                        },
-                    ]}>
-                    {isPlaying ? (
-                        <AudioLines size={20} color={colors.primary} />
-                    ) : (
-                        <Volume2 size={20} color={colors.primary} />
-                    )}
-                </HapticTouchableOpacity>
+                <AudioButton audioUri={data.audio} onAudioEnd={onAudioEnd} />
             )}
             {data.character == "user" ? (
                 <View style={styles.userQuestionNrapper}>
@@ -240,14 +164,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         gap: 8,
     },
-    iconBtn: {
-        borderRadius: 8,
-        width: 36,
-        height: 36,
-        justifyContent: "center",
-        alignItems: "center",
-        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-    },
     answer: {
         padding: 12,
         borderRadius: 8,
@@ -271,7 +187,6 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     textInner: {
-        // Width fit
         gap: 2,
         alignSelf: "flex-start",
     },

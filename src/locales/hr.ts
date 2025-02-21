@@ -19,6 +19,7 @@ const translations: typeof en = {
     listen: "Poslušaj",
     great: "Odlično!",
     narrator: "Pripovjedač",
+    skip: "Preskoči",
     languages: {
         en: "Engleski",
         de: "Njemački",
@@ -35,6 +36,10 @@ const translations: typeof en = {
         sv: "Švedski",
         currently_learning:
             "Trenutno učiš {{language}}, s postavljenim temeljnim jezikom na {{base}}.",
+    },
+    permissions: {
+        denied_mic:
+            "Pristup mikrofonu potreban je za korištenje prepoznavanja govora.",
     },
     errors: {
         email_empty: "Email ne može biti prazan.",
