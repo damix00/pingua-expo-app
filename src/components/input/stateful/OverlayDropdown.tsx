@@ -111,6 +111,7 @@ export default function OverlayDropdown({
                     activeOpacity={1}
                     onPress={() => setShowDropdown(false)}>
                     <AnimatedIosBlurView
+                        tint="light"
                         intensity={50}
                         style={[
                             styles.overlay,
@@ -125,7 +126,7 @@ export default function OverlayDropdown({
                                 left,
                                 backgroundColor:
                                     Platform.OS == "ios"
-                                        ? colors.transparentBackground
+                                        ? colors.transparentBackgroundDarker
                                         : colors.background,
                             },
                         ]}>

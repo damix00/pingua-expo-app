@@ -5,7 +5,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { TaskTitle } from "./task";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import HapticTouchableOpacity from "@/components/input/button/HapticTouchableOpacity";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Animated, {
     Extrapolation,
     interpolate,
@@ -26,18 +26,26 @@ function AnswerCard({
     answer,
     correct,
     onPress,
+    shouldDisable,
     shouldTakeFullWidth,
 }: {
     answer: string;
     correct: boolean;
     onPress: (mistake: boolean) => void;
+    shouldDisable: boolean;
     shouldTakeFullWidth: boolean;
 }) {
     const colors = useThemeColors();
     const isIncorrect = useSharedValue(0);
     const haptics = useHaptics();
     const pressed = useRef(false);
-    const [disabled, setDisabled] = useState(false);
+    const opacity = useSharedValue(1);
+    const [disabled, setDisabled] = useState(shouldDisable);
+
+    useEffect(() => {
+        setDisabled(shouldDisable);
+        opacity.value = withTiming(shouldDisable ? 0.25 : 1, { duration: 200 });
+    }, [shouldDisable]);
 
     const handlePress = useCallback(() => {
         onPress(!correct);
@@ -45,6 +53,9 @@ function AnswerCard({
             setDisabled(true);
             haptics.notificationAsync(NotificationFeedbackType.Error);
             isIncorrect.value = withTiming(1, { duration: 200 });
+            opacity.value = withTiming(shouldDisable ? 0.25 : 1, {
+                duration: 200,
+            });
         } else if (correct && !pressed.current) {
             setDisabled(true);
             haptics.notificationAsync(NotificationFeedbackType.Success);
@@ -66,12 +77,7 @@ function AnswerCard({
                 [-1, 0, 1],
                 [colors.correctCard, colors.card, colors.errorCard]
             ),
-            opacity: interpolate(
-                isIncorrect.value,
-                [-1, 0, 1],
-                [1, 1, 0.25],
-                Extrapolation.CLAMP
-            ),
+            opacity: opacity.value,
             borderWidth: 1,
         };
     }, [colors, isIncorrect]);
@@ -141,6 +147,7 @@ export default function MultipleChoiceTask({
                 <View style={styles.answers}>
                     {data.answers?.map((answer, index) => (
                         <AnswerCard
+                            shouldDisable={!buttonDisabled && !answer.correct}
                             key={answer.answer}
                             answer={answer.answer}
                             correct={answer.correct}

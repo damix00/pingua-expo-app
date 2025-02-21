@@ -2,6 +2,7 @@ import FlashcardTask from "@/components/lessons/tasks/FlashcardTask";
 import MultipleChoiceTask from "@/components/lessons/tasks/MultipleChoice";
 import QuestionsAppbar from "@/components/lessons/tasks/QuestionsAppbar";
 import RecordVoiceTask from "@/components/lessons/tasks/RecordVoice";
+import TranslateTask from "@/components/lessons/tasks/TranslateTask";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { useBottomSheet } from "@/context/BottomSheetContext";
 import { useThemeColors } from "@/hooks/useThemeColor";
@@ -74,6 +75,14 @@ export default function QuestionsLessonScreen() {
             case "multiple-choice":
                 return (
                     <MultipleChoiceTask
+                        key={q.id}
+                        onComplete={handleComplete}
+                        data={q}
+                    />
+                );
+            case "translate":
+                return (
+                    <TranslateTask
                         key={q.id}
                         onComplete={handleComplete}
                         data={q}

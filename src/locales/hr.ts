@@ -163,6 +163,9 @@ const translations: typeof en = {
             tap_to_record: "Drži za snimanje",
             voice_loading: "Obrada...",
             multiple_choice: "Odaberi točan prijevod",
+            correct: "Točno!",
+            incorrect: "Netočno :(",
+            translate_task: "Prevedi sljedeću rečenicu",
         },
     },
     chats: {
@@ -172,6 +175,7 @@ const translations: typeof en = {
     translation: {
         from: "Sa",
         to: "Na",
+        translate: "Prevedi",
     },
 };
 

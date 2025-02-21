@@ -158,6 +158,7 @@ export default {
             multiple_choice: "Choose the correct translation",
             correct: "Correct!",
             incorrect: "Incorrect :(",
+            translate_task: "Translate the following sentence",
         },
     },
     chats: {
@@ -167,5 +168,6 @@ export default {
     translation: {
         from: "From",
         to: "To",
+        translate: "Translate",
     },
 };

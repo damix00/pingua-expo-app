@@ -13,6 +13,7 @@ const lightTheme = {
     background: "#F6F2FF",
     backgroundDarker: "#7B7980",
     transparentBackground: "#F6F2FFad",
+    transparentBackgroundDarker: "#e3dfedad",
     backgroundVariant: "#E1DBED",
     card: "#E8DFFF",
     icon: "#687076",
