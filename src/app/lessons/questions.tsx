@@ -1,4 +1,5 @@
 import FlashcardTask from "@/components/lessons/tasks/FlashcardTask";
+import ListenAndWriteTask from "@/components/lessons/tasks/ListenAndWrite";
 import MultipleChoiceTask from "@/components/lessons/tasks/MultipleChoice";
 import QuestionsAppbar from "@/components/lessons/tasks/QuestionsAppbar";
 import RecordVoiceTask from "@/components/lessons/tasks/RecordVoice";
@@ -7,6 +8,7 @@ import { ThemedText } from "@/components/ui/ThemedText";
 import { useBottomSheet } from "@/context/BottomSheetContext";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { Question } from "@/types/course";
+import { clamp, sleep } from "@/utils/util";
 import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
@@ -46,6 +48,8 @@ export default function QuestionsLessonScreen() {
     const [child, setChild] = useState<JSX.Element | null>(null);
     const mistakes = useRef(0);
 
+    const TRANSITION_DURATION = 500;
+
     useEffect(() => {
         if (questions.length === 0) {
             router.replace("/lessons/success?xp=5");
@@ -54,6 +58,14 @@ export default function QuestionsLessonScreen() {
 
     const getChild = useCallback(() => {
         const q = questions[0];
+
+        if (!q) {
+            return <View key="empty" />;
+        }
+
+        if (q && q?.audio) {
+            console.log(q.type, q.audio);
+        }
 
         switch (q?.type) {
             case "flashcard":
@@ -88,34 +100,51 @@ export default function QuestionsLessonScreen() {
                         data={q}
                     />
                 );
+            case "listen-and-write":
+                return (
+                    <ListenAndWriteTask
+                        key={q.id}
+                        onComplete={handleComplete}
+                        data={q}
+                    />
+                );
             default:
                 console.log("Unknown question type", q);
-                return <></>;
+                return <View key="empty" />;
         }
     }, [questions]);
 
-    const handleComplete = useCallback((mistake?: boolean) => {
+    const handleComplete = useCallback(async (mistake: boolean) => {
         if (mistake) {
             mistakes.current++;
         }
 
         opacity.value = withTiming(0, {
-            duration: 250,
+            duration: TRANSITION_DURATION / 2,
         });
         setTouchEnabled(false);
-        setTimeout(() => {
-            setQuestions((prev) => prev.slice(1));
-            opacity.value = withTiming(1, {
-                duration: 250,
-            });
-            setTouchEnabled(true);
-        }, 250);
+
+        await sleep(TRANSITION_DURATION / 2);
+
+        setQuestions((prev) => prev.slice(1));
+
+        await sleep(TRANSITION_DURATION / 2);
+
+        opacity.value = withTiming(1, {
+            duration: TRANSITION_DURATION / 2,
+        });
+
+        setTouchEnabled(true);
     }, []);
 
     useEffect(() => {
         setProgress(
-            (parsed.questions.length - questions.length) /
-                parsed.questions.length
+            clamp(
+                (parsed.questions.length - questions.length + 1) /
+                    parsed.questions.length,
+                0,
+                1
+            )
         );
     }, [questions.length, parsed.questions.length]);
 

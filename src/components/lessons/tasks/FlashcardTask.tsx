@@ -19,7 +19,7 @@ export default function FlashcardTask({
     onComplete,
 }: {
     data: Question;
-    onComplete: () => any;
+    onComplete: (mistake: boolean) => any;
 }) {
     const isFlipped = useSharedValue(false);
     const duration = 500;
@@ -107,7 +107,7 @@ export default function FlashcardTask({
                     </Animated.View>
                 </HapticTouchableOpacity>
             </View>
-            <Button disabled={!flipped} onPress={onComplete}>
+            <Button disabled={!flipped} onPress={() => onComplete(false)}>
                 <ButtonText>{t("continue")}</ButtonText>
             </Button>
         </View>

@@ -132,7 +132,11 @@ export default function RecordVoiceTask({
 
         try {
             const res = await FileSystem.uploadAsync(
-                `${apiConfig.baseUrl}/v1/courses/${currentCourse.currentCourse.id}/questions/${data.id}/speech-recognition`,
+                `${apiConfig.baseUrl}/v1/courses/${
+                    currentCourse.currentCourse.id
+                }/questions/${
+                    data.id
+                }/speech-recognition?text=${encodeURIComponent(data.question)}`,
                 uri,
                 {
                     uploadType: FileSystem.FileSystemUploadType.MULTIPART,

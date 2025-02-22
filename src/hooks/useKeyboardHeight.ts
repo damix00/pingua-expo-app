@@ -29,10 +29,14 @@ export default function useKeyboardHeight(includeInset: boolean = true) {
         };
 
         const onKeyboardShow = (event: KeyboardEvent) => {
-            height.value = withTiming(event.endCoordinates.height, {
-                duration: event.duration || 250,
-                easing,
-            });
+            height.value = withTiming(
+                event.endCoordinates.height +
+                    (includeInset ? 0 : -insets.bottom),
+                {
+                    duration: event.duration || 250,
+                    easing,
+                }
+            );
         };
 
         const onKeyboardHide = (event: KeyboardEvent) => {

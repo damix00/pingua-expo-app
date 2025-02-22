@@ -53,7 +53,7 @@ function AnswerCard({
             setDisabled(true);
             haptics.notificationAsync(NotificationFeedbackType.Error);
             isIncorrect.value = withTiming(1, { duration: 200 });
-            opacity.value = withTiming(shouldDisable ? 0.25 : 1, {
+            opacity.value = withTiming(0.25, {
                 duration: 200,
             });
         } else if (correct && !pressed.current) {
@@ -124,14 +124,17 @@ export default function MultipleChoiceTask({
     const { t } = useTranslation();
     const colors = useThemeColors();
     const [buttonDisabled, setButtonDisabled] = useState(true);
-    const [madeMistake, setMadeMistake] = useState(false);
+
+    const hasMistake = useRef(false);
 
     if (!data.answers && data.type !== "multiple_choice") {
         return null;
     }
 
     const handlePress = useCallback((mistake: boolean) => {
-        setMadeMistake(mistake);
+        if (mistake) {
+            hasMistake.current = true;
+        }
         if (!mistake) {
             setButtonDisabled(false);
         }
@@ -161,7 +164,7 @@ export default function MultipleChoiceTask({
                 </View>
                 <Button
                     disabled={buttonDisabled}
-                    onPress={() => onComplete(madeMistake)}>
+                    onPress={() => onComplete(hasMistake.current)}>
                     <ButtonText>{t("continue")}</ButtonText>
                 </Button>
             </View>

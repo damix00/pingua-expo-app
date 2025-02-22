@@ -159,6 +159,12 @@ export default {
             correct: "Correct!",
             incorrect: "Incorrect :(",
             translate_task: "Translate the following sentence",
+            translation_placeholder: "Type your translation here...",
+            check: "Check",
+            listen_and_write: "Listen and write",
+            write_here: "Write here...",
+            cant_listen: "I can't listen now",
+            correct_translation: "Correct translation: {{translation}}",
         },
     },
     chats: {

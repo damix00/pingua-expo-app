@@ -1,4 +1,4 @@
-import { useAuth } from "@/context/AuthContext";
+import { Course, useAuth } from "@/context/AuthContext";
 import { Tabs, useRootNavigationState, useRouter } from "expo-router";
 import { useCallback, useEffect, useRef } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -24,7 +24,7 @@ export default function TabLayout() {
     const auth = useAuth();
     const colors = useThemeColors();
     const popAllAndPush = usePopAllAndPush();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const appChats = useChats();
 
     const networkState = useNetworkState();
@@ -45,16 +45,40 @@ export default function TabLayout() {
             auth.setCourses(me.data.courses);
             auth.setSectionData(me.data.section_data);
 
+            const selectedCourse = me.data.courses[0];
+
             if (chats.status == 200) {
                 appChats.setChats(chats.data.chats);
+            }
+
+            // update course
+            const updated = await axios.patch(
+                `/v1/courses/${selectedCourse.id}`,
+                {
+                    app_language: i18n.language,
+                }
+            );
+
+            let newCourses = me.data.courses;
+
+            if (updated.status == 200) {
+                newCourses = me.data.courses.map((course: Course) => {
+                    if (course.id == updated.data.course.id) {
+                        return updated.data.course;
+                    }
+
+                    return course;
+                });
+
+                auth.setCourses(newCourses);
             }
 
             await saveUserCache(
                 me.data.user,
                 refreshed.data.jwt,
-                me.data.courses,
+                newCourses,
                 me.data.section_data,
-                me.data.courses[0].id,
+                selectedCourse.id,
                 chats.data?.chats ?? []
             );
         } else if (me.status == 401) {

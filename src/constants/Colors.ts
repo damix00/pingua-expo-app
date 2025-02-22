@@ -22,7 +22,7 @@ const lightTheme = {
     outlineSecondary: "#E1DBED",
     error: "#e62727",
     errorCard: "#f2d0d0",
-    correct: "#30db33",
+    correct: "#2dba2f",
     correctCard: "#daf7da",
     backdrop: Platform.OS == "ios" ? "#00000039" : "#000000B7",
 };

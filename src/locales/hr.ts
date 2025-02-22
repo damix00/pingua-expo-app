@@ -166,6 +166,12 @@ const translations: typeof en = {
             correct: "Točno!",
             incorrect: "Netočno :(",
             translate_task: "Prevedi sljedeću rečenicu",
+            translation_placeholder: "Ovdje upiši prijevod...",
+            check: "Provjeri",
+            listen_and_write: "Poslušaj i napiši",
+            write_here: "Napiši ovdje...",
+            cant_listen: "Sada ne mogu slušati",
+            correct_translation: "Točan prijevod: {{translation}}",
         },
     },
     chats: {
