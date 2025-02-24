@@ -32,6 +32,7 @@ import * as Sharing from "expo-sharing";
 import { AndroidOutputFormat, IOSOutputFormat } from "expo-av/build/Audio";
 import { apiConfig } from "@/api/config";
 import { getJwt } from "@/api/data";
+import { NotificationFeedbackType } from "expo-haptics";
 
 enum TaskStatus {
     IDLE,
@@ -133,7 +134,7 @@ export default function RecordVoiceTask({
         try {
             const res = await FileSystem.uploadAsync(
                 `${apiConfig.baseUrl}/v1/courses/${
-                    currentCourse.currentCourse.id
+                    currentCourse.currentCourse!.id
                 }/questions/${
                     data.id
                 }/speech-recognition?text=${encodeURIComponent(data.question)}`,
@@ -153,8 +154,10 @@ export default function RecordVoiceTask({
             const json = JSON.parse(res.body);
 
             if (json.similarity) {
+                haptics.notificationAsync(NotificationFeedbackType.Success);
                 setStatus(TaskStatus.CORRECT);
             } else {
+                haptics.notificationAsync(NotificationFeedbackType.Error);
                 setStatus(TaskStatus.INCORRECT);
             }
         } catch (err) {

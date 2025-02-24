@@ -172,6 +172,8 @@ const translations: typeof en = {
             write_here: "Napiši ovdje...",
             cant_listen: "Sada ne mogu slušati",
             correct_translation: "Točan prijevod: {{translation}}",
+            correct_form: "Točan oblik: {{form}}",
+            listen_and_choose: "Poslušaj i odaberi",
         },
     },
     chats: {

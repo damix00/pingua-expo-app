@@ -48,38 +48,6 @@ export default function ModalLayout() {
                     title: "Premium",
                 }}
             />
-            <Stack.Screen
-                name="plans"
-                options={{
-                    presentation: "card",
-                    title: "Plans",
-                    header: () => (
-                        <>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    router.back();
-                                }}
-                                style={[
-                                    styles.back,
-                                    {
-                                        top: Platform.select({
-                                            android: insets.top,
-                                            ios: 0,
-                                        }),
-                                    },
-                                ]}>
-                                <ChevronLeft size={24} color={textColor} />
-                            </TouchableOpacity>
-                            <CloseButton
-                                onPress={() => {
-                                    router.dismiss();
-                                    router.dismiss();
-                                }}
-                            />
-                        </>
-                    ),
-                }}
-            />
         </Stack>
     );
 }

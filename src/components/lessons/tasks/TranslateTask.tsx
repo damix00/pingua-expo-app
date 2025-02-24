@@ -78,7 +78,9 @@ export default function TranslateTask({
 
             try {
                 const res = await axios.post(
-                    `/v1/courses/${currentCourse.currentCourse.id}/questions/${data.id}/check-translation?text=${data.question}`,
+                    `/v1/courses/${currentCourse.currentCourse!.id}/questions/${
+                        data.id
+                    }/check-translation?text=${data.question}`,
                     {
                         translation: translationInput.current,
                     }

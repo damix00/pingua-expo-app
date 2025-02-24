@@ -6,14 +6,19 @@ import RecordVoiceTask from "@/components/lessons/tasks/RecordVoice";
 import TranslateTask from "@/components/lessons/tasks/TranslateTask";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { useBottomSheet } from "@/context/BottomSheetContext";
+import { useCurrentCourse } from "@/hooks/course";
+import { usePreventBack } from "@/hooks/navigation";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { Question } from "@/types/course";
 import { clamp, sleep } from "@/utils/util";
+import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet, View } from "react-native";
 import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 export default function QuestionsLessonScreen() {
     const data = useLocalSearchParams<{ data: string }>();
@@ -32,6 +37,10 @@ export default function QuestionsLessonScreen() {
     const colors = useThemeColors();
     const bottomSheet = useBottomSheet();
     const [touchEnabled, setTouchEnabled] = useState(true);
+    const course = useCurrentCourse();
+    const { t } = useTranslation();
+
+    usePreventBack();
 
     const [progress, setProgress] = useState(0);
     const [questions, setQuestions] = useState<Question[]>(() =>
@@ -50,9 +59,30 @@ export default function QuestionsLessonScreen() {
 
     const TRANSITION_DURATION = 500;
 
+    const onFinishedLesson = useCallback(async () => {
+        const result = await axios.patch(
+            `/v1/courses/${course.currentCourse!.id}/lessons/${parsed.id}`,
+            {
+                mistakes: mistakes.current,
+                type: "questions",
+            }
+        );
+
+        if (result.status != 200) {
+            Toast.show({
+                type: "error",
+                text1: t("errors.something_went_wrong"),
+            });
+        }
+
+        router.replace(
+            `/lessons/success?xp=${result.data.xp}&advancedToNextSection=${result.data.advancedToNextSection}`
+        );
+    }, [course.currentCourse, parsed.id, t]);
+
     useEffect(() => {
         if (questions.length === 0) {
-            router.replace("/lessons/success?xp=5");
+            onFinishedLesson();
         }
     }, [questions]);
 
@@ -61,10 +91,6 @@ export default function QuestionsLessonScreen() {
 
         if (!q) {
             return <View key="empty" />;
-        }
-
-        if (q && q?.audio) {
-            console.log(q.type, q.audio);
         }
 
         switch (q?.type) {
@@ -84,6 +110,7 @@ export default function QuestionsLessonScreen() {
                         data={q}
                     />
                 );
+            case "listen-and-choose":
             case "multiple-choice":
                 return (
                     <MultipleChoiceTask

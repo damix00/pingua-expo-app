@@ -31,6 +31,7 @@ import axios from "axios";
 import { useCurrentCourse } from "@/hooks/course";
 import Toast from "react-native-toast-message";
 import ProgressBar from "@/components/lessons/story/ProgressBar";
+import { usePreventBack } from "@/hooks/navigation";
 
 const AnimatedThemedText = Animated.createAnimatedComponent(ThemedText);
 
@@ -39,6 +40,7 @@ export default function StoryLessonScreen() {
         data: string;
     }>();
     const { t } = useTranslation();
+    usePreventBack();
     const colors = useThemeColors();
     const insets = useSafeAreaInsets();
     const course = useCurrentCourse();
@@ -150,7 +152,7 @@ export default function StoryLessonScreen() {
 
     const onEnd = useCallback(async () => {
         const data = await axios.patch(
-            `/v1/courses/${course.currentCourse.id}/lessons/${parsed.id}`,
+            `/v1/courses/${course.currentCourse!.id}/lessons/${parsed.id}`,
             {
                 mistakes: incorrectAnswers.current,
                 type: "story",
@@ -164,7 +166,9 @@ export default function StoryLessonScreen() {
             });
         }
 
-        router.replace(`/lessons/success?xp=${data.data.xp}`);
+        router.replace(
+            `/lessons/success?xp=${data.data.xp}&advancedToNextSection=${data.data.advancedToNextSection}`
+        );
     }, []);
 
     useEffect(() => {

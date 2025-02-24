@@ -4,21 +4,30 @@ import { useTranslation } from "react-i18next";
 
 export function useCurrentCourse() {
     const auth = useAuth();
+    const { i18n } = useTranslation();
 
-    const currentCourse = useMemo(
-        () =>
+    const currentCourse = useMemo(() => {
+        if (!auth.courses || !auth.selectedCourse) {
+            return null;
+        }
+
+        return (
             auth.courses.find((course) => course.id === auth.selectedCourse) ??
-            auth.courses[0],
-        [auth.courses, auth.selectedCourse]
-    );
+            auth.courses[0]
+        );
+    }, [auth.courses, auth.selectedCourse]);
 
-    const currentCourseData = useMemo(
-        () =>
+    const currentCourseData = useMemo(() => {
+        if (!auth.sectionData || !auth.selectedCourse) {
+            return null;
+        }
+
+        return (
             auth.sectionData.find(
                 (course) => course.id === auth.selectedCourse
-            ) ?? auth.sectionData[0],
-        [auth.sectionData, auth.selectedCourse]
-    );
+            ) ?? auth.sectionData[0]
+        );
+    }, [auth.sectionData, auth.selectedCourse]);
 
     const updateCurrentCourse = useCallback(
         (data: Course) => {
@@ -31,14 +40,25 @@ export function useCurrentCourse() {
         [auth]
     );
 
-    return { currentCourse, currentCourseData, updateCurrentCourse };
-}
+    if (!auth.courses || !auth.sectionData) {
+        return {
+            currentCourse: null,
+            currentCourseData: null,
+            updateCurrentCourse: () => {},
+            title: "",
+        };
+    }
 
-export function useSectionTitle(sectionData: SectionData) {
-    const { i18n } = useTranslation();
-
-    // @ts-ignore
-    return sectionData[`title_${i18n.language}`] ?? sectionData.title;
+    return {
+        currentCourse,
+        currentCourseData,
+        updateCurrentCourse,
+        title:
+            // @ts-ignore
+            currentCourseData[`title_${i18n.language}`] ??
+            currentCourseData?.title ??
+            "",
+    };
 }
 
 export function useUnitTitle(sectionData: SectionData, unit: number) {

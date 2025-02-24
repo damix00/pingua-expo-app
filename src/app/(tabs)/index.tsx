@@ -1,16 +1,7 @@
 import { ThemedText } from "@/components/ui/ThemedText";
-import { useAuth } from "@/context/AuthContext";
-import { useCurrentCourse, useSectionTitle } from "@/hooks/course";
-import { useThemeColors } from "@/hooks/useThemeColor";
-import { useCallback, useEffect, useMemo, useRef } from "react";
-import {
-    ActivityIndicator,
-    FlatList,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    View,
-} from "react-native";
+import { useCurrentCourse } from "@/hooks/course";
+import { useMemo, useRef } from "react";
+import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 import UnitButton from "@/components/homescreen/home/UnitButton";
 import XPProgressBar from "@/components/homescreen/home/XPProgressBar";
 import { getJwt } from "@/api/data";
@@ -22,13 +13,16 @@ export default function Index() {
     const insets = useAppbarSafeAreaInsets();
     const flatListRef = useRef<FlatList>(null);
 
-    const { currentCourse, currentCourseData } = useCurrentCourse();
-    const title = useSectionTitle(currentCourseData);
+    const { currentCourse, currentCourseData, title } = useCurrentCourse();
 
     const units = useMemo(() => {
         const data = [];
 
-        for (let i = 0; i < currentCourseData.unitCount; i++) {
+        if (!currentCourse || !currentCourseData) {
+            return [];
+        }
+
+        for (let i = 0; i < currentCourseData?.unitCount; i++) {
             // Each unit takes 10 XP to complete
             const xp = (i + 1) * 10;
 
@@ -42,10 +36,27 @@ export default function Index() {
     }, [currentCourse, currentCourseData]);
 
     const currentUnit = useMemo(() => {
+        if (!units) {
+            return 0;
+        }
+
         const index = units.findIndex((unit) => !unit.completed);
 
         return index === -1 ? 0 : index;
     }, [units]);
+
+    if (!currentCourseData || !currentCourse) {
+        return (
+            <ThemedView
+                style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}>
+                <ActivityIndicator />
+            </ThemedView>
+        );
+    }
 
     return (
         <FlatList
@@ -71,6 +82,7 @@ export default function Index() {
                         currentLevel={currentCourse.level}
                         xp={currentCourse.xp}
                         xpToAdvance={currentCourseData.unitCount * 10}
+                        sectionCount={currentCourseData.unitCount}
                     />
                 </View>
             )}

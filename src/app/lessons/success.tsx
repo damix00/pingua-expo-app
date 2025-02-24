@@ -2,24 +2,31 @@ import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ui/ThemedText";
+import { useAuth } from "@/context/AuthContext";
 import { useCurrentCourse } from "@/hooks/course";
 import useHaptics from "@/hooks/useHaptics";
+import { saveUserCache } from "@/utils/cache/user-cache";
+import { sleep } from "@/utils/util";
+import axios from "axios";
 import { NotificationFeedbackType } from "expo-haptics";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function LessonSuccessPage() {
-    const { xp } = useLocalSearchParams<{
+    const { xp, advancedToNextSection } = useLocalSearchParams<{
         xp: string;
+        advancedToNextSection: string;
     }>();
 
     const insets = useSafeAreaInsets();
     const haptics = useHaptics();
     const currentCourse = useCurrentCourse();
+
+    const auth = useAuth();
 
     const { t } = useTranslation();
 
@@ -30,18 +37,49 @@ export default function LessonSuccessPage() {
 
     const duration = 500;
 
-    useEffect(() => {
+    const loadNewSection = useCallback(async () => {
+        const me = await axios.get("/v1/auth/me");
+
+        console.log(me.data);
+
+        auth.setCourses(me.data.courses);
+        auth.setSectionData(me.data.section_data);
+        auth.setSectionCount(me.data.section_count);
+
+        await saveUserCache({
+            user: me.data.user,
+            courses: me.data.courses,
+            sectionData: me.data.sectionData,
+        });
+    }, []);
+
+    const playAnim = useCallback(async () => {
         opacity1.value = withTiming(1, { duration });
-        setTimeout(() => {
-            opacity2.value = withTiming(1, { duration });
-        }, 1000);
-        setTimeout(() => {
-            haptics.notificationAsync(NotificationFeedbackType.Success);
-            opacity3.value = withTiming(1, { duration });
-        }, 2000);
-        setTimeout(() => {
+        await sleep(1000);
+        opacity2.value = withTiming(1, { duration });
+
+        await sleep(1000);
+        haptics.notificationAsync(NotificationFeedbackType.Success);
+        opacity3.value = withTiming(1, { duration });
+
+        if (advancedToNextSection) {
+            await sleep(1500);
+            opacity1.value = withTiming(0, { duration });
+            opacity2.value = withTiming(0, { duration });
+            opacity3.value = withTiming(0, { duration });
+            await sleep(duration);
+        } else {
+            await sleep(500);
             opacity4.value = withTiming(1, { duration });
-        }, 2500);
+        }
+    }, []);
+
+    useEffect(() => {
+        Promise.all([playAnim(), loadNewSection()]).then(() => {
+            if (advancedToNextSection) {
+                router.replace("/lessons/new-section");
+            }
+        });
     }, []);
 
     return (
@@ -74,6 +112,14 @@ export default function LessonSuccessPage() {
                 style={[{ opacity: opacity4 }, styles.item, styles.button]}>
                 <Button
                     onPress={() => {
+                        if (advancedToNextSection) {
+                            return;
+                        }
+
+                        if (!currentCourse.currentCourse) {
+                            return;
+                        }
+
                         currentCourse.updateCurrentCourse({
                             ...currentCourse.currentCourse,
                             xp: currentCourse.currentCourse.xp + parseInt(xp),

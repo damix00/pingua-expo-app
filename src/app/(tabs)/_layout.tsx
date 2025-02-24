@@ -44,6 +44,7 @@ export default function TabLayout() {
             auth.setUser(me.data.user);
             auth.setCourses(me.data.courses);
             auth.setSectionData(me.data.section_data);
+            auth.setSectionCount(me.data.section_count);
 
             const selectedCourse = me.data.courses[0];
 
@@ -73,14 +74,15 @@ export default function TabLayout() {
                 auth.setCourses(newCourses);
             }
 
-            await saveUserCache(
-                me.data.user,
-                refreshed.data.jwt,
-                newCourses,
-                me.data.section_data,
-                selectedCourse.id,
-                chats.data?.chats ?? []
-            );
+            await saveUserCache({
+                user: me.data.user,
+                jwt: refreshed.data.jwt,
+                courses: newCourses,
+                sectionData: me.data.section_data,
+                selectedCourse: selectedCourse.id,
+                chats: chats.data?.chats ?? [],
+                sectionCount: me.data.section_count,
+            });
         } else if (me.status == 401) {
             await clearUserCache();
             auth.logout();

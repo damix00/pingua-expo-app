@@ -9,11 +9,13 @@ export default function XPProgressBar({
     currentLevel,
     xp,
     xpToAdvance,
+    sectionCount,
 }: {
     currentUnit: number;
     currentLevel: number;
     xp: number;
     xpToAdvance: number;
+    sectionCount: number;
 }) {
     const { t } = useTranslation();
     const colors = useThemeColors();
@@ -24,12 +26,14 @@ export default function XPProgressBar({
                 <ThemedText style={styles.text}>
                     {t("course.unit", { unit: Math.floor(xp / 10) + 1 })}
                 </ThemedText>
-                <ThemedText type="secondary" style={styles.text}>
-                    {t("course.xpToLevel", {
-                        xp: xpToAdvance - xp,
-                        level: currentLevel + 1,
-                    })}
-                </ThemedText>
+                {currentLevel < sectionCount && (
+                    <ThemedText type="secondary" style={styles.text}>
+                        {t("course.xpToLevel", {
+                            xp: xpToAdvance - xp,
+                            level: currentLevel + 1,
+                        })}
+                    </ThemedText>
+                )}
             </View>
             <View
                 style={[

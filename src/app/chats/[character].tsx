@@ -290,7 +290,8 @@ export default function ChatScreen() {
                                 },
                                 body: JSON.stringify({
                                     content: message,
-                                    language: course.currentCourse.languageCode,
+                                    language:
+                                        course.currentCourse!.languageCode,
                                 }),
                             }
                         );

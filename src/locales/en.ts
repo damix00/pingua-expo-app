@@ -148,6 +148,7 @@ export default {
             title: "Congratulations!",
             description: "You've completed this lesson.",
             xp: "+{{xp}} XP",
+            new_section: "New section unlocked!",
         },
         questions: {
             new_word: "New word!",
@@ -165,6 +166,8 @@ export default {
             write_here: "Write here...",
             cant_listen: "I can't listen now",
             correct_translation: "Correct translation: {{translation}}",
+            correct_form: "Correct form: {{form}}",
+            listen_and_choose: "Listen and choose",
         },
     },
     chats: {

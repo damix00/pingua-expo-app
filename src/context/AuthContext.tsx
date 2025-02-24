@@ -57,6 +57,8 @@ export type UserContextType = {
     courses: Course[];
     setCourses: (courses: Course[]) => void;
     logout: () => void;
+    sectionCount: number;
+    setSectionCount: (sectionCount: number) => void;
 };
 
 export const AuthContext = createContext<UserContextType>({
@@ -71,6 +73,8 @@ export const AuthContext = createContext<UserContextType>({
     courses: [],
     setCourses: () => {},
     logout: () => {},
+    sectionCount: 0,
+    setSectionCount: () => {},
 });
 
 export function AuthProvider({
@@ -84,6 +88,8 @@ export function AuthProvider({
     setCourses,
     loggedIn,
     setLoggedIn,
+    sectionCount,
+    setSectionCount,
     ...props
 }: {
     sectionData: SectionData[];
@@ -96,6 +102,8 @@ export function AuthProvider({
     setCourses: (courses: Course[]) => void;
     loggedIn: boolean;
     setLoggedIn: (loggedIn: boolean) => void;
+    sectionCount: number;
+    setSectionCount: (sectionCount: number) => void;
     children: React.ReactNode;
 }) {
     const logout = () => {
@@ -118,6 +126,8 @@ export function AuthProvider({
                 setUser,
                 courses,
                 setCourses,
+                sectionCount,
+                setSectionCount,
             }}>
             {props.children}
         </AuthContext.Provider>

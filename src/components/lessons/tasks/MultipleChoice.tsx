@@ -18,6 +18,7 @@ import useHaptics from "@/hooks/useHaptics";
 import { NotificationFeedbackType } from "expo-haptics";
 import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
+import AudioButton from "@/components/input/button/AudioButton";
 
 const AnimatedTouchableOpacity =
     Animated.createAnimatedComponent(TouchableOpacity);
@@ -89,6 +90,7 @@ function AnswerCard({
                 [-1, 0, 1],
                 [colors.correct, colors.primary, colors.error]
             ),
+            textAlign: "center",
         };
     });
 
@@ -142,10 +144,19 @@ export default function MultipleChoiceTask({
 
     return (
         <View style={styles.container}>
-            <TaskTitle
-                title={t("lesson.questions.multiple_choice")}
-                question={data.question}
-            />
+            {data.type == "listen-and-choose" ? (
+                <View style={styles.questionContainer}>
+                    <AudioButton audioUri={data.audio} />
+                    <ThemedText fontWeight="800" style={styles.questionText}>
+                        {t("lesson.questions.listen_and_choose")}
+                    </ThemedText>
+                </View>
+            ) : (
+                <TaskTitle
+                    title={t("lesson.questions.multiple_choice")}
+                    question={data.question}
+                />
+            )}
             <View style={styles.answerContainer}>
                 <View style={styles.answers}>
                     {data.answers?.map((answer, index) => (
@@ -209,5 +220,17 @@ const styles = StyleSheet.create({
         aspectRatio: 1,
         alignItems: "center",
         justifyContent: "center",
+        padding: 16,
+    },
+    questionContainer: {
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 8,
+        flexDirection: "row",
+        paddingHorizontal: 24,
+    },
+    questionText: {
+        fontSize: 24,
+        textAlign: "left",
     },
 });

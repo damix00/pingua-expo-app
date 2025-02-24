@@ -1,6 +1,7 @@
 import { CommonActions } from "@react-navigation/native";
 import { Route, useNavigation } from "expo-router";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
+import { BackHandler } from "react-native";
 
 export function usePopAllAndPush() {
     const shouldWork = useRef(true);
@@ -29,4 +30,19 @@ export function usePopAllAndPush() {
     );
 
     return cbck;
+}
+
+export function usePreventBack() {
+    useEffect(() => {
+        const listener = () => true;
+
+        const subscription = BackHandler.addEventListener(
+            "hardwareBackPress",
+            listener
+        );
+
+        return () => {
+            subscription.remove();
+        };
+    });
 }

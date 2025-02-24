@@ -2,6 +2,7 @@ import { ThemedView } from "@/components/ThemedView";
 import StaticBackground from "@/components/ui/StaticBackground";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { useCurrentCourse } from "@/hooks/course";
+import { usePreventBack } from "@/hooks/navigation";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { useTimeout } from "@/hooks/useTimeout";
 import { mascot } from "@/utils/cache/CachedImages";
@@ -16,10 +17,11 @@ export default function LessonLoading() {
     const insets = useSafeAreaInsets();
     const course = useCurrentCourse();
     const { t } = useTranslation();
+    usePreventBack();
 
     useTimeout(async () => {
         const response = await axios.post(
-            `/v1/courses/${course.currentCourse.id}/lessons`
+            `/v1/courses/${course.currentCourse!.id}/lessons`
         );
 
         if (response.data.type == "story") {

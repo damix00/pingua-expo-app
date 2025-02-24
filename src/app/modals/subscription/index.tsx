@@ -127,7 +127,7 @@ export default function SubscriptionModal() {
                     </View>
                 </View>
                 <View style={styles.horizontalPadding}>
-                    <Button href="modals/subscription/plans">
+                    <Button>
                         <ButtonText>{t("subscription.cta")}</ButtonText>
                     </Button>
                     <ThemedText type="secondary" style={styles.disclaimer}>

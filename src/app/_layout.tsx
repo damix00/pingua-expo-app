@@ -96,6 +96,7 @@ export default function RootLayout() {
     const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
     const [sectionData, setSectionData] = useState<SectionData[]>([]);
     const [chats, setChats] = useState<Chat[]>([]);
+    const [sectionCount, setSectionCount] = useState(1);
 
     const scheme = useColorScheme();
     const colors = useThemeColors();
@@ -146,6 +147,7 @@ export default function RootLayout() {
         setCourses(userCache.courses);
         setSelectedCourse(userCache.selectedCourse);
         setChats(userCache.chats);
+        setSectionCount(userCache.sectionCount);
 
         setSectionData(userCache.sectionData);
 
@@ -208,6 +210,8 @@ export default function RootLayout() {
                             setUser={setUser}
                             setCourses={setCourses}
                             loggedIn={loggedIn}
+                            sectionCount={sectionCount}
+                            setSectionCount={setSectionCount}
                             setLoggedIn={setLoggedIn}>
                             <ChatProvider chats={chats} setChats={setChats}>
                                 <ThemeProvider
@@ -359,6 +363,15 @@ export default function RootLayout() {
                                             />
                                             <Stack.Screen
                                                 name="lessons/success"
+                                                options={{
+                                                    gestureEnabled: false,
+                                                    headerShown: false,
+                                                    animation: "fade",
+                                                    animationDuration: 300,
+                                                }}
+                                            />
+                                            <Stack.Screen
+                                                name="lessons/new-section"
                                                 options={{
                                                     gestureEnabled: false,
                                                     headerShown: false,

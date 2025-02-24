@@ -120,3 +120,15 @@ export async function saveLocale(language: string | null) {
     }
     await AsyncStorage.setItem("language", language!);
 }
+
+export function compareTexts(text1: string, text2: string) {
+    // Replace all extended characters with their base characters
+    let t1 = text1.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    let t2 = text2.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+    // Remove commas and periods
+    t1 = t1.replace(/,/g, "").replace(/\./g, "");
+    t2 = t2.replace(/,/g, "").replace(/\./g, "");
+
+    return t1.trim().toLowerCase() === t2.trim().toLowerCase();
+}

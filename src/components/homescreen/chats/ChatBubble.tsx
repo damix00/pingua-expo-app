@@ -62,8 +62,8 @@ export default function ChatBubble({
     const onTranslateBtnPress = useCallback(() => {
         bottomSheet.setBottomSheet(
             <TranslateBottomSheet
-                fromLanguage={course.currentCourse.languageCode}
-                toLanguage={course.currentCourse.appLanguageCode}
+                fromLanguage={course.currentCourse!.languageCode}
+                toLanguage={course.currentCourse!.appLanguageCode}
                 fromText={content}
             />
         );
@@ -107,7 +107,7 @@ export default function ChatBubble({
                                   `/v1/chats/${chatId}/messages/${messageId}/tts`,
                                   {
                                       language:
-                                          course.currentCourse.languageCode,
+                                          course.currentCourse!.languageCode,
                                   }
                               );
 

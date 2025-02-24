@@ -164,14 +164,14 @@ export default function ProfileSetupPage() {
                                 auth.setCourses(response.data.courses);
                                 auth.setSectionData(response.data.section_data);
 
-                                await saveUserCache(
-                                    response.data.user,
-                                    response.data.jwt,
-                                    response.data.courses,
-                                    response.data.section_data,
-                                    response.data.courses[0].id,
-                                    []
-                                );
+                                await saveUserCache({
+                                    user: response.data.user,
+                                    jwt: response.data.jwt,
+                                    courses: response.data.courses,
+                                    sectionData: response.data.section_data,
+                                    selectedCourse: response.data.courses[0].id,
+                                    chats: [],
+                                });
 
                                 popAllAndPush("(tabs)");
                             } else {
