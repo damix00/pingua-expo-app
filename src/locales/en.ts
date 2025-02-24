@@ -107,7 +107,7 @@ export default {
         title: "Level up your language",
         description:
             "Exclusive lessons, real-world practice, and AI-powered guidance - all in one place.",
-        cta: "Subscribe now",
+        cta: "Subscribe - $9.99/month",
         disclaimer:
             "Your subscription will automatically renew unless canceled. You can manage or cancel your subscription in your account settings at any time. By subscribing, you agree to our Terms of Service and Privacy Policy.",
         item_1: "**Personalized lessons** tailored towards your goals.",

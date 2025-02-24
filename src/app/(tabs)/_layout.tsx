@@ -198,23 +198,6 @@ export default function TabLayout() {
                     }}
                 />
                 <Tabs.Screen
-                    name="scenarios"
-                    options={{
-                        title: t("tabs.scenarios"),
-                        tabBarIcon: ({ focused }) => (
-                            <Ionicons
-                                name={focused ? "sparkles" : "sparkles-outline"}
-                                size={24}
-                                color={
-                                    focused
-                                        ? colors.primary
-                                        : colors.textSecondary
-                                }
-                            />
-                        ),
-                    }}
-                />
-                <Tabs.Screen
                     name="translate"
                     options={{
                         title: t("tabs.translate"),

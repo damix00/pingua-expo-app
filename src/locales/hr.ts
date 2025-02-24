@@ -113,7 +113,7 @@ const translations: typeof en = {
         title: "Unaprijedi svoje jezične vještine",
         description:
             "Ekskluzivne lekcije, praksa i vođenje uz pomoć AI-a - sve na jednom mjestu.",
-        cta: "Pretplati se",
+        cta: "Pretplati se - $9.99/mjesečno",
         disclaimer:
             "Vaša će se pretplata automatski obnoviti ako je ne otkažete. Pretplatu otkazati ili promijeniti u postavkama svoga računa u bilo kojem trenutku. Pretplatom prihvaćate naše Uvjete pružanja usluge i Pravila privatnosti.",
         item_1: "**Personalizirane lekcije** prilagođene tvojim ciljevima.",
@@ -155,6 +155,7 @@ const translations: typeof en = {
             title: "Svaka čast!",
             description: "Završili ste ovu lekciju.",
             xp: "+{{xp}} XP",
+            new_section: "Nova sekcija otključana!",
         },
         questions: {
             new_word: "Nova riječ!",
