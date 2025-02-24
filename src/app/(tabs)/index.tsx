@@ -76,7 +76,7 @@ export default function Index() {
             keyExtractor={(data) => data.xp.toString()}
             ListHeaderComponent={() => (
                 <View style={styles.header}>
-                    <ThemedText type="heading">{title}</ThemedText>
+                    <ThemedText type="heading">{title ?? ""}</ThemedText>
                     <XPProgressBar
                         currentUnit={currentUnit + 1}
                         currentLevel={currentCourse.level}

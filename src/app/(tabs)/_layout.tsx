@@ -52,32 +52,10 @@ export default function TabLayout() {
                 appChats.setChats(chats.data.chats);
             }
 
-            // update course
-            const updated = await axios.patch(
-                `/v1/courses/${selectedCourse.id}`,
-                {
-                    app_language: i18n.language,
-                }
-            );
-
-            let newCourses = me.data.courses;
-
-            if (updated.status == 200) {
-                newCourses = me.data.courses.map((course: Course) => {
-                    if (course.id == updated.data.course.id) {
-                        return updated.data.course;
-                    }
-
-                    return course;
-                });
-
-                auth.setCourses(newCourses);
-            }
-
             await saveUserCache({
                 user: me.data.user,
                 jwt: refreshed.data.jwt,
-                courses: newCourses,
+                courses: me.data.courses,
                 sectionData: me.data.section_data,
                 selectedCourse: selectedCourse.id,
                 chats: chats.data?.chats ?? [],

@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react";
 
-export type Plan = "FREE" | "BASIC" | "PREMIUM" | "ULTRA";
+// export type Plan = "FREE" | "BASIC" | "PREMIUM" | "ULTRA";
+export type Plan = "FREE" | "PREMIUM";
 
 export type AuthUser = {
     id: string;

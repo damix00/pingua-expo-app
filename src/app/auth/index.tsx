@@ -174,7 +174,7 @@ export default function Auth() {
                                         .match(/href="([^"]+)"/);
                                     if (href) {
                                         // open the link in the browser
-                                        await openBrowserAsync(href[1]);
+                                        router.push(href[1] as any);
                                     }
                                 },
                             },

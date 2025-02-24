@@ -173,11 +173,22 @@ export default function MultipleChoiceTask({
                         />
                     ))}
                 </View>
-                <Button
-                    disabled={buttonDisabled}
-                    onPress={() => onComplete(hasMistake.current)}>
-                    <ButtonText>{t("continue")}</ButtonText>
-                </Button>
+                <View style={styles.buttonWrapper}>
+                    {buttonDisabled && data.type == "listen-and-choose" && (
+                        <Button
+                            variant="text"
+                            onPress={() => onComplete(hasMistake.current)}>
+                            <ButtonText>
+                                {t("lesson.questions.cant_listen")}
+                            </ButtonText>
+                        </Button>
+                    )}
+                    <Button
+                        disabled={buttonDisabled}
+                        onPress={() => onComplete(hasMistake.current)}>
+                        <ButtonText>{t("continue")}</ButtonText>
+                    </Button>
+                </View>
             </View>
         </View>
     );
@@ -232,5 +243,9 @@ const styles = StyleSheet.create({
     questionText: {
         fontSize: 24,
         textAlign: "left",
+    },
+    buttonWrapper: {
+        flexDirection: "column",
+        gap: 4,
     },
 });

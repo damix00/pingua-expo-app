@@ -82,6 +82,8 @@ export default function TranslateTab() {
     const fromText = useRef("");
 
     const handleTranslate = useCallback(async () => {
+        if (fromText.current.length == 0) return;
+
         setLoading(true);
 
         const resp = await axios.post("/v1/translations", {

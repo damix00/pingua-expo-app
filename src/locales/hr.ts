@@ -98,7 +98,7 @@ const translations: typeof en = {
     auth: {
         login: "Prijava ili registracija",
         disclaimer:
-            'Nastavkom se slažeš s našim <a href="https://google.com">Uvjetima korištenja</a> i <a href="https://google.com">Pravilima privatnosti</a>.',
+            'Nastavkom se slažeš s našim <a href="/legal/tos">Uvjetima korištenja</a> i <a href="/legal/privacy-policy">Pravilima privatnosti</a>.',
         otp_title: "Šesteroznamenkasti kȏd",
         otp_description:
             "Poslali smo kȏd na {{email}}. Unesite ga ispod kako biste nastavili.",
@@ -110,6 +110,7 @@ const translations: typeof en = {
     subscription: {
         subscribe: "Pretplati se",
         name: "Premium",
+        get_subscription: "Kupi Premium",
         title: "Unaprijedi svoje jezične vještine",
         description:
             "Ekskluzivne lekcije, praksa i vođenje uz pomoć AI-a - sve na jednom mjestu.",
@@ -176,6 +177,17 @@ const translations: typeof en = {
             correct_form: "Točan oblik: {{form}}",
             listen_and_choose: "Poslušaj i odaberi",
         },
+    },
+    popups: {
+        logout: {
+            title: "Odjava",
+            description: "Jeste li sigurni da se želite odjaviti?",
+            cancel: "Odustani",
+            confirm: "Odjavi se",
+        },
+    },
+    settings: {
+        title: "Postavke",
     },
     chats: {
         tapToChat: "Dodirni za chat",

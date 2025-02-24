@@ -92,7 +92,7 @@ export default {
     auth: {
         login: "Log in or sign up",
         disclaimer:
-            'By continuing, you agree to our <a href="https://google.com">Terms of Service</a> and <a href="https://google.com">Privacy Policy</a>.',
+            'By continuing, you agree to our <a href="/legal/tos">Terms of Service</a> and <a href="/legal/privacy-policy">Privacy Policy</a>.',
         otp_title: "6-digit code",
         otp_description:
             "We've sent a code to {{email}}. Enter it below to continue.",
@@ -103,6 +103,7 @@ export default {
     },
     subscription: {
         subscribe: "Subscribe",
+        get_subscription: "Get Premium",
         name: "Premium",
         title: "Level up your language",
         description:
@@ -169,6 +170,17 @@ export default {
             correct_form: "Correct form: {{form}}",
             listen_and_choose: "Listen and choose",
         },
+    },
+    popups: {
+        logout: {
+            title: "Log out",
+            description: "Are you sure you want to log out?",
+            confirm: "Log out",
+            cancel: "Cancel",
+        },
+    },
+    settings: {
+        title: "Settings",
     },
     chats: {
         tapToChat: "Tap to chat",

@@ -33,10 +33,10 @@ export async function loadUserCache(): Promise<UserCacheType> {
 }
 
 export async function saveUserCache(data: {
-    user: AuthUser;
+    user?: AuthUser;
     jwt?: string;
-    courses: Course[];
-    sectionData: SectionData[];
+    courses?: Course[];
+    sectionData?: SectionData[];
     selectedCourse?: string | null;
     chats?: Chat[];
     sectionCount?: number;

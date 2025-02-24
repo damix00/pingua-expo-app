@@ -417,6 +417,26 @@ export default function RootLayout() {
                                                             : "default",
                                                 }}
                                             />
+                                            <Stack.Screen
+                                                name="legal/tos"
+                                                options={{
+                                                    title: "Terms of Service",
+                                                    headerBackButtonDisplayMode:
+                                                        "minimal",
+                                                    headerBackButtonMenuEnabled:
+                                                        false,
+                                                }}
+                                            />
+                                            <Stack.Screen
+                                                name="legal/privacy-policy"
+                                                options={{
+                                                    title: "Privacy Policy",
+                                                    headerBackButtonDisplayMode:
+                                                        "minimal",
+                                                    headerBackButtonMenuEnabled:
+                                                        false,
+                                                }}
+                                            />
                                         </Stack>
 
                                         <CustomBottomSheetModal

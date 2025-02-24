@@ -46,15 +46,18 @@ export default function AuthOtpPage() {
                     // User exists
                     setJwt(response.data.jwt);
                     auth.setUser(response.data.user);
-                    auth.setLoggedIn(true);
                     auth.setCourses(response.data.courses);
                     auth.setSectionData(response.data.section_data);
+
+                    auth.setLoggedIn(true);
 
                     await saveUserCache({
                         user: response.data.user,
                         jwt: response.data.jwt,
                         courses: response.data.courses,
                         sectionData: response.data.section_data,
+                        selectedCourse: response.data.courses[0].id,
+                        chats: [],
                     });
 
                     // Replace all routes with the home route

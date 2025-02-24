@@ -160,9 +160,10 @@ export default function ProfileSetupPage() {
                             if (response.status == 201 && response.data.user) {
                                 setJwt(response.data.jwt);
                                 auth.setUser(response.data.user);
-                                auth.setLoggedIn(true);
                                 auth.setCourses(response.data.courses);
                                 auth.setSectionData(response.data.section_data);
+
+                                auth.setLoggedIn(true);
 
                                 await saveUserCache({
                                     user: response.data.user,

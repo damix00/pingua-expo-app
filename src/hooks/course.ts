@@ -15,7 +15,7 @@ export function useCurrentCourse() {
             auth.courses.find((course) => course.id === auth.selectedCourse) ??
             auth.courses[0]
         );
-    }, [auth.courses, auth.selectedCourse]);
+    }, [auth?.courses, auth?.selectedCourse]);
 
     const currentCourseData = useMemo(() => {
         if (!auth.sectionData || !auth.selectedCourse) {
@@ -27,7 +27,7 @@ export function useCurrentCourse() {
                 (course) => course.id === auth.selectedCourse
             ) ?? auth.sectionData[0]
         );
-    }, [auth.sectionData, auth.selectedCourse]);
+    }, [auth?.sectionData, auth?.selectedCourse]);
 
     const updateCurrentCourse = useCallback(
         (data: Course) => {
@@ -40,7 +40,12 @@ export function useCurrentCourse() {
         [auth]
     );
 
-    if (!auth.courses || !auth.sectionData) {
+    if (
+        !auth.courses ||
+        !auth.sectionData ||
+        !currentCourse ||
+        !currentCourseData
+    ) {
         return {
             currentCourse: null,
             currentCourseData: null,

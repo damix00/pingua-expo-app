@@ -22,6 +22,8 @@ export default function LessonSuccessPage() {
         advancedToNextSection: string;
     }>();
 
+    const advanced = advancedToNextSection === "true";
+
     const insets = useSafeAreaInsets();
     const haptics = useHaptics();
     const currentCourse = useCurrentCourse();
@@ -38,6 +40,10 @@ export default function LessonSuccessPage() {
     const duration = 500;
 
     const loadNewSection = useCallback(async () => {
+        if (!advanced) {
+            return;
+        }
+
         const me = await axios.get("/v1/auth/me");
 
         console.log(me.data);
@@ -62,7 +68,7 @@ export default function LessonSuccessPage() {
         haptics.notificationAsync(NotificationFeedbackType.Success);
         opacity3.value = withTiming(1, { duration });
 
-        if (advancedToNextSection) {
+        if (advanced) {
             await sleep(1500);
             opacity1.value = withTiming(0, { duration });
             opacity2.value = withTiming(0, { duration });
@@ -76,7 +82,7 @@ export default function LessonSuccessPage() {
 
     useEffect(() => {
         Promise.all([playAnim(), loadNewSection()]).then(() => {
-            if (advancedToNextSection) {
+            if (advanced) {
                 router.replace("/lessons/new-section");
             }
         });
@@ -111,8 +117,8 @@ export default function LessonSuccessPage() {
             <Animated.View
                 style={[{ opacity: opacity4 }, styles.item, styles.button]}>
                 <Button
-                    onPress={() => {
-                        if (advancedToNextSection) {
+                    onPress={async () => {
+                        if (advanced) {
                             return;
                         }
 
