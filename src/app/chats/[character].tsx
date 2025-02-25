@@ -26,7 +26,6 @@ import Animated, {
     useAnimatedStyle,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
-import { fetch as expoFetch } from "expo/fetch"; // Import the polyfilled expo fetch
 import { Ellipsis } from "lucide-react-native";
 
 export default function ChatScreen() {
@@ -279,112 +278,44 @@ export default function ChatScreen() {
                         setLoading(true);
 
                         // Have to use fetch because axios doesn't support streaming
-                        const resp = await expoFetch(
+                        const resp = await axios.post(
                             `${apiConfig.baseUrl}/v1/chats/${chat.id}/messages`,
                             {
-                                method: "POST",
+                                content: message,
+                                language: course.currentCourse!.languageCode,
+                            },
+                            {
                                 headers: {
                                     "Content-Type": "application/json",
-                                    "X-Accel-Buffering": "no",
                                     Authorization: getJwt(),
                                 },
-                                body: JSON.stringify({
-                                    content: message,
-                                    language:
-                                        course.currentCourse!.languageCode,
-                                }),
                             }
                         );
 
-                        const stream = resp.body?.getReader();
+                        // Update messages
+                        const messages = resp.data.messages;
 
-                        if (!stream) {
-                            setLoading(false);
-                            return;
-                        }
+                        const newMessages = [
+                            ...messages,
+                            ...messagesRef.current,
+                        ];
 
-                        while (true) {
-                            const { done, value } = await stream.read();
+                        const updatedChat = {
+                            ...chat,
+                            lastMessage: messages[0],
+                            messages: newMessages,
+                        };
 
-                            if (done) {
-                                setLoading(false);
-                                break;
-                            }
+                        messagesRef.current = newMessages;
 
-                            try {
-                                const chunk = new TextDecoder().decode(value);
+                        // remove loading message
+                        setLoadingMessages((prev) =>
+                            prev.filter((msg) => msg !== message)
+                        );
 
-                                const parsed = JSON.parse(chunk);
+                        chats.updateChat(updatedChat);
 
-                                if (parsed?.sent) {
-                                    setLoadingMessages((prev) =>
-                                        prev.filter((msg) => msg !== message)
-                                    );
-
-                                    const newMessage = {
-                                        id: parsed.id,
-                                        chatId: chat.id,
-                                        userMessage: true,
-                                        content: message,
-                                        createdAt: new Date(),
-                                        attachments: [],
-                                    };
-
-                                    const updatedChat = {
-                                        ...chat,
-                                        lastMessage: newMessage,
-                                        messages: [
-                                            newMessage,
-                                            ...messagesRef.current,
-                                        ],
-                                    };
-
-                                    messagesRef.current = updatedChat.messages;
-
-                                    chats.updateChat(updatedChat);
-                                } else if (parsed?.content) {
-                                    const newMessage = {
-                                        tmp: true,
-                                        id: Math.random().toString(),
-                                        chatId: chat.id,
-                                        userMessage: false,
-                                        content: parsed.content,
-                                        createdAt: new Date(),
-                                        attachments: [],
-                                    };
-
-                                    const updatedChat = {
-                                        ...chat,
-                                        messages: [
-                                            newMessage,
-                                            ...messagesRef.current,
-                                        ],
-                                    };
-
-                                    messagesRef.current = updatedChat.messages;
-
-                                    chats.updateChat(updatedChat);
-                                } else if (parsed?.finished) {
-                                    const messages = parsed.messages;
-
-                                    const updatedChat = {
-                                        ...chat,
-                                        lastMessage: messages[0],
-                                        messages: [
-                                            ...messages,
-                                            ...messagesRef.current.filter(
-                                                // @ts-ignore
-                                                (msg) => !msg.tmp
-                                            ),
-                                        ],
-                                    };
-
-                                    chats.updateChat(updatedChat);
-                                }
-                            } catch (e) {
-                                console.error(e);
-                            }
-                        }
+                        setLoading(false);
                     }}
                 />
             </View>

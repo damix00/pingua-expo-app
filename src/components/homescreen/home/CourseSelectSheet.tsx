@@ -10,12 +10,14 @@ import { findFlag } from "@/utils/i18n";
 import { StyleSheet, View } from "react-native";
 import Button from "../../input/button/Button";
 import ButtonText from "../../input/button/ButtonText";
+import { useBottomSheet } from "@/context/BottomSheetContext";
 
 export default function CourseSelectSheet() {
     const auth = useAuth();
     const insets = useSafeAreaInsets();
     const { t } = useTranslation();
     const colors = useThemeColors();
+    const bottomSheet = useBottomSheet();
 
     const course = useMemo(() => {
         return auth.courses.find((c) => c.id === auth.selectedCourse);
@@ -49,16 +51,19 @@ export default function CourseSelectSheet() {
                     })}
                 </ThemedText>
             </View>
+            <Button onPress={bottomSheet.hideBottomSheet}>
+                <ButtonText>{t("change")}</ButtonText>
+            </Button>
         </BottomSheetView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        height: "auto",
+        paddingHorizontal: 16,
+        gap: 12,
     },
     card: {
-        paddingHorizontal: 16,
         flexDirection: "row",
         gap: 8,
         alignItems: "center",

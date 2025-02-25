@@ -15,32 +15,35 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 function LanguageSelectButton({
     label,
     language,
+    exclude,
     onSelect,
 }: {
     label: string;
     language: string;
     onSelect: (value: string) => any;
+    exclude: string;
 }) {
     const colors = useThemeColors();
     const { t } = useTranslation();
 
     const languages = useMemo(
-        () => [
-            "en",
-            "hr",
-            "de",
-            "es",
-            "fr",
-            "it",
-            "ru",
-            "pt",
-            "tr",
-            "el",
-            "nl",
-            "pl",
-            "sv",
-        ],
-        []
+        () =>
+            [
+                "en",
+                "hr",
+                "de",
+                "es",
+                "fr",
+                "it",
+                "ru",
+                "pt",
+                "tr",
+                "el",
+                "nl",
+                "pl",
+                "sv",
+            ].filter((lang) => lang != exclude),
+        [exclude]
     );
 
     return (
@@ -111,6 +114,7 @@ export default function TranslateTab() {
             }}>
             <View style={[styles.card]}>
                 <LanguageSelectButton
+                    exclude={to}
                     label={t("translation.from")}
                     language={from}
                     onSelect={(v) => {
@@ -142,6 +146,7 @@ export default function TranslateTab() {
             />
             <View style={[styles.card]}>
                 <LanguageSelectButton
+                    exclude={from}
                     label={t("translation.to")}
                     language={to}
                     onSelect={(v) => {
