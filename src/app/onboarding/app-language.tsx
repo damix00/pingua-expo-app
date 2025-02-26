@@ -8,12 +8,15 @@ import { CachedSvgUri } from "@/utils/cache/SVGCache";
 import { useTranslation } from "react-i18next";
 import { ChevronRight } from "lucide-react-native";
 import {
+    appLanguages,
     findFlag,
     languageCodeMap,
     languageMap,
     saveLocale,
 } from "@/utils/i18n";
 import { router } from "expo-router";
+import OnboardingStatic from "@/context/OnboardingStatic";
+import * as Localization from "expo-localization";
 
 function ChooseLanguageCard({
     language,
@@ -79,8 +82,19 @@ export default function AppLanguagePage() {
                     <ChooseLanguageCard
                         language={item}
                         onPress={async () => {
-                            i18n.changeLanguage(item);
-                            await saveLocale(item);
+                            if (appLanguages.includes(item)) {
+                                i18n.changeLanguage(item);
+                                await saveLocale(item);
+                            } else {
+                                i18n.changeLanguage(
+                                    Localization.getLocales()[0].languageCode ??
+                                        "en"
+                                );
+                                await saveLocale(null);
+                            }
+
+                            OnboardingStatic.appLanguage = item;
+
                             router.back();
                         }}
                     />

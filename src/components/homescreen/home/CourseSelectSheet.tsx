@@ -11,6 +11,8 @@ import { StyleSheet, View } from "react-native";
 import Button from "../../input/button/Button";
 import ButtonText from "../../input/button/ButtonText";
 import { useBottomSheet } from "@/context/BottomSheetContext";
+import { useCurrentCourse } from "@/hooks/course";
+import UpdateCourseSheet from "./UpdateCourseSheet";
 
 export default function CourseSelectSheet() {
     const auth = useAuth();
@@ -19,9 +21,7 @@ export default function CourseSelectSheet() {
     const colors = useThemeColors();
     const bottomSheet = useBottomSheet();
 
-    const course = useMemo(() => {
-        return auth.courses.find((c) => c.id === auth.selectedCourse);
-    }, [auth.courses, auth.selectedCourse]);
+    const course = useCurrentCourse();
 
     return (
         <BottomSheetView
@@ -37,7 +37,8 @@ export default function CourseSelectSheet() {
                     height={44}
                     uri={
                         findFlag(
-                            course?.languageCode ?? auth.courses[0].languageCode
+                            course?.currentCourse?.languageCode ??
+                                auth.courses[0].languageCode
                         ) ?? ""
                     }
                 />
@@ -46,12 +47,19 @@ export default function CourseSelectSheet() {
                         flex: 1,
                     }}>
                     {t(`languages.currently_learning`, {
-                        language: t(`languages.${course?.languageCode}`),
-                        base: t(`languages.${course?.appLanguageCode}`),
+                        language: t(
+                            `languages.${course.currentCourse?.languageCode}`
+                        ),
+                        base: t(
+                            `languages.${course.currentCourse?.appLanguageCode}`
+                        ),
                     })}
                 </ThemedText>
             </View>
-            <Button onPress={bottomSheet.hideBottomSheet}>
+            <Button
+                onPress={() =>
+                    bottomSheet.setBottomSheet(<UpdateCourseSheet />)
+                }>
                 <ButtonText>{t("change")}</ButtonText>
             </Button>
         </BottomSheetView>

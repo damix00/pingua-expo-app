@@ -5,6 +5,7 @@ import TextInput from "@/components/input/TextInput";
 import { ThemedText } from "@/components/ui/ThemedText";
 import useAppbarSafeAreaInsets from "@/hooks/useAppbarSafeAreaInsets";
 import { useThemeColors } from "@/hooks/useThemeColor";
+import { courseLanguages } from "@/utils/i18n";
 import axios from "axios";
 import { ArrowDownUp, ChevronsUpDown } from "lucide-react-native";
 import { useCallback, useMemo, useRef, useState } from "react";
@@ -27,30 +28,15 @@ function LanguageSelectButton({
     const { t } = useTranslation();
 
     const languages = useMemo(
-        () =>
-            [
-                "en",
-                "hr",
-                "de",
-                "es",
-                "fr",
-                "it",
-                "ru",
-                "pt",
-                "tr",
-                "el",
-                "nl",
-                "pl",
-                "sv",
-            ].filter((lang) => lang != exclude),
+        () => courseLanguages.filter((lang) => lang.code != exclude),
         [exclude]
     );
 
     return (
         <OverlayDropdown
             items={languages.map((lang) => ({
-                label: t(`languages.${lang}`),
-                value: lang,
+                label: t(`languages.${lang.code}`),
+                value: lang.code,
             }))}
             onSelect={onSelect}
             selectedValue={language}>
@@ -105,12 +91,13 @@ export default function TranslateTab() {
     return (
         <KeyboardAwareScrollView
             keyboardDismissMode="on-drag"
-            style={{
-                backgroundColor: colors.background,
-                flex: 1,
+            contentContainerStyle={{
                 paddingHorizontal: 24,
                 paddingTop: insets.top,
-                paddingBottom: insets.bottom,
+                paddingBottom: insets.bottom + 16 + 56,
+            }}
+            style={{
+                backgroundColor: colors.background,
             }}>
             <View style={[styles.card]}>
                 <LanguageSelectButton

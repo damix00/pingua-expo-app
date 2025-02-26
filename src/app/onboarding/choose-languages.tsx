@@ -25,6 +25,8 @@ import {
     languageMap,
 } from "@/utils/i18n";
 import { objectToQueryString } from "@/utils/util";
+import OnboardingStatic from "@/context/OnboardingStatic";
+import { useIsFocused } from "@react-navigation/native";
 
 function ChooseLanguageCard({
     code,
@@ -49,8 +51,10 @@ export default function ChooseLanguageOnboarding() {
     const { t, i18n } = useTranslation();
     const params = useLocalSearchParams();
 
+    const focused = useIsFocused(); // Refresh the page when focused
+
     const languages = courseLanguages.filter(
-        (language) => language.code !== i18n.language
+        (language) => language.code != OnboardingStatic.appLanguage
     );
 
     return (
@@ -87,7 +91,11 @@ export default function ChooseLanguageOnboarding() {
                                 <CachedSvgUri
                                     width={50}
                                     height={50}
-                                    uri={findFlag(i18n.language) ?? ""}
+                                    uri={
+                                        findFlag(
+                                            OnboardingStatic.appLanguage
+                                        ) ?? ""
+                                    }
                                 />
                             }
                             trailing={<ChevronRight color="white" size={24} />}
@@ -97,7 +105,7 @@ export default function ChooseLanguageOnboarding() {
                                 router.push("/onboarding/app-language");
                             }}>
                             <ThemedText type="onPrimary">
-                                {t(`languages.${i18n.language}`)}
+                                {t(`languages.${OnboardingStatic.appLanguage}`)}
                             </ThemedText>
                         </GlassCard>
                         <ThemedText

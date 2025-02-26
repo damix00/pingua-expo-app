@@ -18,6 +18,7 @@ export default {
     great: "Great!",
     narrator: "Narrator",
     skip: "Skip",
+    update: "Update",
     languages: {
         en: "English",
         de: "German",

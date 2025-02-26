@@ -58,6 +58,7 @@ import CustomBottomSheetModal from "@/components/modal/BottomSheet";
 import { Chat, ChatProvider } from "@/context/ChatContext";
 import ChatHeader from "@/components/homescreen/chats/ChatHeader";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Disable auto-hide and manage it manually
 SplashScreen.preventAutoHideAsync();

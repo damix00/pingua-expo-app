@@ -14,11 +14,27 @@ const resources = {
 export const languageMap = {
     en: "English",
     hr: "Hrvatski",
+    de: "Deutsch",
+    es: "Español",
+    fr: "Français",
+    it: "Italiano",
+    pt: "Português",
+    nl: "Nederlands",
+    pl: "Polski",
+    sv: "Svenska",
 };
 
 export const languageCodeMap = {
     English: "en",
     Hrvatski: "hr",
+    Deutsch: "de",
+    Español: "es",
+    Français: "fr",
+    Italiano: "it",
+    Português: "pt",
+    Nederlands: "nl",
+    Polski: "pl",
+    Svenska: "sv",
 };
 
 export type CourseLanguage = {
@@ -32,54 +48,44 @@ export let courseLanguages: CourseLanguage[] = [
         flag: `${twemoji.base}svg/1f1ec-1f1e7.svg`,
     },
     {
+        code: "hr",
+        flag: `${twemoji.base}svg/1f1ed-1f1f7.svg`,
+    },
+    {
         code: "de",
         flag: `${twemoji.base}svg/1f1e9-1f1ea.svg`,
     },
     {
-        code: "hr",
-        flag: `${twemoji.base}svg/1f1ed-1f1f7.svg`,
+        code: "es",
+        flag: `${twemoji.base}svg/1f1ea-1f1f8.svg`,
     },
-    // {
-    //     code: "es",
-    //     flag: `${twemoji.base}svg/1f1ea-1f1f8.svg`,
-    // },
-    // {
-    //     code: "fr",
-    //     flag: `${twemoji.base}svg/1f1eb-1f1f7.svg`,
-    // },
-    // {
-    //     code: "it",
-    //     flag: `${twemoji.base}svg/1f1ee-1f1f9.svg`,
-    // },
-    // {
-    //     code: "ru",
-    //     flag: `${twemoji.base}svg/1f1f7-1f1fa.svg`,
-    // },
-    // {
-    //     code: "pt",
-    //     flag: `${twemoji.base}svg/1f1f5-1f1f9.svg`,
-    // },
-    // {
-    //     code: "tr",
-    //     flag: `${twemoji.base}svg/1f1f9-1f1f7.svg`,
-    // },
-    // {
-    //     code: "el",
-    //     flag: `${twemoji.base}svg/1f1ec-1f1f7.svg`,
-    // },
-    // {
-    //     code: "nl",
-    //     flag: `${twemoji.base}svg/1f1f3-1f1f1.svg`,
-    // },
-    // {
-    //     code: "pl",
-    //     flag: `${twemoji.base}svg/1f1f5-1f1f1.svg`,
-    // },
-    // {
-    //     code: "sv",
-    //     flag: `${twemoji.base}svg/1f1f8-1f1ea.svg`,
-    // },
+    {
+        code: "fr",
+        flag: `${twemoji.base}svg/1f1eb-1f1f7.svg`,
+    },
+    {
+        code: "it",
+        flag: `${twemoji.base}svg/1f1ee-1f1f9.svg`,
+    },
+    {
+        code: "pt",
+        flag: `${twemoji.base}svg/1f1f5-1f1f9.svg`,
+    },
+    {
+        code: "nl",
+        flag: `${twemoji.base}svg/1f1f3-1f1f1.svg`,
+    },
+    {
+        code: "pl",
+        flag: `${twemoji.base}svg/1f1f5-1f1f1.svg`,
+    },
+    {
+        code: "sv",
+        flag: `${twemoji.base}svg/1f1f8-1f1ea.svg`,
+    },
 ];
+
+export const appLanguages = ["en", "hr"];
 
 export function findFlag(code: string) {
     return courseLanguages.find((lang) => lang.code === code)?.flag;
@@ -117,6 +123,7 @@ export { localizations };
 export async function saveLocale(language: string | null) {
     if (!language) {
         await AsyncStorage.removeItem("language");
+        return;
     }
     await AsyncStorage.setItem("language", language!);
 }

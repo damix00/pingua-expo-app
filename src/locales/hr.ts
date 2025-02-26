@@ -20,6 +20,7 @@ const translations: typeof en = {
     great: "Odlično!",
     narrator: "Pripovjedač",
     skip: "Preskoči",
+    update: "Ažuriraj",
     languages: {
         en: "Engleski",
         de: "Njemački",

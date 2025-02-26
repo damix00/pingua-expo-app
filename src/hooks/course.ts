@@ -60,7 +60,7 @@ export function useCurrentCourse() {
         updateCurrentCourse,
         title:
             // @ts-ignore
-            currentCourseData[`title_${i18n.language}`] ??
+            currentCourseData[`title_${currentCourse.appLanguageCode ?? ""}`] ??
             currentCourseData?.title ??
             "",
     };
@@ -68,9 +68,11 @@ export function useCurrentCourse() {
 
 export function useUnitTitle(sectionData: SectionData, unit: number) {
     const { i18n } = useTranslation();
+    const course = useCurrentCourse();
 
     return (
-        sectionData.unitTitles[unit][`title_${i18n.language}`] ??
-        sectionData.unitTitles[unit].title
+        sectionData.unitTitles[unit][
+            `title_${course.currentCourse?.appLanguageCode ?? ""}`
+        ] ?? sectionData.unitTitles[unit].title
     );
 }

@@ -45,19 +45,25 @@ export default function AuthOtpPage() {
                 if (response.data.user) {
                     // User exists
                     setJwt(response.data.jwt);
-                    auth.setUser(response.data.user);
-                    auth.setCourses(response.data.courses);
-                    auth.setSectionData(response.data.section_data);
+
+                    const me = await axios.get("/v1/auth/me");
+
+                    auth.setUser(me.data.user);
+                    auth.setCourses(me.data.courses);
+                    auth.setSectionData(me.data.section_data);
+                    auth.setSectionCount(me.data.section_count);
 
                     auth.setLoggedIn(true);
 
+                    const selectedCourse = me.data.courses[0];
+
                     await saveUserCache({
-                        user: response.data.user,
+                        user: me.data.user,
                         jwt: response.data.jwt,
-                        courses: response.data.courses,
-                        sectionData: response.data.section_data,
-                        selectedCourse: response.data.courses[0].id,
-                        chats: [],
+                        courses: me.data.courses,
+                        sectionData: me.data.section_data,
+                        selectedCourse: selectedCourse.id,
+                        sectionCount: me.data.section_count,
                     });
 
                     // Replace all routes with the home route

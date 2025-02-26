@@ -25,6 +25,7 @@ import { saveUserCache } from "@/utils/cache/user-cache";
 import { StatusBar } from "expo-status-bar";
 import { CommonActions } from "@react-navigation/native";
 import { usePopAllAndPush } from "@/hooks/navigation";
+import OnboardingStatic from "@/context/OnboardingStatic";
 
 export default function ProfileSetupPage() {
     const colors = useThemeColors();
@@ -150,7 +151,7 @@ export default function ProfileSetupPage() {
                                     code_id: otp,
                                     username,
                                     name: newName,
-                                    app_locale: i18n.language,
+                                    app_locale: OnboardingStatic.appLanguage,
                                     language_code: code,
                                     fluency_level: fluency,
                                     goal,
@@ -159,19 +160,25 @@ export default function ProfileSetupPage() {
 
                             if (response.status == 201 && response.data.user) {
                                 setJwt(response.data.jwt);
-                                auth.setUser(response.data.user);
-                                auth.setCourses(response.data.courses);
-                                auth.setSectionData(response.data.section_data);
+
+                                const me = await axios.get("/v1/auth/me");
+
+                                auth.setUser(me.data.user);
+                                auth.setCourses(me.data.courses);
+                                auth.setSectionData(me.data.section_data);
+                                auth.setSectionCount(me.data.section_count);
 
                                 auth.setLoggedIn(true);
 
+                                const selectedCourse = me.data.courses[0];
+
                                 await saveUserCache({
-                                    user: response.data.user,
+                                    user: me.data.user,
                                     jwt: response.data.jwt,
-                                    courses: response.data.courses,
-                                    sectionData: response.data.section_data,
-                                    selectedCourse: response.data.courses[0].id,
-                                    chats: [],
+                                    courses: me.data.courses,
+                                    sectionData: me.data.section_data,
+                                    selectedCourse: selectedCourse.id,
+                                    sectionCount: me.data.section_count,
                                 });
 
                                 popAllAndPush("(tabs)");
