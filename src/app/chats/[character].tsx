@@ -12,7 +12,7 @@ import { useThemeColors } from "@/hooks/useThemeColor";
 import axios from "axios";
 import { useNetworkState } from "expo-network";
 import { useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
     ActivityIndicator,
@@ -48,10 +48,12 @@ export default function ChatScreen() {
     const [lazyLoading, setLazyLoading] = useState(false);
     const [reachedEnd, setReachedEnd] = useState(false);
 
+    const inputRef = useRef<View>(null);
+
     const animatedListPadding = useAnimatedStyle(
         () => ({
             // Padding top because the list is inverted
-            paddingTop: keyboardHeight.value + insets.bottom + 24 + 8,
+            paddingTop: keyboardHeight.value,
         }),
         [keyboardHeight, insets]
     );
@@ -176,12 +178,8 @@ export default function ChatScreen() {
                 contentContainerStyle={[
                     styles.contentContainer,
                     {
-                        paddingTop:
-                            Platform.OS == "android" ? insets.bottom : 0,
-                        paddingBottom:
-                            Platform.OS == "android"
-                                ? insets.top * 2
-                                : insets.top,
+                        paddingTop: insets.bottom + 42,
+                        paddingBottom: insets.top + insets.bottom,
                     },
                 ]}
                 showsVerticalScrollIndicator={false}
@@ -268,7 +266,7 @@ export default function ChatScreen() {
                         : item.id
                 }
             />
-            <View style={styles.input}>
+            <View style={styles.input} ref={inputRef}>
                 <MessageInput
                     onSend={async (message) => {
                         if (message.trim() == "") {

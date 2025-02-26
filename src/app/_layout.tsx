@@ -13,8 +13,8 @@ import {
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack, usePathname } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Platform, useColorScheme, View } from "react-native";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Platform, StyleSheet, useColorScheme, View } from "react-native";
 // Font imports
 import {
     Montserrat_100Thin,
@@ -59,9 +59,21 @@ import { Chat, ChatProvider } from "@/context/ChatContext";
 import ChatHeader from "@/components/homescreen/chats/ChatHeader";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Notifications from "expo-notifications";
+import { requestNotificationsAsync } from "@/utils/permissions";
+import { cancelReminderNotifications } from "@/utils/notifications";
+import IosBlurView from "@/components/IosBlurView";
 
 // Disable auto-hide and manage it manually
 SplashScreen.preventAutoHideAsync();
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+    }),
+});
 
 export default function RootLayout() {
     // Load custom fonts
@@ -108,7 +120,28 @@ export default function RootLayout() {
         useState<React.ReactNode | null>(null);
 
     const prevComponent = useRef<React.ReactNode | null>(null);
-    const insets = useSafeAreaInsets();
+
+    const transparentHeader = useMemo(
+        () => ({
+            headerStyle: {
+                backgroundColor: "transparent",
+                elevation: 0,
+                borderBottomWidth: 0,
+            },
+            headerTransparent: true,
+            headerBackground: () => (
+                <IosBlurView
+                    intensity={36}
+                    style={{
+                        ...StyleSheet.absoluteFillObject,
+                        borderBottomWidth: 1,
+                        borderColor: colors.outline,
+                    }}
+                />
+            ),
+        }),
+        [colors]
+    );
 
     useEffect(() => {
         if (
@@ -135,6 +168,11 @@ export default function RootLayout() {
         setLoadedPrefs(true);
         await loadLocales();
 
+        await requestNotificationsAsync();
+
+        await Notifications.dismissAllNotificationsAsync();
+        await cancelReminderNotifications();
+
         // Fetch user data and set JWT if available
         const userCache = await loadUserCache();
 
@@ -152,14 +190,21 @@ export default function RootLayout() {
 
         setSectionData(userCache.sectionData);
 
-        // Adjust navigation bar for Android
-        if (Platform.OS === "android") {
-            await NavigationBar.setPositionAsync("absolute");
-            await NavigationBar.setBackgroundColorAsync("#ffffff00");
-        }
-
         setInitialized(true);
     }, []);
+
+    useEffect(() => {
+        (async () => {
+            // Adjust navigation bar for Android
+            if (Platform.OS === "android") {
+                await NavigationBar.setPositionAsync("absolute");
+                await NavigationBar.setBackgroundColorAsync(colors.background);
+                await NavigationBar.setButtonStyleAsync(
+                    scheme == "light" ? "dark" : "dark"
+                );
+            }
+        })();
+    }, [colors, scheme]);
 
     // Hide splash once fonts and preferences load
     useEffect(() => {
@@ -236,11 +281,16 @@ export default function RootLayout() {
                                                     android: "simple_push",
                                                     ios: "ios_from_right",
                                                 }),
+
                                                 headerTitleStyle: {
                                                     color: colors.text,
                                                     fontFamily:
                                                         "Montserrat_600SemiBold",
                                                 },
+                                                headerBackButtonMenuEnabled:
+                                                    false,
+                                                headerBackButtonDisplayMode:
+                                                    "minimal",
                                             }}>
                                             <Stack.Screen
                                                 name="onboarding/index"
@@ -436,6 +486,15 @@ export default function RootLayout() {
                                                         "minimal",
                                                     headerBackButtonMenuEnabled:
                                                         false,
+                                                }}
+                                            />
+
+                                            {/* Settings */}
+                                            <Stack.Screen
+                                                name="settings/index"
+                                                options={{
+                                                    title: "Settings",
+                                                    ...transparentHeader,
                                                 }}
                                             />
                                         </Stack>

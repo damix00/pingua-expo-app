@@ -1,5 +1,6 @@
 import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
+import HapticTouchableOpacity from "@/components/input/button/HapticTouchableOpacity";
 import OverlayDropdown from "@/components/input/stateful/OverlayDropdown";
 import TextInput from "@/components/input/TextInput";
 import { ThemedText } from "@/components/ui/ThemedText";
@@ -10,7 +11,7 @@ import axios from "axios";
 import { ArrowDownUp, ChevronsUpDown } from "lucide-react-native";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 function LanguageSelectButton({
@@ -86,7 +87,7 @@ export default function TranslateTab() {
         }
 
         setLoading(false);
-    }, []);
+    }, [from, to]);
 
     return (
         <KeyboardAwareScrollView
@@ -124,13 +125,38 @@ export default function TranslateTab() {
                 />
             </View>
             <View
-                style={[
-                    styles.divider,
-                    {
-                        backgroundColor: colors.outline,
-                    },
-                ]}
-            />
+                style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: 8,
+                }}>
+                <View
+                    style={[
+                        styles.divider,
+                        {
+                            backgroundColor: colors.outline,
+                        },
+                    ]}
+                />
+                <HapticTouchableOpacity
+                    onPress={() => {
+                        // swap languages
+                        const temp = from;
+                        setFrom(to);
+                        setTo(temp);
+                    }}>
+                    <ArrowDownUp size={24} color={colors.textSecondary} />
+                </HapticTouchableOpacity>
+                <View
+                    style={[
+                        styles.divider,
+                        {
+                            backgroundColor: colors.outline,
+                        },
+                    ]}
+                />
+            </View>
             <View style={[styles.card]}>
                 <LanguageSelectButton
                     exclude={from}
@@ -189,9 +215,9 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
     },
     divider: {
+        flex: 1,
         height: 1,
         marginVertical: 8,
-        marginHorizontal: 8,
     },
     textContent: {
         fontSize: 12,

@@ -21,6 +21,8 @@ const translations: typeof en = {
     narrator: "Pripovjedač",
     skip: "Preskoči",
     update: "Ažuriraj",
+    logout: "Odjava",
+    cancel: "Odustani",
     languages: {
         en: "Engleski",
         de: "Njemački",
@@ -189,15 +191,88 @@ const translations: typeof en = {
     },
     settings: {
         title: "Postavke",
+        hapticFeedback: "Taktilne povratne informacije",
+        language: "Jezik",
     },
     chats: {
         tapToChat: "Dodirni za chat",
         youChat: "Vi: {{message}}",
+        clear: "Očisti chat",
+        clearChatPrompt:
+            "Jeste li sigurni da želite očistiti chat? Ova radnja je nepovratna.",
     },
     translation: {
         from: "Sa",
         to: "Na",
         translate: "Prevedi",
+    },
+    notifications: {
+        reminders: {
+            r1: {
+                title: "Opa!",
+                body: "Pingvin je upravo prošao i rekao da preskačeš svoje lekcije?!",
+            },
+            r2: {
+                title: "što se događa?",
+                body: "samo sam ti htio reći da mi nedostaješ. želiš naučiti neke nove riječi danas?",
+            },
+            r3: {
+                title: "Zvoni zvoni!",
+                body: "Tvoje učenje te zove. Hoćeš li se javiti?",
+            },
+            r4: {
+                title: "Gdje si?",
+                body: "Ako pingvini mogu izdržati hladnoću, možeš i ti jednu lekciju.",
+            },
+            r5: {
+                title: "Tvoje lekcije su ti napisale pismo prekida.",
+                body: "'Nije do mene, do tebe je.' Učini im uslugu – vrati se prije nego bude prekasno.",
+            },
+            r6: {
+                title: "Nećemo moliti...",
+                body: "Zapravo, hoćemo. Molimo te, uči danas. Nedostaješ nam :(",
+            },
+            r7: {
+                title: "Postaješ popularan!",
+                body: "Na listi 'Najmanje učenih'. Promijenimo to!",
+            },
+            r8: {
+                title: "Nema pritiska, ali...",
+                body: "Jedan pingvin se kladio u svoju ribu da ćeš učiti danas. Nemoj ga iznevjeriti.",
+            },
+            r9: {
+                title: "Nisi sigma!",
+                body: "Samo pravi sigme rade svoje lekcije. Znači, ti nisi? Dokaži suprotno.",
+            },
+            r10: {
+                title: "nadam se da si sretan",
+                body: "tvoje lekcije plaču. samo žele biti naučene. je li to previše za tražiti?",
+            },
+            r11: {
+                title: "wow. stvarno wow.",
+                body: "dakle, ovo je sada tvoj život? netko tko odustaje? ne bih rekao.",
+            },
+            r12: {
+                title: "Nisam ljut.",
+                body: "samo razočaran. u tebe. jer ne učiš. mislio sam da smo prijatelji.",
+            },
+            r13: {
+                title: "Nadam se da su memovi vrijedili toga.",
+                body: "Zanemaruješ svoje lekcije. Tužne su. Pomozi im.",
+            },
+            r14: {
+                title: "aha, znači više ne mariš?",
+                body: "jesam li ti ikad bio važan? valjda ne. samo sam ti podsjetnik, ha?",
+            },
+            r15: {
+                title: "okej. idi svom drugom pingvinu.",
+                body: "vidim kako je. imaš drugog pingvina. ja sam samo podsjetnik. razumijem.",
+            },
+            final: {
+                title: "okej. shvaćam.",
+                body: "prestat ću te gnjaviti. mislio sam da smo prijatelji, ali očito nismo.",
+            },
+        },
     },
 };
 

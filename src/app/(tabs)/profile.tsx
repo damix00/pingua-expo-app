@@ -102,8 +102,14 @@ export default function ProfileTab() {
                 />
                 <Divider />
                 <ListButton
+                    onPress={() => router.push("/settings")}
+                    text={t("settings.title")}
+                    icon={<SettingsIcon size={iconSize} color={iconColor} />}
+                />
+                <Divider />
+                <ListButton
                     onPress={handleLogout}
-                    text="Logout"
+                    text={t("logout")}
                     icon={<LogOut size={iconSize} color={iconColor} />}
                 />
             </View>

@@ -215,6 +215,7 @@ export default function SelectItem({
                                     styles.itemWrapper,
                                 ]}>
                                 <Animated.View
+                                    pointerEvents="none"
                                     style={{
                                         width: itemWidth,
                                         height: itemHeight,

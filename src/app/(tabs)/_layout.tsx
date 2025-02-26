@@ -17,6 +17,7 @@ import CourseSelectSheet from "@/components/homescreen/home/CourseSelectSheet";
 import PremiumButton from "@/components/homescreen/home/PremiumButton";
 import { useBottomSheet } from "@/context/BottomSheetContext";
 import { useChats } from "@/context/ChatContext";
+import { scheduleReminderNotifications } from "@/utils/notifications";
 
 export default function TabLayout() {
     const bottomSheet = useBottomSheet();
@@ -29,6 +30,8 @@ export default function TabLayout() {
 
     const networkState = useNetworkState();
     const executed = useRef(false);
+
+    const scheduledNotifications = useRef(false);
 
     const handlePresentModalPress = useCallback(() => {
         bottomSheet.setBottomSheet(<CourseSelectSheet />);
@@ -61,6 +64,12 @@ export default function TabLayout() {
                 chats: chats.data?.chats ?? [],
                 sectionCount: me.data.section_count,
             });
+
+            if (!scheduledNotifications.current) {
+                scheduledNotifications.current = true;
+
+                await scheduleReminderNotifications();
+            }
         } else if (me.status == 401) {
             await clearUserCache();
             auth.logout();
@@ -91,11 +100,11 @@ export default function TabLayout() {
             }, 100);
         }
 
-        if (auth.loggedIn && auth.user?.plan == "FREE") {
-            setTimeout(() => {
-                router.push("/modals/subscription");
-            }, 100);
-        }
+        // if (auth.loggedIn && auth.user?.plan == "FREE") {
+        //     setTimeout(() => {
+        //         router.push("/modals/subscription");
+        //     }, 100);
+        // }
     }, [auth]);
 
     if (!auth.loggedIn) {
@@ -124,7 +133,7 @@ export default function TabLayout() {
                     headerLeft: () => (
                         <CourseSelect onPress={handlePresentModalPress} />
                     ),
-                    headerRight: () => <PremiumButton />,
+                    // headerRight: () => <PremiumButton />,
                     // Bottom navigation bar
                     tabBarBackground: () => (
                         <IosBlurView

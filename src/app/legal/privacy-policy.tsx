@@ -11,7 +11,7 @@ export default function PrivacyPolicyModal() {
                 padding: 24,
                 gap: 8,
                 flexDirection: "column",
-                paddingBottom: 24 + insets.bottom,
+                paddingBottom: insets.bottom + 128,
             }}>
             <ThemedText type="title">Privacy Policy</ThemedText>
             <ThemedText>

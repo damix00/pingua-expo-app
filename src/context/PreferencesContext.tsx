@@ -22,6 +22,13 @@ export async function loadPreferences(): Promise<PreferencesType> {
     };
 }
 
+export async function savePreferences(preferences: PreferencesType) {
+    await AsyncStorage.setItem(
+        "hapticFeedback",
+        preferences.hapticFeedback.toString()
+    );
+}
+
 export function PreferencesProvider({
     preferences,
     setPreferences,
@@ -43,5 +50,13 @@ export function PreferencesProvider({
 }
 
 export const usePreferences = () => {
-    return useContext(PreferencesContext);
+    const context = useContext(PreferencesContext);
+
+    if (!context) {
+        throw new Error(
+            "usePreferences must be used within a PreferencesProvider"
+        );
+    }
+
+    return context;
 };

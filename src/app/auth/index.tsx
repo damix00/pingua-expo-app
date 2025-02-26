@@ -1,7 +1,7 @@
 import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
 import { ThemedText } from "@/components/ui/ThemedText";
-import { Image, Keyboard, StyleSheet, View } from "react-native";
+import { Image, Keyboard, Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ONBOARDING_APPBAR_HEIGHT } from "../onboarding/OnboardingAppbar";
 import { useThemeColors } from "@/hooks/useThemeColor";
@@ -121,6 +121,8 @@ export default function Auth() {
                     {
                         backgroundColor: colors.background,
                         paddingTop: insets.top + ONBOARDING_APPBAR_HEIGHT,
+                        paddingBottom:
+                            Platform.OS == "android" ? insets.bottom : 0,
                     },
                 ]}>
                 <View style={[styles.imageWrapper]}>

@@ -10,12 +10,16 @@ import {
     Dimensions,
     ScrollView,
     Platform,
-    FlatList,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BlurView } from "expo-blur";
 import IosBlurView, { AnimatedIosBlurView } from "@/components/IosBlurView";
+import {
+    FlatList,
+    GestureHandlerRootView,
+    TouchableOpacity as GestureHandlerTouchableOpacity,
+} from "react-native-gesture-handler";
 import Animated, {
     Easing,
     useSharedValue,
@@ -106,67 +110,77 @@ export default function OverlayDropdown({
                 transparent={true}
                 visible={showDropdown}
                 onRequestClose={() => setShowDropdown(false)}>
-                <TouchableOpacity
-                    style={styles.backdrop}
-                    activeOpacity={1}
-                    onPress={() => setShowDropdown(false)}>
-                    <AnimatedIosBlurView
-                        tint="light"
-                        intensity={50}
-                        style={[
-                            styles.overlay,
-                            {
-                                transform: [
-                                    {
-                                        scale,
-                                    },
-                                ],
-                                top: dropdownTop,
-                                maxHeight: 200,
-                                left,
-                                backgroundColor:
-                                    Platform.OS == "ios"
-                                        ? colors.transparentBackgroundDarker
-                                        : colors.background,
-                            },
-                        ]}>
-                        <FlatList
-                            showsVerticalScrollIndicator={false}
-                            alwaysBounceVertical={false}
-                            data={items}
-                            keyExtractor={(item) => item.value}
-                            contentInset={{
-                                top: 4,
-                                bottom: 4,
-                            }}
-                            ItemSeparatorComponent={() => (
-                                <View
-                                    style={{
-                                        height: 1,
-                                        backgroundColor: colors.outline,
-                                    }}
-                                />
-                            )}
-                            renderItem={({ item }) => (
-                                <TouchableOpacity
-                                    key={item.value}
-                                    style={styles.item}
-                                    onPress={() => handleSelect(item.value)}>
-                                    {typeof item.icon === "function"
-                                        ? item.icon({ size: 24 })
-                                        : item.icon}
-                                    <ThemedText>{item.label}</ThemedText>
-                                    {item.value === selectedValue && (
-                                        <Check
-                                            size={16}
-                                            color={colors.primary}
-                                        />
-                                    )}
-                                </TouchableOpacity>
-                            )}
-                        />
-                    </AnimatedIosBlurView>
-                </TouchableOpacity>
+                <GestureHandlerRootView>
+                    <TouchableOpacity
+                        style={styles.backdrop}
+                        activeOpacity={1}
+                        onPress={() => setShowDropdown(false)}>
+                        <AnimatedIosBlurView
+                            tint="light"
+                            intensity={50}
+                            style={[
+                                styles.overlay,
+                                {
+                                    transform: [
+                                        {
+                                            scale,
+                                        },
+                                    ],
+                                    top: dropdownTop,
+                                    maxHeight: 200,
+                                    left:
+                                        left >
+                                        Dimensions.get("window").width / 2
+                                            ? Dimensions.get("window").width -
+                                              left +
+                                              32
+                                            : left,
+                                    backgroundColor:
+                                        Platform.OS == "ios"
+                                            ? colors.transparentBackgroundDarker
+                                            : colors.backgroundVariant,
+                                },
+                            ]}>
+                            <FlatList
+                                showsVerticalScrollIndicator={false}
+                                alwaysBounceVertical={false}
+                                data={items}
+                                keyExtractor={(item) => item.value}
+                                contentInset={{
+                                    top: 4,
+                                    bottom: 4,
+                                }}
+                                ItemSeparatorComponent={() => (
+                                    <View
+                                        style={{
+                                            height: 1,
+                                            backgroundColor: colors.outline,
+                                        }}
+                                    />
+                                )}
+                                renderItem={({ item }) => (
+                                    <GestureHandlerTouchableOpacity
+                                        key={item.value}
+                                        style={styles.item}
+                                        onPress={() =>
+                                            handleSelect(item.value)
+                                        }>
+                                        {typeof item.icon === "function"
+                                            ? item.icon({ size: 24 })
+                                            : item.icon}
+                                        <ThemedText>{item.label}</ThemedText>
+                                        {item.value === selectedValue && (
+                                            <Check
+                                                size={16}
+                                                color={colors.primary}
+                                            />
+                                        )}
+                                    </GestureHandlerTouchableOpacity>
+                                )}
+                            />
+                        </AnimatedIosBlurView>
+                    </TouchableOpacity>
+                </GestureHandlerRootView>
             </Modal>
         </View>
     );

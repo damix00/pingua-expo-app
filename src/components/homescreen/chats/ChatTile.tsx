@@ -1,10 +1,15 @@
+import SelectItem from "@/components/input/stateful/select/SelectItem";
 import { ThemedText } from "@/components/ui/ThemedText";
-import { useChat } from "@/context/ChatContext";
+import { chatCharacters, useChat, useChats } from "@/context/ChatContext";
+import { useThemeColors } from "@/hooks/useThemeColor";
 import { Character } from "@/types/course";
+import axios from "axios";
 import { router } from "expo-router";
+import { Trash2 } from "lucide-react-native";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Alert, Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 export interface ChatTileProps {
     character: Character;
@@ -18,45 +23,108 @@ export default function ChatTile({ name, image, character }: ChatTileProps) {
     const { t } = useTranslation();
     const chat = useChat(character);
 
+    const chats = useChats();
+
     const exists = useMemo(() => chat != null, [chat]);
     const lastMessage = useMemo(() => chat?.lastMessage, [chat]);
+
+    const colors = useThemeColors();
 
     const handlePress = useCallback(() => {
         router.push(`/chats/${character}`);
     }, [character]);
 
+    const handleClear = useCallback(() => {
+        Alert.alert(t("chats.clear"), t("chats.clearChatPrompt"), [
+            {
+                text: t("cancel"),
+                style: "cancel",
+            },
+            {
+                text: t("chats.clear"),
+                style: "destructive",
+                onPress: async () => {
+                    const response = await axios.delete(
+                        `/v1/chats/${chat?.id}`
+                    );
+
+                    if (response.status !== 200) {
+                        Toast.show({
+                            type: "error",
+                            text1: t("errors.something_went_wrong"),
+                        });
+                    }
+
+                    chats.updateChat({
+                        id: chat?.id || "",
+                        character,
+                        messages: [],
+                        memories: [],
+                        lastMessage: null,
+                    });
+                },
+            },
+        ]);
+    }, [character, chat]);
+
+    const menuItems = useMemo(
+        () => [
+            {
+                isTitle: true,
+                text: name,
+            },
+            {
+                isDestructive: true,
+                text: t("chats.clear"),
+                icon: <Trash2 size={18} color={colors.error} />,
+                onPress: handleClear,
+            },
+        ],
+        [name, t, colors, handleClear, chat]
+    );
+
     return (
-        <TouchableOpacity onPress={handlePress}>
-            <View style={styles.item}>
-                <View style={styles.imageParent}>
-                    <Image source={image} style={styles.image} />
+        <SelectItem items={menuItems}>
+            <TouchableOpacity onPress={handlePress}>
+                <View
+                    style={[
+                        styles.item,
+                        {
+                            backgroundColor: colors.background,
+                        },
+                    ]}>
+                    <View style={styles.imageParent}>
+                        <Image source={image} style={styles.image} />
+                    </View>
+                    <View style={styles.itemText}>
+                        <ThemedText fontWeight="700">{name}</ThemedText>
+                        <ThemedText
+                            type="secondary"
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            style={{
+                                fontSize: 12,
+                            }}>
+                            {exists && lastMessage
+                                ? lastMessage.userMessage
+                                    ? t("chats.youChat", {
+                                          message: lastMessage.content,
+                                      })
+                                    : lastMessage.content
+                                : t("chats.tapToChat")}
+                        </ThemedText>
+                    </View>
                 </View>
-                <View style={styles.itemText}>
-                    <ThemedText fontWeight="700">{name}</ThemedText>
-                    <ThemedText
-                        type="secondary"
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
-                        style={{
-                            fontSize: 12,
-                        }}>
-                        {exists && lastMessage
-                            ? lastMessage.userMessage
-                                ? t("chats.youChat", {
-                                      message: lastMessage.content,
-                                  })
-                                : lastMessage.content
-                            : t("chats.tapToChat")}
-                    </ThemedText>
-                </View>
-            </View>
-        </TouchableOpacity>
+            </TouchableOpacity>
+        </SelectItem>
     );
 }
 
 const styles = StyleSheet.create({
     item: {
-        paddingHorizontal: 24,
+        paddingHorizontal: 12,
+        marginHorizontal: 12,
+        borderRadius: 4,
         paddingVertical: 4,
         flexDirection: "row",
         alignItems: "center",

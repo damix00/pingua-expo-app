@@ -19,6 +19,8 @@ export default {
     narrator: "Narrator",
     skip: "Skip",
     update: "Update",
+    logout: "Log out",
+    cancel: "Cancel",
     languages: {
         en: "English",
         de: "German",
@@ -182,14 +184,87 @@ export default {
     },
     settings: {
         title: "Settings",
+        hapticFeedback: "Haptic feedback",
+        language: "Language",
     },
     chats: {
         tapToChat: "Tap to chat",
         youChat: "You: {{message}}",
+        clear: "Clear chat",
+        clearChatPrompt:
+            "Are you sure you want to clear this chat? This action cannot be undone.",
     },
     translation: {
         from: "From",
         to: "To",
         translate: "Translate",
+    },
+    notifications: {
+        reminders: {
+            r1: {
+                title: "Uh-oh!",
+                body: "A penguin just waddled past, and they said you're skipping your study lessons?!",
+            },
+            r2: {
+                title: "what's happening?",
+                body: "just wanted to tell you I miss you. wanna learn some new words today?",
+            },
+            r3: {
+                title: "Ring ring!",
+                body: "Your study session is calling. Will you pick up?",
+            },
+            r4: {
+                title: "Where are you?",
+                body: "If penguins can brave the cold, you can brave one lesson.",
+            },
+            r5: {
+                title: "Your lessons wrote a breakup letter.",
+                body: "'It's not me, it's you.' Do them a favor - come back before it's too late.",
+            },
+            r6: {
+                title: "We won't beg...",
+                body: "Actually, we will. Please study today. We miss you :(",
+            },
+            r7: {
+                title: "You're trending!",
+                body: "On the 'Least Studied' list. Let's change that!",
+            },
+            r8: {
+                title: "No pressure, but...",
+                body: "A penguin bet their fish that you'd study today. Don't let them starve.",
+            },
+            r9: {
+                title: "You're not sigma!",
+                body: "Only true sigmas do their lessons, so I guess you're not one. Prove me wrong?",
+            },
+            r10: {
+                title: "hope you're happy",
+                body: "your lessons are crying. they just want to be learned. is that too much to ask?",
+            },
+            r11: {
+                title: "wow. just wow.",
+                body: "so this is who you are now? someone who quits? couldn't be me.",
+            },
+            r12: {
+                title: "I'm not mad.",
+                body: "just disappointed. in you. for not studying. I thought we were friends.",
+            },
+            r13: {
+                title: "Hope the memes are worth it.",
+                body: "You are neglecting your lessons. They are sad. Please help.",
+            },
+            r14: {
+                title: "oh okay, you just don't care anymore?",
+                body: "was I ever important to you? guess not. I'm just a reminder to you, huh?",
+            },
+            r15: {
+                title: "okay. go to your other penguin.",
+                body: "I see how it is. you have another penguin. I'm just a reminder to you. I get it.",
+            },
+            final: {
+                title: "okay, I get it.",
+                body: "I'll stop reminding you to study. I thought we were friends, but I guess not.",
+            },
+        },
     },
 };
