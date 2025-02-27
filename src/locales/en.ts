@@ -125,7 +125,7 @@ export default {
     tabs: {
         home: "Home",
         scenarios: "Scenarios",
-        chats: "Chats",
+        chats: "AI Chats",
         profile: "Profile",
         translate: "Translate",
     },
@@ -278,5 +278,11 @@ export default {
                 body: "I'll stop reminding you to study. I thought we were friends, but I guess not.",
             },
         },
+    },
+    paywall: {
+        title: "Looks like you've discovered a Premium feature!",
+        description:
+            "This feature is only available to Premium members. Subscribe now to unlock it.",
+        subscribe: "Subscribe",
     },
 };

@@ -131,7 +131,7 @@ const translations: typeof en = {
     tabs: {
         home: "Početna",
         scenarios: "Scenariji",
-        chats: "Čavrljanja",
+        chats: "AI Čavrljanja",
         profile: "Profil",
         translate: "Prevoditelj",
     },
@@ -285,6 +285,12 @@ const translations: typeof en = {
                 body: "prestat ću te gnjaviti. mislio sam da smo prijatelji, ali očito nismo.",
             },
         },
+    },
+    paywall: {
+        title: "Izgleda da ste otkrili Premium značajku!",
+        description:
+            "Ova je značajka dostupna samo Premium korisnicima. Pretplatite se kako biste je otključali.",
+        subscribe: "Pretplati se",
     },
 };
 

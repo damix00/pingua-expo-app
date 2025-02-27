@@ -1,5 +1,6 @@
 import ChatTile from "@/components/homescreen/chats/ChatTile";
 import { ThemedView } from "@/components/ThemedView";
+import Paywall from "@/components/ui/Paywall";
 import { useAuth } from "@/context/AuthContext";
 import { chats, useChats } from "@/context/ChatContext";
 import useAppbarSafeAreaInsets from "@/hooks/useAppbarSafeAreaInsets";
@@ -46,27 +47,32 @@ export default function ChatsTab() {
 
     return (
         <ThemedView style={styles.container}>
-            <FlatList
-                refreshControl={
-                    <RefreshControl
-                        tintColor={colors.primary}
-                        progressViewOffset={insets.top}
-                        onRefresh={onRefresh}
-                        refreshing={refreshing}
-                    />
-                }
-                style={[
-                    styles.list,
-                    {
-                        paddingTop: insets.top + 8,
-                        paddingBottom: insets.bottom,
-                    },
-                ]}
-                contentContainerStyle={styles.contentContainer}
-                data={chats}
-                renderItem={({ item }) => <ChatTile {...item} />}
-                keyExtractor={(item) => item.character}
-            />
+            {!isPremium && <Paywall />}
+            <View
+                style={styles.list}
+                pointerEvents={isPremium ? "auto" : "none"}>
+                <FlatList
+                    refreshControl={
+                        <RefreshControl
+                            tintColor={colors.primary}
+                            progressViewOffset={insets.top}
+                            onRefresh={onRefresh}
+                            refreshing={refreshing}
+                        />
+                    }
+                    style={[
+                        styles.list,
+                        {
+                            paddingTop: insets.top + 8,
+                            paddingBottom: insets.bottom,
+                        },
+                    ]}
+                    contentContainerStyle={styles.contentContainer}
+                    data={chats}
+                    renderItem={({ item }) => <ChatTile {...item} />}
+                    keyExtractor={(item) => item.character}
+                />
+            </View>
         </ThemedView>
     );
 }
