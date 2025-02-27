@@ -8,9 +8,11 @@ import { useThemeColors } from "@/hooks/useThemeColor";
 import { saveUserCache } from "@/utils/cache/user-cache";
 import { formatDate } from "@/utils/util";
 import axios from "axios";
+import { router } from "expo-router";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Platform, ScrollView, StyleSheet, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 export default function PremiumSettingsPage() {
     const colors = useThemeColors();
@@ -48,6 +50,13 @@ export default function PremiumSettingsPage() {
                                     plan: "FREE",
                                     planExpiresAt: null,
                                 },
+                            });
+
+                            router.dismiss();
+                        } else {
+                            Toast.show({
+                                type: "error",
+                                text1: t("errors.something_went_wrong"),
                             });
                         }
                     },
