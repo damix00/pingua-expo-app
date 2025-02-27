@@ -33,6 +33,7 @@ import { AndroidOutputFormat, IOSOutputFormat } from "expo-av/build/Audio";
 import { apiConfig } from "@/api/config";
 import { getJwt } from "@/api/data";
 import { NotificationFeedbackType } from "expo-haptics";
+import Toast from "react-native-toast-message";
 
 enum TaskStatus {
     IDLE,
@@ -150,6 +151,7 @@ export default function RecordVoiceTask({
             );
 
             console.log("Recording sent!");
+            console.log(res.body, res.status);
 
             const json = JSON.parse(res.body);
 
@@ -161,12 +163,12 @@ export default function RecordVoiceTask({
                 setStatus(TaskStatus.INCORRECT);
             }
         } catch (err) {
-            if (axios.isAxiosError(err)) {
-                console.error("Failed to send recording", err.message);
-                console.error("Error details:", err.toJSON());
-            } else {
-                console.error("Failed to send recording", err);
-            }
+            Toast.show({
+                type: "error",
+                text1: t("errors.something_went_wrong"),
+            });
+
+            console.error("Failed to send recording", err);
         } finally {
             loadingRef.current = false;
             setLoading(false);

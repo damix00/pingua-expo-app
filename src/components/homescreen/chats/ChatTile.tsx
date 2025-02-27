@@ -31,7 +31,7 @@ export default function ChatTile({ name, image, character }: ChatTileProps) {
     const colors = useThemeColors();
 
     const handlePress = useCallback(() => {
-        router.push(`/chats/${character}`);
+        router.push(`/chats/${encodeURIComponent(character)}`);
     }, [character]);
 
     const handleClear = useCallback(() => {

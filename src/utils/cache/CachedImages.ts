@@ -6,6 +6,7 @@ const mascotSad = require("@/assets/images/mascot.png");
 const fujioAvatar = mascot;
 const jaxonAvatar = mascot;
 const saraAvatar = mascot;
+const mrJacksonAvatar = mascot;
 
 export {
     auraBg,
@@ -15,4 +16,5 @@ export {
     fujioAvatar,
     jaxonAvatar,
     saraAvatar,
+    mrJacksonAvatar,
 };

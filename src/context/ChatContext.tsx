@@ -2,6 +2,7 @@ import { Character } from "@/types/course";
 import {
     fujioAvatar,
     jaxonAvatar,
+    mrJacksonAvatar,
     saraAvatar,
 } from "@/utils/cache/CachedImages";
 import { createContext, useContext } from "react";
@@ -72,12 +73,18 @@ export const chats: {
         name: "Sara",
         image: saraAvatar,
     },
+    {
+        character: Character.MrJackson,
+        name: "Mr. Jackson",
+        image: mrJacksonAvatar,
+    },
 ];
 
 export const chatCharacters = {
     [Character.Fujio]: chats[0],
     [Character.Jaxon]: chats[1],
     [Character.Sara]: chats[2],
+    [Character.MrJackson]: chats[3],
 };
 
 export function ChatProvider({
