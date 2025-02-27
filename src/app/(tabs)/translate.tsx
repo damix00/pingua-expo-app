@@ -97,7 +97,7 @@ export default function TranslateTab() {
     return (
         <>
             {!isPremium && <Paywall />}
-            <View pointerEvents={isPremium ? "auto" : "none"}>
+            <View pointerEvents={isPremium ? "auto" : "auto"}>
                 <KeyboardAwareScrollView
                     keyboardDismissMode="on-drag"
                     contentContainerStyle={{

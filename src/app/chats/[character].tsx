@@ -178,7 +178,7 @@ export default function ChatScreen() {
                 contentContainerStyle={[
                     styles.contentContainer,
                     {
-                        paddingTop: insets.bottom + 42,
+                        paddingTop: 56 + 16,
                         paddingBottom: insets.top + insets.bottom,
                     },
                 ]}
