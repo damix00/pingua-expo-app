@@ -22,3 +22,9 @@ export function clamp(num: number, min: number, max: number) {
 export function getPlatformHeaderHeight() {
     return Platform.OS === "ios" ? 38 : 56;
 }
+
+export function formatDate(date: Date) {
+    return `${addZero(date.getDate())}.${addZero(
+        date.getMonth() + 1
+    )}.${date.getFullYear()}.`;
+}

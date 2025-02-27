@@ -8,6 +8,7 @@ import { ThemedText } from "@/components/ui/ThemedText";
 import { useBottomSheet } from "@/context/BottomSheetContext";
 import { useCurrentCourse } from "@/hooks/course";
 import { usePreventBack } from "@/hooks/navigation";
+import useKeyboardHeight from "@/hooks/useKeyboardHeight";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { Question } from "@/types/course";
 import { clamp, sleep } from "@/utils/util";
@@ -16,7 +17,12 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet, View } from "react-native";
-import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Animated, {
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
@@ -56,6 +62,8 @@ export default function QuestionsLessonScreen() {
 
     const [child, setChild] = useState<JSX.Element | null>(null);
     const mistakes = useRef(0);
+
+    const height = useKeyboardHeight(false);
 
     const TRANSITION_DURATION = 500;
 
@@ -186,31 +194,35 @@ export default function QuestionsLessonScreen() {
                 backgroundColor: colors.background,
             }}>
             <QuestionsAppbar progress={progress} />
-            <View
+            <Animated.View
                 style={{
                     flex: 1,
+                    opacity,
                 }}
                 pointerEvents={touchEnabled ? "auto" : "none"}>
                 <Animated.ScrollView
                     alwaysBounceVertical={false}
-                    contentContainerStyle={styles.container}
+                    contentContainerStyle={[
+                        styles.container,
+                        {
+                            paddingBottom: insets.bottom + 16,
+                        },
+                    ]}
                     style={[
                         {
                             paddingTop: insets.top + 16 + 56,
-                            paddingBottom: insets.bottom + 16,
-                            opacity,
                         },
                     ]}>
                     {child}
                 </Animated.ScrollView>
-            </View>
+            </Animated.View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
         paddingHorizontal: 24,
     },
 });

@@ -11,7 +11,7 @@ export type AuthUser = {
     email: string;
     xp: number;
     plan: Plan;
-    planExpiresAt: Date;
+    planExpiresAt: Date | null;
 };
 
 export type SectionCache = {

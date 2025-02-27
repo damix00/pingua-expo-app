@@ -100,11 +100,11 @@ export default function TabLayout() {
             }, 100);
         }
 
-        // if (auth.loggedIn && auth.user?.plan == "FREE") {
-        //     setTimeout(() => {
-        //         router.push("/modals/subscription");
-        //     }, 100);
-        // }
+        if (auth.loggedIn && auth.user?.plan == "FREE") {
+            setTimeout(() => {
+                router.push("/modals/subscription");
+            }, 100);
+        }
     }, [auth]);
 
     if (!auth.loggedIn) {
@@ -133,7 +133,7 @@ export default function TabLayout() {
                     headerLeft: () => (
                         <CourseSelect onPress={handlePresentModalPress} />
                     ),
-                    // headerRight: () => <PremiumButton />,
+                    headerRight: () => <PremiumButton />,
                     // Bottom navigation bar
                     tabBarBackground: () => (
                         <IosBlurView

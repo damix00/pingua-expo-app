@@ -120,10 +120,10 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignContent: "center",
         flexDirection: "column",
+        gap: 16,
     },
     textWrapper: {
         gap: 4,
-        marginBottom: 16,
         alignItems: "center",
         justifyContent: "center",
     },

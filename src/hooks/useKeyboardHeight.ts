@@ -5,20 +5,16 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function useKeyboardHeight(includeInset: boolean = true) {
     const insets = useSafeAreaInsets();
-    const height = useSharedValue(includeInset ? insets.bottom : 0);
+    const bottomInsets = includeInset ? insets.bottom : 0;
+
+    const height = useSharedValue(bottomInsets);
 
     const easing = Easing.bezier(0.25, 0.1, 0.4, 1);
 
     useEffect(() => {
         const didKeyboardShow = (event: KeyboardEvent) => {
             if (Platform.OS == "android") {
-                onKeyboardShow({
-                    ...event,
-                    endCoordinates: {
-                        ...event.endCoordinates,
-                        height: event.endCoordinates.height + insets.bottom,
-                    },
-                });
+                onKeyboardShow(event);
             }
         };
 
@@ -31,7 +27,8 @@ export default function useKeyboardHeight(includeInset: boolean = true) {
         const onKeyboardShow = (event: KeyboardEvent) => {
             height.value = withTiming(
                 event.endCoordinates.height +
-                    (includeInset ? 0 : -insets.bottom),
+                    (includeInset ? 0 : -insets.bottom) +
+                    (Platform.OS == "ios" ? 0 : insets.bottom),
                 {
                     duration: event.duration || 250,
                     easing,
@@ -40,7 +37,7 @@ export default function useKeyboardHeight(includeInset: boolean = true) {
         };
 
         const onKeyboardHide = (event: KeyboardEvent) => {
-            height.value = withTiming(includeInset ? insets.bottom : 0, {
+            height.value = withTiming(bottomInsets, {
                 duration: event.duration || 250,
                 easing,
             });

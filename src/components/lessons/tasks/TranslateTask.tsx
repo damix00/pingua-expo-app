@@ -1,7 +1,7 @@
 import { Question } from "@/types/course";
 import { TaskTitle } from "./task";
 import { useTranslation } from "react-i18next";
-import { StyleSheet, View } from "react-native";
+import { KeyboardAvoidingView, StyleSheet, View } from "react-native";
 import useKeyboardHeight from "@/hooks/useKeyboardHeight";
 import Animated, {
     interpolateColor,
@@ -34,7 +34,6 @@ export default function TranslateTask({
     onComplete: (mistake: boolean) => any;
 }) {
     const { t } = useTranslation();
-    const height = useKeyboardHeight(false);
     const colors = useThemeColors();
 
     const checked = useRef(false);
@@ -51,6 +50,7 @@ export default function TranslateTask({
     const [correctTranslation, setCorrectTranslation] = useState<string>("");
 
     const haptics = useHaptics();
+    const height = useKeyboardHeight(false);
 
     const correctTextStyle = useAnimatedStyle(() => ({
         color: interpolateColor(

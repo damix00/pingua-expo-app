@@ -489,12 +489,35 @@ export default function RootLayout() {
                                                 }}
                                             />
 
-                                            {/* Settings */}
                                             <Stack.Screen
                                                 name="settings/index"
                                                 options={{
                                                     title: "Settings",
                                                     ...transparentHeader,
+                                                }}
+                                            />
+                                            <Stack.Screen
+                                                name="settings/premium"
+                                                options={{
+                                                    title: "Premium",
+                                                    ...transparentHeader,
+                                                }}
+                                            />
+
+                                            <Stack.Screen
+                                                name="subscribe/index"
+                                                options={{
+                                                    presentation: "card",
+                                                    title: "Subscribe",
+                                                    headerShown: false,
+                                                }}
+                                            />
+                                            <Stack.Screen
+                                                name="subscribe/success"
+                                                options={{
+                                                    presentation: "card",
+                                                    title: "Success!",
+                                                    headerShown: false,
                                                 }}
                                             />
                                         </Stack>

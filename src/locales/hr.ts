@@ -124,6 +124,9 @@ const translations: typeof en = {
         item_2: "**Pričaj s povjerenjem** u poslu i svakodnevnom životu.",
         item_3: "**Bez reklama, bez ometanja** - samo premium iskustvo.",
         item_4: "**Vježbaj govor** s realističnim, interaktivnim AI dijalogom.",
+        thanks: "Hvala na pretplati <3",
+        thanks_description:
+            "Sada možeš pristupiti svim premium sadržajima i funkcijama.",
     },
     tabs: {
         home: "Početna",
@@ -193,6 +196,15 @@ const translations: typeof en = {
         title: "Postavke",
         hapticFeedback: "Taktilne povratne informacije",
         language: "Jezik",
+        premium: {
+            heading: "Vi ste Premium korisnik",
+            renews: "Vaša se pretplata obnavlja {{date}}.",
+            cancel: "Otkaži pretplatu",
+            cancelPrompt:
+                "Jeste li sigurni da želite otkazati pretplatu? Izgubit ćete sve pogodnosti Premium pretplate.",
+            cancelSubscription: "Otkaži pretplatu",
+            keepSubscription: "Zadrži pretplatu",
+        },
     },
     chats: {
         tapToChat: "Dodirni za chat",
@@ -226,7 +238,7 @@ const translations: typeof en = {
             },
             r5: {
                 title: "Tvoje lekcije su ti napisale pismo prekida.",
-                body: "'Nije do mene, do tebe je.' Učini im uslugu – vrati se prije nego bude prekasno.",
+                body: "'Nije do mene, do tebe je.' Učini im uslugu - vrati se prije nego bude prekasno.",
             },
             r6: {
                 title: "Nećemo moliti...",

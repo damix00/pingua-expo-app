@@ -80,7 +80,7 @@ export default function ProfileTab() {
                     }}
                 />
                 <ListButton
-                    onPress={() => router.push("/modals/subscription")}
+                    onPress={() => router.push("/settings/premium")}
                     textColor={
                         auth.user.plan == "FREE" ? colors.primary : colors.text
                     }

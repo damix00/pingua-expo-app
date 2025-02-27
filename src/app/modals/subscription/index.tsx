@@ -23,8 +23,10 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Markdown from "react-native-markdown-display";
-import React from "react";
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
+import axios from "axios";
+import Toast from "react-native-toast-message";
 
 const icons = [Sparkles, Globe, MegaphoneOff, MessageCircle];
 
@@ -32,6 +34,7 @@ export default function SubscriptionModal() {
     const colors = useThemeColors();
     const insets = useSafeAreaInsets();
     const { t } = useTranslation();
+    const [buttonLoading, setButtonLoading] = useState(false);
 
     const basePaddingTop = 24;
 
@@ -127,7 +130,40 @@ export default function SubscriptionModal() {
                     </View>
                 </View>
                 <View style={styles.horizontalPadding}>
-                    <Button>
+                    <Button
+                        loading={buttonLoading}
+                        onPress={async () => {
+                            try {
+                                setButtonLoading(true);
+                                const result = await axios.post(
+                                    "/v1/subscriptions"
+                                );
+
+                                if (!result.data.url) {
+                                    Toast.show({
+                                        type: "error",
+                                        text1: t("errors.something_went_wrong"),
+                                    });
+
+                                    return;
+                                }
+
+                                router.dismiss();
+                                router.push(
+                                    `/subscribe?url=${encodeURIComponent(
+                                        result.data.url
+                                    )}`
+                                );
+                            } catch (error) {
+                                console.error(error);
+                                Toast.show({
+                                    type: "error",
+                                    text1: t("errors.something_went_wrong"),
+                                });
+                            } finally {
+                                setButtonLoading(false);
+                            }
+                        }}>
                         <ButtonText>{t("subscription.cta")}</ButtonText>
                     </Button>
                     <ThemedText type="secondary" style={styles.disclaimer}>

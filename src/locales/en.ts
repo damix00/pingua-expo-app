@@ -118,6 +118,9 @@ export default {
         item_2: "**Speak confidently** in work and everyday life.",
         item_3: "**No ads, no distractions** - just premium language tools.",
         item_4: "**Practice speaking** with realistic, interactive AI dialogue.",
+        thanks: "Thank you for subscribing <3",
+        thanks_description:
+            "You're now a premium member. Enjoy your exclusive benefits!",
     },
     tabs: {
         home: "Home",
@@ -186,6 +189,15 @@ export default {
         title: "Settings",
         hapticFeedback: "Haptic feedback",
         language: "Language",
+        premium: {
+            heading: "You're a Premium member",
+            renews: "Your subscription renews on {{date}}",
+            cancel: "Cancel subscription",
+            cancelPrompt:
+                "Are you sure you want to cancel your subscription? You will lose access to premium features.",
+            cancelSubscription: "Cancel subscription",
+            keepSubscription: "Stay subscribed",
+        },
     },
     chats: {
         tapToChat: "Tap to chat",
