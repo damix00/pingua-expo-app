@@ -235,7 +235,7 @@ export default function StoryLessonScreen() {
                 showsVerticalScrollIndicator={false}
                 style={[animatedListStyle]}
                 contentContainerStyle={{
-                    marginBottom: insets.bottom + 64,
+                    paddingBottom: insets.bottom + 64,
                     gap: 8,
                 }}
                 onScroll={(e) => {
