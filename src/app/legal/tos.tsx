@@ -53,7 +53,7 @@ export default function TOSModal() {
             <ThemedText type="heading">7. Contact Us</ThemedText>
             <ThemedText>
                 If you have any questions about these terms, please contact us
-                at support@pingua.com.
+                at support@latinary.com.
             </ThemedText>
         </ScrollView>
     );

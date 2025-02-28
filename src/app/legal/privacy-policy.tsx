@@ -54,7 +54,7 @@ export default function PrivacyPolicyModal() {
             <ThemedText type="heading">7. Contact Us</ThemedText>
             <ThemedText>
                 If you have any questions about this Privacy Policy, please
-                contact us at support@pingua.com.
+                contact us at support@latinary.com.
             </ThemedText>
         </ScrollView>
     );
