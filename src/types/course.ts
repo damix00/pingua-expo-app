@@ -3,7 +3,7 @@ export enum Character {
     Fujio = "fujio",
     Jaxon = "jaxon",
     Sara = "sara",
-    MrJackson = "mr-jackson",
+    MrWilliams = "mr-williams",
 }
 
 export const characterNames = {
@@ -11,7 +11,7 @@ export const characterNames = {
     fujio: "Fujio",
     jaxon: "Jaxon",
     sara: "Sara",
-    "mr-jackson": "Mr. Jackson",
+    "mr-williams": "Mr. Williams",
 };
 
 export type DialogueLine = {
