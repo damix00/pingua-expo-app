@@ -94,7 +94,15 @@ export default function ChatTile({ name, image, character }: ChatTileProps) {
                         },
                     ]}>
                     <View style={styles.imageParent}>
-                        <Image source={image} style={styles.image} />
+                        <Image
+                            source={image}
+                            style={[
+                                styles.image,
+                                {
+                                    borderColor: colors.outline,
+                                },
+                            ]}
+                        />
                     </View>
                     <View style={styles.itemText}>
                         <ThemedText fontWeight="700">{name}</ThemedText>
@@ -135,7 +143,8 @@ const styles = StyleSheet.create({
         height: IMAGE_SIZE,
         borderRadius: IMAGE_SIZE,
         marginBottom: 8,
-        backgroundColor: "blue",
+        borderWidth: 1,
+        objectFit: "contain",
     },
     imageParent: {
         height: IMAGE_SIZE,

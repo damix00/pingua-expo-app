@@ -198,7 +198,7 @@ const translations: typeof en = {
         language: "Jezik",
         premium: {
             heading: "Vi ste Premium korisnik",
-            renews: "Vaša se pretplata obnavlja {{date}}.",
+            renews: "Vaša se pretplata obnavlja {{date}}",
             cancel: "Otkaži pretplatu",
             cancelPrompt:
                 "Jeste li sigurni da želite otkazati pretplatu? Izgubit ćete sve pogodnosti Premium pretplate.",
@@ -229,7 +229,7 @@ const translations: typeof en = {
                 body: "samo sam ti htio reći da mi nedostaješ. želiš naučiti neke nove riječi danas?",
             },
             r3: {
-                title: "Zvoni zvoni!",
+                title: "Ring-ring!",
                 body: "Tvoje učenje te zove. Hoćeš li se javiti?",
             },
             r4: {
@@ -238,7 +238,7 @@ const translations: typeof en = {
             },
             r5: {
                 title: "Tvoje lekcije su ti napisale pismo prekida.",
-                body: "'Nije do mene, do tebe je.' Učini im uslugu - vrati se prije nego bude prekasno.",
+                body: "'Nije do mene, do tebe je.' Učini im uslugu - vrati se prije nego što bude prekasno.",
             },
             r6: {
                 title: "Nećemo moliti...",
@@ -250,11 +250,11 @@ const translations: typeof en = {
             },
             r8: {
                 title: "Nema pritiska, ali...",
-                body: "Jedan pingvin se kladio u svoju ribu da ćeš učiti danas. Nemoj ga iznevjeriti.",
+                body: "Jedan se pingvin kladio u svoju ribu da ćeš učiti danas. Nemoj ga iznevjeriti.",
             },
             r9: {
                 title: "Nisi sigma!",
-                body: "Samo pravi sigme rade svoje lekcije. Znači, ti nisi? Dokaži suprotno.",
+                body: "Samo prave sigme rade svoje lekcije. Znači, ti nisi sigma? Dokaži suprotno.",
             },
             r10: {
                 title: "nadam se da si sretan",
@@ -262,7 +262,7 @@ const translations: typeof en = {
             },
             r11: {
                 title: "wow. stvarno wow.",
-                body: "dakle, ovo je sada tvoj život? netko tko odustaje? ne bih rekao.",
+                body: "dakle, ovo je sada tvoj život? netko tko odustaje? ja ne bih nikad.",
             },
             r12: {
                 title: "Nisam ljut.",
