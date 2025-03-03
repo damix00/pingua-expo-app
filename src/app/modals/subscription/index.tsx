@@ -28,7 +28,7 @@ import { StatusBar } from "expo-status-bar";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 
-const icons = [Sparkles, Globe, MegaphoneOff, MessageCircle];
+const icons = [Sparkles, Globe, MessageCircle];
 
 export default function SubscriptionModal() {
     const colors = useThemeColors();
@@ -81,7 +81,7 @@ export default function SubscriptionModal() {
                         </ThemedText>
 
                         <View style={styles.itemsWrapper}>
-                            {Array.from({ length: 4 }).map((_, index) => {
+                            {Array.from({ length: 3 }).map((_, index) => {
                                 const Icon = icons[index];
                                 return (
                                     <View

@@ -116,8 +116,7 @@ export default {
             "Your subscription will automatically renew unless canceled. You can manage or cancel your subscription in your account settings at any time. By subscribing, you agree to our Terms of Service and Privacy Policy.",
         item_1: "**Personalized lessons** tailored towards your goals.",
         item_2: "**Speak confidently** in work and everyday life.",
-        item_3: "**No ads, no distractions** - just premium language tools.",
-        item_4: "**Practice speaking** with realistic, interactive AI dialogue.",
+        item_3: "**Practice speaking** with realistic, interactive AI dialogue.",
         thanks: "Thank you for subscribing <3",
         thanks_description:
             "You're now a premium member. Enjoy your exclusive benefits!",

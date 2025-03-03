@@ -122,8 +122,7 @@ const translations: typeof en = {
             "Vaša će se pretplata automatski obnoviti ako je ne otkažete. Pretplatu otkazati ili promijeniti u postavkama svoga računa u bilo kojem trenutku. Pretplatom prihvaćate naše Uvjete pružanja usluge i Pravila privatnosti.",
         item_1: "**Personalizirane lekcije** prilagođene tvojim ciljevima.",
         item_2: "**Pričaj s povjerenjem** u poslu i svakodnevnom životu.",
-        item_3: "**Bez reklama, bez ometanja** - samo premium iskustvo.",
-        item_4: "**Vježbaj govor** s realističnim, interaktivnim AI dijalogom.",
+        item_3: "**Vježbaj govor** s realističnim, interaktivnim AI dijalogom.",
         thanks: "Hvala na pretplati <3",
         thanks_description:
             "Sada možeš pristupiti svim premium sadržajima i funkcijama.",

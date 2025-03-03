@@ -47,8 +47,8 @@ export async function scheduleReminderNotifications() {
         } =
             i == 7
                 ? {
-                      title: "okay, I get it.",
-                      body: "I'll stop reminding you to study. I thought we were friends, but I guess not.",
+                      title: t("notifications.reminders.final.title"),
+                      body: t("notifications.reminders.final.body"),
                   }
                 : notifications[
                       Math.floor(Math.random() * notifications.length)
