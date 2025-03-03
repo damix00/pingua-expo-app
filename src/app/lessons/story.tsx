@@ -235,8 +235,8 @@ export default function StoryLessonScreen() {
                 showsVerticalScrollIndicator={false}
                 style={[animatedListStyle]}
                 contentContainerStyle={{
-                    paddingBottom: insets.bottom + 64,
                     gap: 8,
+                    paddingBottom: insets.bottom + MAX_HEIGHT + 64,
                 }}
                 onScroll={(e) => {
                     scrollY.value = e.nativeEvent.contentOffset.y;

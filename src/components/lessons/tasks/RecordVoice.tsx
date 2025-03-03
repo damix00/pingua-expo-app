@@ -28,7 +28,6 @@ import { TaskTitle } from "./task";
 import axios from "axios";
 import * as FileSystem from "expo-file-system";
 import { useCurrentCourse } from "@/hooks/course";
-import * as Sharing from "expo-sharing";
 import { AndroidOutputFormat, IOSOutputFormat } from "expo-av/build/Audio";
 import { apiConfig } from "@/api/config";
 import { getJwt } from "@/api/data";
