@@ -7,17 +7,20 @@ import {
 } from "@/utils/cache/CachedImages";
 import { createContext, useContext } from "react";
 
+// Enum for different types of attachments
 export enum AttachmentType {
     IMAGE = "IMAGE",
     VOICE = "VOICE",
 }
 
+// Type definition for an attachment
 export type Attachment = {
     id: string;
     type: AttachmentType;
     url: string;
 };
 
+// Type definition for a message
 export type Message = {
     id: string;
     chatId: string;
@@ -27,12 +30,14 @@ export type Message = {
     createdAt: Date;
 };
 
+// Type definition for a memory
 export type Memory = {
     id: string;
     content: string;
     expiresAt: Date;
 };
 
+// Type definition for a chat
 export type Chat = {
     id: string;
     character: Character;
@@ -41,18 +46,21 @@ export type Chat = {
     lastMessage: Message | null;
 };
 
+// Type definition for the chat context
 export type ChatContextType = {
     chats: Chat[];
     setChats: (chats: Chat[]) => void;
     updateChat: (chat: Chat) => void;
 };
 
+// Create a context for chats with default values
 export const ChatContext = createContext<ChatContextType>({
     chats: [],
     setChats: () => {},
     updateChat: () => {},
 });
 
+// Predefined list of chat characters with their avatars
 export const chats: {
     character: Character;
     name: string;
@@ -80,6 +88,7 @@ export const chats: {
     },
 ];
 
+// Mapping of characters to their respective chat objects
 export const chatCharacters = {
     [Character.Fujio]: chats[0],
     [Character.Jaxon]: chats[1],
@@ -87,6 +96,7 @@ export const chatCharacters = {
     [Character.MrWilliams]: chats[3],
 };
 
+// ChatProvider component to provide chat context to its children
 export function ChatProvider({
     chats,
     setChats,
@@ -109,6 +119,7 @@ export function ChatProvider({
     );
 }
 
+// Custom hook to use chat context
 export function useChats() {
     const chats = useContext(ChatContext);
 
@@ -119,6 +130,7 @@ export function useChats() {
     return chats;
 }
 
+// Custom hook to use a specific chat by character
 export function useChat(character: string) {
     const { chats, setChats } = useChats();
 

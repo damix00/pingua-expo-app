@@ -14,9 +14,11 @@ import Animated, {
     withTiming,
 } from "react-native-reanimated";
 
+// Create an animated version of TouchableOpacity
 const AnimatedTouchableOpacity =
     Animated.createAnimatedComponent(TouchableOpacity);
 
+// Define the CustomBottomSheetModal component
 const CustomBottomSheetModal = forwardRef(function CustomBottomSheetModal(
     {
         children,
@@ -25,10 +27,14 @@ const CustomBottomSheetModal = forwardRef(function CustomBottomSheetModal(
     },
     ref: React.ForwardedRef<BottomSheetModal<any>>
 ) {
+    // Get theme colors
     const colors = useThemeColors();
+    // Shared value for backdrop background color
     const backdropBackground = useSharedValue("#00000000");
+    // Get box shadow style
     const shadow = useBoxShadow();
 
+    // Animated style for the backdrop
     const bottomSheetAnimatedStyle = useAnimatedStyle(() => {
         return {
             backgroundColor: backdropBackground.value,
@@ -45,6 +51,7 @@ const CustomBottomSheetModal = forwardRef(function CustomBottomSheetModal(
                 backgroundColor: colors.background,
             }}
             style={shadow}
+            // Custom backdrop component
             backdropComponent={(props) => (
                 <AnimatedTouchableOpacity
                     {...props}
@@ -68,6 +75,7 @@ const CustomBottomSheetModal = forwardRef(function CustomBottomSheetModal(
                 />
             )}
             ref={ref}
+            // Animate backdrop background color on modal animate
             onAnimate={(from, to) => {
                 if (to == -1) {
                     backdropBackground.value = withTiming("#00000000");

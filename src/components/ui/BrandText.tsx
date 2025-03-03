@@ -1,7 +1,5 @@
-import { useThemeColor, useThemeColors } from "@/hooks/useThemeColor";
-import { getLoadedFonts } from "expo-font";
+import { useThemeColors } from "@/hooks/useThemeColor";
 import { StyleSheet, Text, TextProps } from "react-native";
-import { NativeProps } from "react-native-safe-area-context/lib/typescript/src/specs/NativeSafeAreaView";
 
 export default function BrandText({
     children,
