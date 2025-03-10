@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
         height: 36,
         borderRadius: 16,
         marginRight: 8,
+        objectFit: "contain",
     },
     name: {
         fontSize: 16,

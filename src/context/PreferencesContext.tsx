@@ -1,15 +1,18 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useState } from "react";
 
+export type SystemBoolean = "system" | "true" | "false";
+
 // Define the shape of the preferences object
 export type PreferencesType = {
     hapticFeedback: boolean;
+    darkMode: SystemBoolean;
 };
 
 // Define the shape of the context object
 export type PreferencesContextType = {
     preferences: PreferencesType;
-    setPreferences: (preferences: PreferencesType) => void;
+    setPreferences: (preferences: Partial<PreferencesType>) => void;
 };
 
 // Create the PreferencesContext with a default value of null
@@ -20,18 +23,26 @@ export const PreferencesContext = createContext<PreferencesContextType | null>(
 // Function to load preferences from AsyncStorage
 export async function loadPreferences(): Promise<PreferencesType> {
     const hapticFeedback = await AsyncStorage.getItem("hapticFeedback");
+    const darkMode = await AsyncStorage.getItem("darkMode");
 
     return {
         hapticFeedback: hapticFeedback === "true" || hapticFeedback == null,
+        darkMode: (darkMode as SystemBoolean) || "system",
     };
 }
 
 // Function to save preferences to AsyncStorage
-export async function savePreferences(preferences: PreferencesType) {
-    await AsyncStorage.setItem(
-        "hapticFeedback",
-        preferences.hapticFeedback.toString()
-    );
+export async function savePreferences(preferences: Partial<PreferencesType>) {
+    if (preferences.hapticFeedback) {
+        await AsyncStorage.setItem(
+            "hapticFeedback",
+            preferences.hapticFeedback.toString()
+        );
+    }
+
+    if (preferences.darkMode) {
+        await AsyncStorage.setItem("darkMode", preferences.darkMode);
+    }
 }
 
 // PreferencesProvider component to provide the preferences context to its children
@@ -48,7 +59,9 @@ export function PreferencesProvider({
         <PreferencesContext.Provider
             value={{
                 preferences,
-                setPreferences,
+                setPreferences: (newPref) => {
+                    setPreferences({ ...preferences, ...newPref });
+                },
             }}>
             {props.children}
         </PreferencesContext.Provider>

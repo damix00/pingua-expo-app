@@ -93,6 +93,8 @@ export default function Auth() {
                 });
             }
         } catch (e) {
+            console.error(e);
+
             await haptics.notificationAsync(
                 Haptics.NotificationFeedbackType.Error
             );
@@ -112,17 +114,20 @@ export default function Auth() {
             <StatusBar style="auto" />
             <KeyboardAwareScrollView
                 alwaysBounceVertical={false}
-                enableOnAndroid
                 contentInsetAdjustmentBehavior="never"
                 keyboardShouldPersistTaps="handled"
-                contentContainerStyle={styles.scrollViewContent}
+                contentContainerStyle={[
+                    styles.scrollViewContent,
+                    {
+                        paddingTop: insets.top + ONBOARDING_APPBAR_HEIGHT,
+                        paddingBottom:
+                            Platform.OS == "android" ? insets.bottom : 0,
+                    },
+                ]}
                 style={[
                     styles.scrollView,
                     {
                         backgroundColor: colors.background,
-                        paddingTop: insets.top + ONBOARDING_APPBAR_HEIGHT,
-                        paddingBottom:
-                            Platform.OS == "android" ? insets.bottom : 0,
                     },
                 ]}>
                 <View style={[styles.imageWrapper]}>

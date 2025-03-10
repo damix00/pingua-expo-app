@@ -6,6 +6,6 @@ export default function useAppbarSafeAreaInsets() {
 
     return {
         ...insets,
-        top: insets.top + (Platform.OS === "ios" ? 48 : 72),
+        top: insets.top + (Platform.OS === "ios" ? 42 : 64),
     };
 }

@@ -2,15 +2,17 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { ChevronLeft } from "lucide-react-native";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useThemeColors } from "@/hooks/useThemeColor";
 
 export const ONBOARDING_APPBAR_HEIGHT = 56;
 
 export default function OnboardingAppbar({
-    darkText = false,
+    adaptiveColor = false,
 }: {
-    darkText?: boolean;
+    adaptiveColor?: boolean;
 }) {
     const safeAreaInsets = useSafeAreaInsets();
+    const colors = useThemeColors();
 
     return (
         <View
@@ -25,7 +27,7 @@ export default function OnboardingAppbar({
                 onPress={() => {
                     router.back();
                 }}>
-                <ChevronLeft color={darkText ? "black" : "white"} />
+                <ChevronLeft color={adaptiveColor ? colors.text : "white"} />
             </TouchableOpacity>
         </View>
     );

@@ -6,7 +6,7 @@
         "orientation": "portrait",
         "icon": "./src/assets/images/mascot.png",
         "scheme": "pingua",
-        "userInterfaceStyle": "light",
+        "userInterfaceStyle": "automatic",
         "newArchEnabled": true,
         "ios": {
             "supportsTablet": true,
@@ -17,7 +17,8 @@
                 "imageWidth": 128,
                 "resizeMode": "contain",
                 "backgroundColor": "#7d51ef"
-            }
+            },
+            "userInterfaceStyle": "automatic"
         },
         "android": {
             "package": "com.latinary.pingua",
@@ -28,7 +29,9 @@
                 "resizeMode": "contain",
                 "backgroundColor": "#7d51ef"
             },
-            "permissions": ["android.permission.VIBRATE"]
+            "softwareKeyboardLayoutMode": "pan",
+            "permissions": ["android.permission.VIBRATE"],
+            "userInterfaceStyle": "automatic"
         },
         "web": {
             "bundler": "metro",

@@ -12,17 +12,9 @@ export default function useKeyboardHeight(includeInset: boolean = true) {
     const easing = Easing.bezier(0.25, 0.1, 0.4, 1);
 
     useEffect(() => {
-        const didKeyboardShow = (event: KeyboardEvent) => {
-            if (Platform.OS == "android") {
-                onKeyboardShow(event);
-            }
-        };
-
-        const didKeyboardHide = (event: KeyboardEvent) => {
-            if (Platform.OS == "android") {
-                onKeyboardHide(event);
-            }
-        };
+        if (Platform.OS == "android") {
+            return;
+        }
 
         const onKeyboardShow = (event: KeyboardEvent) => {
             height.value = withTiming(
@@ -48,25 +40,16 @@ export default function useKeyboardHeight(includeInset: boolean = true) {
                 onKeyboardShow(event);
             }
         });
-        const didShow = Keyboard.addListener(
-            "keyboardDidShow",
-            didKeyboardShow
-        );
+
         const onHide = Keyboard.addListener("keyboardWillHide", (event) => {
             if (Platform.OS != "android") {
                 onKeyboardHide(event);
             }
         });
-        const didHide = Keyboard.addListener(
-            "keyboardDidHide",
-            didKeyboardHide
-        );
 
         return () => {
             onShow.remove();
             onHide.remove();
-            didShow.remove();
-            didHide.remove();
         };
     }, []);
 

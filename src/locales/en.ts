@@ -188,6 +188,10 @@ export default {
         title: "Settings",
         hapticFeedback: "Haptic feedback",
         language: "Language",
+        darkMode: "Dark mode",
+        deviceDefault: "System",
+        light: "Light",
+        dark: "Dark",
         premium: {
             heading: "You're a Premium member",
             renews: "Your subscription renews on {{date}}",

@@ -190,13 +190,7 @@ export default function SelectItem({
                         onPress={onClose}>
                         <BlurView
                             intensity={50}
-                            tint={
-                                Platform.OS == "android"
-                                    ? scheme == "dark"
-                                        ? "light"
-                                        : "dark"
-                                    : "default"
-                            }
+                            tint={"default"}
                             experimentalBlurMethod="dimezisBlurView"
                             style={[
                                 {

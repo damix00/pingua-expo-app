@@ -14,7 +14,13 @@ import {
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack, usePathname } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Platform, StyleSheet, useColorScheme, View } from "react-native";
+import {
+    Appearance,
+    Platform,
+    StyleSheet,
+    useColorScheme,
+    View,
+} from "react-native";
 // Font imports
 import {
     Montserrat_100Thin,
@@ -121,6 +127,16 @@ export default function RootLayout() {
 
     const prevComponent = useRef<React.ReactNode | null>(null);
 
+    const theme = useMemo(
+        () =>
+            prefs?.darkMode == "system"
+                ? scheme ?? "light"
+                : prefs?.darkMode == "true"
+                ? "dark"
+                : "light",
+        [prefs, scheme]
+    );
+
     const transparentHeader = useMemo(
         () => ({
             headerStyle: {
@@ -200,11 +216,11 @@ export default function RootLayout() {
                 await NavigationBar.setPositionAsync("absolute");
                 await NavigationBar.setBackgroundColorAsync(colors.background);
                 await NavigationBar.setButtonStyleAsync(
-                    scheme == "light" ? "dark" : "dark"
+                    theme == "light" ? "dark" : "dark"
                 );
             }
         })();
-    }, [colors, scheme]);
+    }, [colors, theme]);
 
     // Hide splash once fonts and preferences load
     useEffect(() => {
@@ -244,7 +260,12 @@ export default function RootLayout() {
                             : colors.background,
                     }}>
                     <PreferencesProvider
-                        preferences={prefs ?? { hapticFeedback: true }}
+                        preferences={
+                            prefs ?? {
+                                hapticFeedback: true,
+                                darkMode: "system",
+                            }
+                        }
                         setPreferences={(newPrefs) => setPrefs(newPrefs)}>
                         <AuthProvider
                             sectionData={sectionData}
@@ -262,7 +283,7 @@ export default function RootLayout() {
                             <ChatProvider chats={chats} setChats={setChats}>
                                 <ThemeProvider
                                     value={
-                                        scheme === "dark"
+                                        theme === "dark"
                                             ? DarkTheme
                                             : DefaultTheme
                                     }>
@@ -363,7 +384,7 @@ export default function RootLayout() {
                                                     headerTransparent: true,
                                                     header: () => (
                                                         <OnboardingAppbar
-                                                            darkText
+                                                            adaptiveColor
                                                         />
                                                     ),
                                                 }}
@@ -375,7 +396,7 @@ export default function RootLayout() {
                                                     headerTransparent: true,
                                                     header: () => (
                                                         <OnboardingAppbar
-                                                            darkText
+                                                            adaptiveColor
                                                         />
                                                     ),
                                                 }}

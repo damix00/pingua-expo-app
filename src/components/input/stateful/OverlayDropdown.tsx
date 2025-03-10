@@ -36,6 +36,10 @@ interface OverlayDropdownProps {
     }[];
     onSelect: (value: string) => void;
     selectedValue: string;
+    padding?: {
+        left?: number;
+        right?: number;
+    };
     children: React.ReactNode;
 }
 
@@ -43,6 +47,7 @@ export default function OverlayDropdown({
     items,
     onSelect,
     selectedValue,
+    padding,
     children,
 }: OverlayDropdownProps) {
     const colors = useThemeColors();
@@ -77,10 +82,14 @@ export default function OverlayDropdown({
         if (triggerRef.current) {
             triggerRef.current.measure((fx, fy, width, height, px, py) => {
                 const screenHeight = Dimensions.get("window").height;
+                const screenWidth = Dimensions.get("window").width;
                 const dropdownHeight = Math.min(items.length * 48, 200); // Approximate height of dropdown items with a max height
                 const spaceBelow = screenHeight - py - height - insets.bottom;
                 const spaceAbove = py - insets.top;
-                const left = px;
+                const left = Math.min(
+                    px + (padding?.left ?? 0),
+                    screenWidth - 256 - (padding?.right ?? 0)
+                ); // Ensure dropdown doesn't go off-screen
 
                 if (
                     spaceBelow < dropdownHeight &&
@@ -106,6 +115,7 @@ export default function OverlayDropdown({
                 {children}
             </TouchableOpacity>
             <Modal
+                statusBarTranslucent
                 animationType="fade"
                 transparent={true}
                 visible={showDropdown}

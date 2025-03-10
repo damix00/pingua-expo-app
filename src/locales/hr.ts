@@ -195,6 +195,10 @@ const translations: typeof en = {
         title: "Postavke",
         hapticFeedback: "Taktilne povratne informacije",
         language: "Jezik",
+        darkMode: "Tamni način rada",
+        deviceDefault: "Sustav",
+        light: "Svijetlo",
+        dark: "Tamno",
         premium: {
             heading: "Vi ste Premium korisnik",
             renews: "Vaša se pretplata obnavlja {{date}}",

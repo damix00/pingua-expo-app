@@ -64,7 +64,7 @@ export default function Index() {
             ref={flatListRef}
             style={[
                 {
-                    paddingTop: insets.top + 16,
+                    paddingTop: insets.top + 20,
                 },
                 styles.container,
             ]}

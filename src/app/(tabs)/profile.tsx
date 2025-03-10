@@ -24,7 +24,19 @@ function Divider({
 }: {
     style?: React.ComponentProps<typeof View>["style"];
 }) {
-    return <View style={[styles.divider, style]} />;
+    const colors = useThemeColors();
+
+    return (
+        <View
+            style={[
+                styles.divider,
+                {
+                    backgroundColor: colors.outline,
+                },
+                style,
+            ]}
+        />
+    );
 }
 
 export default function ProfileTab() {
@@ -108,12 +120,14 @@ export default function ProfileTab() {
                 />
                 <Divider />
                 <ListButton
+                    textColor={colors.text}
                     onPress={() => router.push("/settings")}
                     text={t("settings.title")}
                     icon={<SettingsIcon size={iconSize} color={iconColor} />}
                 />
                 <Divider />
                 <ListButton
+                    textColor={colors.text}
                     onPress={handleLogout}
                     text={t("logout")}
                     icon={<LogOut size={iconSize} color={iconColor} />}
@@ -141,7 +155,7 @@ const ListButton = ({
                 style={[
                     styles.buttonText,
                     {
-                        color: textColor,
+                        color: textColor ? textColor : undefined,
                     },
                 ]}>
                 {text}
@@ -156,7 +170,7 @@ const styles = StyleSheet.create({
     },
     userInfo: {
         alignItems: "flex-start",
-        paddingTop: 16,
+        paddingTop: 20,
         paddingBottom: 12,
         gap: 2,
         paddingHorizontal: 24,
@@ -187,6 +201,5 @@ const styles = StyleSheet.create({
     divider: {
         marginHorizontal: 24,
         height: 1,
-        backgroundColor: "rgba(0,0,0,0.1)",
     },
 });

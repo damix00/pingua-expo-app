@@ -60,7 +60,9 @@ const ThemedText = forwardRef(
                 ref={ref}
                 style={[
                     { color: onPrimary ? colors.textOnPrimary : color },
-                    type === "default" ? styles.default : undefined,
+                    type === "default"
+                        ? { ...styles.default, color: colors.text }
+                        : undefined,
                     type === "primary"
                         ? { color: colors.primary, ...styles.primary }
                         : undefined,

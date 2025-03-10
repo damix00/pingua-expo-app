@@ -1,8 +1,10 @@
+import { useBoxShadow } from "@/hooks/useBoxShadow";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { StyleSheet, View, ViewProps } from "react-native";
 
 export default function Chip({ children, style, ...props }: ViewProps) {
     const colors = useThemeColors();
+    const { boxShadow } = useBoxShadow("medium");
 
     return (
         <View
@@ -11,6 +13,7 @@ export default function Chip({ children, style, ...props }: ViewProps) {
                 styles.container,
                 {
                     backgroundColor: colors.primaryContainer,
+                    boxShadow,
                 },
                 style,
             ]}>
@@ -29,6 +32,5 @@ const styles = StyleSheet.create({
         gap: 4,
         alignItems: "center",
         flexDirection: "row",
-        boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.1)",
     },
 });

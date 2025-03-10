@@ -63,7 +63,7 @@ export default function ChatsTab() {
                     style={[
                         styles.list,
                         {
-                            paddingTop: insets.top + 8,
+                            paddingTop: insets.top + 16,
                             paddingBottom: insets.bottom,
                         },
                     ]}
