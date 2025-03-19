@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, useColorScheme, View } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { useTranslation } from "react-i18next";
 import { useThemeColors } from "@/hooks/useThemeColor";
@@ -12,9 +12,11 @@ export default function Paywall() {
     const { t } = useTranslation();
     const colors = useThemeColors();
     const insets = useAppbarSafeAreaInsets();
+    const scheme = useColorScheme();
 
     return (
         <BlurView
+            tint={scheme == "light" ? "default" : "dark"}
             experimentalBlurMethod="dimezisBlurView"
             style={[
                 styles.wrapper,

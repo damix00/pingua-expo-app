@@ -97,9 +97,9 @@ export default function SettingsPage() {
                         darkMode: transformedValue,
                     });
 
-                    Appearance.setColorScheme(
-                        value == "system" ? null : (value as any)
-                    );
+                    // Appearance.setColorScheme(
+                    //     value == "system" ? null : (value as any)
+                    // );
 
                     await savePreferences({
                         darkMode: transformedValue,

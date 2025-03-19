@@ -133,9 +133,11 @@ export default function AuthOtpPage() {
                         pinCodeContainerStyle: {
                             height: 56,
                             width: 48,
+                            borderColor: colors.outline,
                         },
                         pinCodeTextStyle: {
                             fontFamily: "Montserrat_600SemiBold",
+                            color: colors.text,
                         },
                         containerStyle: {
                             marginTop: 24,

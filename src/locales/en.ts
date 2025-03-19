@@ -202,6 +202,12 @@ export default {
             keepSubscription: "Stay subscribed",
         },
     },
+    scenarios: {
+        beginner: "Beginner",
+        intermediate: "Intermediate",
+        advanced: "Advanced",
+        fluent: "Fluent",
+    },
     chats: {
         tapToChat: "Tap to chat",
         youChat: "You: {{message}}",

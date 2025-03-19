@@ -71,20 +71,16 @@ export default function DialogueTranslation({
                             ]}
                             intensity={15}
                         />
-                        <IosBlurView
-                            intensity={15}
+                        <View
                             style={[
                                 styles.modal,
                                 {
                                     top: y + TRIANGLE_SIZE,
-                                    backgroundColor:
-                                        Platform.OS == "ios"
-                                            ? colors.transparentBackground
-                                            : colors.backgroundVariant,
+                                    backgroundColor: colors.backgroundVariant,
                                 },
                             ]}>
                             <ThemedText>{translation}</ThemedText>
-                        </IosBlurView>
+                        </View>
                     </View>
                 </TouchableOpacity>
             </Modal>

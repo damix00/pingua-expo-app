@@ -209,6 +209,12 @@ const translations: typeof en = {
             keepSubscription: "Zadrži pretplatu",
         },
     },
+    scenarios: {
+        beginner: "Početnik",
+        intermediate: "Srednji",
+        advanced: "Napredni",
+        fluent: "Tečno",
+    },
     chats: {
         tapToChat: "Dodirni za chat",
         youChat: "Vi: {{message}}",

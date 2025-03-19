@@ -67,11 +67,16 @@ export default function PremiumSettingsPage() {
 
     return (
         <ScrollView
+            contentContainerStyle={[
+                {
+                    flexGrow: 1,
+                    paddingTop: insets.top + 24,
+                },
+            ]}
             style={[
                 styles.container,
                 {
                     backgroundColor: colors.background,
-                    paddingTop: insets.top + 8,
                 },
             ]}>
             <View
@@ -99,7 +104,6 @@ export default function PremiumSettingsPage() {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         paddingHorizontal: 16,
     },
     item: {

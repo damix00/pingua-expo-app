@@ -20,9 +20,6 @@ import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
 import AudioButton from "@/components/input/button/AudioButton";
 
-const AnimatedTouchableOpacity =
-    Animated.createAnimatedComponent(TouchableOpacity);
-
 function AnswerCard({
     answer,
     correct,

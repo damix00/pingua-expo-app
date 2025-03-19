@@ -69,6 +69,7 @@ import * as Notifications from "expo-notifications";
 import { requestNotificationsAsync } from "@/utils/permissions";
 import { cancelReminderNotifications } from "@/utils/notifications";
 import IosBlurView from "@/components/IosBlurView";
+import AppRouter from "@/components/AppRouter";
 
 // Disable auto-hide and manage it manually
 SplashScreen.preventAutoHideAsync();
@@ -136,6 +137,16 @@ export default function RootLayout() {
                 : "light",
         [prefs, scheme]
     );
+
+    useEffect(() => {
+        Appearance.setColorScheme(
+            prefs?.darkMode == "system"
+                ? null
+                : prefs?.darkMode == "true"
+                ? "dark"
+                : "light"
+        );
+    }, [prefs]);
 
     const transparentHeader = useMemo(
         () => ({
@@ -216,7 +227,7 @@ export default function RootLayout() {
                 await NavigationBar.setPositionAsync("absolute");
                 await NavigationBar.setBackgroundColorAsync(colors.background);
                 await NavigationBar.setButtonStyleAsync(
-                    theme == "light" ? "dark" : "dark"
+                    theme == "light" ? "dark" : "light"
                 );
             }
         })();
@@ -291,257 +302,7 @@ export default function RootLayout() {
                                         <StatusBar style="auto" />
 
                                         {/* Stack for handling navigation between screens */}
-                                        <Stack
-                                            initialRouteName={
-                                                loggedIn
-                                                    ? "(tabs)"
-                                                    : "onboarding/index"
-                                            }
-                                            screenOptions={{
-                                                animation: Platform.select({
-                                                    android: "simple_push",
-                                                    ios: "ios_from_right",
-                                                }),
-
-                                                headerTitleStyle: {
-                                                    color: colors.text,
-                                                    fontFamily:
-                                                        "Montserrat_600SemiBold",
-                                                },
-                                                headerBackButtonMenuEnabled:
-                                                    false,
-                                                headerBackButtonDisplayMode:
-                                                    "minimal",
-                                            }}>
-                                            <Stack.Screen
-                                                name="onboarding/index"
-                                                options={{
-                                                    animation: "none",
-                                                    headerShown: false,
-                                                }}
-                                            />
-                                            <Stack.Screen
-                                                name="onboarding/choose-languages"
-                                                options={{
-                                                    headerShown: true,
-                                                    headerTransparent: true,
-                                                    header: () => (
-                                                        <OnboardingAppbar />
-                                                    ),
-                                                }}
-                                            />
-                                            <Stack.Screen
-                                                name="onboarding/app-language"
-                                                options={{
-                                                    headerShown: true,
-                                                    headerTransparent: true,
-                                                    header: () => (
-                                                        <OnboardingAppbar />
-                                                    ),
-                                                }}
-                                            />
-                                            <Stack.Screen
-                                                name="onboarding/choose-fluency"
-                                                options={{
-                                                    headerShown: true,
-                                                    headerTransparent: true,
-                                                    header: () => (
-                                                        <OnboardingAppbar />
-                                                    ),
-                                                }}
-                                            />
-                                            <Stack.Screen
-                                                name="onboarding/configuring-course"
-                                                options={{
-                                                    headerShown: false,
-                                                    gestureEnabled: false,
-                                                }}
-                                            />
-                                            <Stack.Screen
-                                                name="onboarding/choose-goal"
-                                                options={{
-                                                    headerShown: true,
-                                                    headerTransparent: true,
-                                                    header: () => (
-                                                        <OnboardingAppbar />
-                                                    ),
-                                                }}
-                                            />
-                                            <Stack.Screen
-                                                name="onboarding/no-account"
-                                                options={{
-                                                    headerShown: true,
-                                                    headerTransparent: true,
-                                                    header: () => (
-                                                        <OnboardingAppbar />
-                                                    ),
-                                                }}
-                                            />
-                                            <Stack.Screen
-                                                name="auth/index"
-                                                options={{
-                                                    headerShown: true,
-                                                    headerTransparent: true,
-                                                    header: () => (
-                                                        <OnboardingAppbar
-                                                            adaptiveColor
-                                                        />
-                                                    ),
-                                                }}
-                                            />
-                                            <Stack.Screen
-                                                name="auth/otp"
-                                                options={{
-                                                    headerShown: true,
-                                                    headerTransparent: true,
-                                                    header: () => (
-                                                        <OnboardingAppbar
-                                                            adaptiveColor
-                                                        />
-                                                    ),
-                                                }}
-                                            />
-                                            <Stack.Screen
-                                                name="auth/profile-setup"
-                                                options={{
-                                                    headerShown: false,
-                                                }}
-                                            />
-                                            <Stack.Screen
-                                                name="(tabs)"
-                                                options={{
-                                                    headerShown: false,
-                                                }}
-                                            />
-
-                                            {/* Lessons */}
-                                            <Stack.Screen
-                                                name="lessons/loading"
-                                                options={{
-                                                    gestureEnabled: false,
-                                                    headerShown: false,
-                                                    animation: "fade",
-                                                    animationDuration: 300,
-                                                }}
-                                            />
-                                            <Stack.Screen
-                                                name="lessons/story"
-                                                options={{
-                                                    gestureEnabled: false,
-                                                    headerShown: false,
-                                                    animation: "fade",
-                                                    animationDuration: 300,
-                                                }}
-                                            />
-                                            <Stack.Screen
-                                                name="lessons/success"
-                                                options={{
-                                                    gestureEnabled: false,
-                                                    headerShown: false,
-                                                    animation: "fade",
-                                                    animationDuration: 300,
-                                                }}
-                                            />
-                                            <Stack.Screen
-                                                name="lessons/new-section"
-                                                options={{
-                                                    gestureEnabled: false,
-                                                    headerShown: false,
-                                                    animation: "fade",
-                                                    animationDuration: 300,
-                                                }}
-                                            />
-                                            <Stack.Screen
-                                                name="lessons/questions"
-                                                options={{
-                                                    gestureEnabled: false,
-                                                    headerShown: false,
-                                                    animation: "fade",
-                                                    animationDuration: 300,
-                                                }}
-                                            />
-
-                                            {/* Chat */}
-                                            <Stack.Screen
-                                                name="chats/[character]"
-                                                options={{
-                                                    header: () => (
-                                                        <ChatHeader />
-                                                    ),
-                                                    headerTransparent: true,
-                                                    headerStyle: {
-                                                        backgroundColor:
-                                                            "transparent",
-                                                    },
-                                                }}
-                                            />
-
-                                            {/* Modals */}
-                                            <Stack.Screen
-                                                name="modals/subscription"
-                                                options={{
-                                                    gestureEnabled: false,
-                                                    presentation: "modal",
-                                                    headerShown: false,
-                                                    animation:
-                                                        Platform.OS == "android"
-                                                            ? "slide_from_bottom"
-                                                            : "default",
-                                                }}
-                                            />
-                                            <Stack.Screen
-                                                name="legal/tos"
-                                                options={{
-                                                    title: "Terms of Service",
-                                                    headerBackButtonDisplayMode:
-                                                        "minimal",
-                                                    headerBackButtonMenuEnabled:
-                                                        false,
-                                                }}
-                                            />
-                                            <Stack.Screen
-                                                name="legal/privacy-policy"
-                                                options={{
-                                                    title: "Privacy Policy",
-                                                    headerBackButtonDisplayMode:
-                                                        "minimal",
-                                                    headerBackButtonMenuEnabled:
-                                                        false,
-                                                }}
-                                            />
-
-                                            <Stack.Screen
-                                                name="settings/index"
-                                                options={{
-                                                    title: "Settings",
-                                                    ...transparentHeader,
-                                                }}
-                                            />
-                                            <Stack.Screen
-                                                name="settings/premium"
-                                                options={{
-                                                    title: "Premium",
-                                                    ...transparentHeader,
-                                                }}
-                                            />
-
-                                            <Stack.Screen
-                                                name="subscribe/index"
-                                                options={{
-                                                    presentation: "card",
-                                                    title: "Subscribe",
-                                                    headerShown: false,
-                                                }}
-                                            />
-                                            <Stack.Screen
-                                                name="subscribe/success"
-                                                options={{
-                                                    presentation: "card",
-                                                    title: "Success!",
-                                                    headerShown: false,
-                                                }}
-                                            />
-                                        </Stack>
+                                        <AppRouter loggedIn={loggedIn} />
 
                                         <CustomBottomSheetModal
                                             ref={bottomSheetRef}>

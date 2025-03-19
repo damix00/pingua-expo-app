@@ -27,7 +27,7 @@ const lightTheme = {
     backdrop: Platform.OS == "ios" ? "#00000039" : "#000000B7",
 };
 
-const darkTheme = {
+const darkTheme: typeof lightTheme = {
     primary: "#7d51ef",
     primaryContainer: "#2D2240",
     primaryVariant: "#895ef3",
@@ -48,6 +48,9 @@ const darkTheme = {
     outline: "#444444",
     outlineSecondary: "#333333",
     error: "red",
+    errorCard: "#4a1c1c",
+    correct: "#2dba2f",
+    correctCard: "#1f3d1f",
     backdrop: "#00000080",
 };
 

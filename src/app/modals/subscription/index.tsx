@@ -40,7 +40,7 @@ export default function SubscriptionModal() {
 
     return (
         <>
-            <StatusBar style={Platform.OS === "ios" ? "light" : "dark"} />
+            <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
             <ScrollView
                 alwaysBounceVertical={false}
                 contentContainerStyle={styles.container}

@@ -44,7 +44,7 @@ export default function ProfileSetupPage() {
 
     return (
         <>
-            <StatusBar style="dark" />
+            <StatusBar style="auto" />
             <ScrollView
                 contentInsetAdjustmentBehavior="never"
                 contentContainerStyle={styles.scrollViewContent}

@@ -1,5 +1,5 @@
 import { Platform } from "react-native";
-import * as FileSystem from "expo-file-system";
+import * as Device from "expo-device";
 
 export function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -27,4 +27,22 @@ export function formatDate(date: Date) {
     return `${addZero(date.getDate())}.${addZero(
         date.getMonth() + 1
     )}.${date.getFullYear()}.`;
+}
+
+export function deviceHasRoundCorners() {
+    const info = Device.modelId as string;
+
+    if (Platform.OS != "ios") return false;
+    if (!info) return false;
+
+    // iPhone SE 2nd gen
+    if (info == "iPhone12,8") return false;
+
+    const split = info.split(",");
+    const mainName = split[0].split("iPhone")[1];
+
+    return (
+        parseInt(mainName) > 10 ||
+        (parseInt(mainName) == 10 && parseInt(split[1]) >= 6)
+    );
 }

@@ -6,11 +6,11 @@ import UnitButton from "@/components/homescreen/home/UnitButton";
 import XPProgressBar from "@/components/homescreen/home/XPProgressBar";
 import { getJwt } from "@/api/data";
 import { router } from "expo-router";
-import useAppbarSafeAreaInsets from "@/hooks/useAppbarSafeAreaInsets";
+import { useBottomNavSafeAreaInsets } from "@/hooks/useAppbarSafeAreaInsets";
 import { ThemedView } from "@/components/ThemedView";
 
 export default function Index() {
-    const insets = useAppbarSafeAreaInsets();
+    const insets = useBottomNavSafeAreaInsets();
     const flatListRef = useRef<FlatList>(null);
 
     const { currentCourse, currentCourseData, title } = useCurrentCourse();
@@ -64,12 +64,12 @@ export default function Index() {
             ref={flatListRef}
             style={[
                 {
-                    paddingTop: insets.top + 20,
+                    paddingTop: insets.top + 24,
                 },
                 styles.container,
             ]}
             contentContainerStyle={{
-                paddingBottom: insets.bottom + 16 + 56,
+                paddingBottom: insets.bottom + 16,
                 gap: 16,
             }}
             data={units}

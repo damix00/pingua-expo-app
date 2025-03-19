@@ -115,6 +115,7 @@ export default function TabLayout() {
         <BottomSheetModalProvider>
             <Tabs
                 screenOptions={{
+                    freezeOnBlur: true,
                     sceneStyle: {
                         backgroundColor: colors.background,
                     },
@@ -137,7 +138,7 @@ export default function TabLayout() {
                     // Bottom navigation bar
                     tabBarBackground: () => (
                         <IosBlurView
-                            intensity={36}
+                            intensity={50}
                             style={{
                                 ...StyleSheet.absoluteFillObject,
                             }}
@@ -158,7 +159,7 @@ export default function TabLayout() {
                     tabBarInactiveTintColor: colors.textSecondary,
                     headerBackground: () => (
                         <IosBlurView
-                            intensity={36}
+                            intensity={50}
                             style={{
                                 ...StyleSheet.absoluteFillObject,
                                 borderBottomWidth: 1,
@@ -174,6 +175,23 @@ export default function TabLayout() {
                         tabBarIcon: ({ focused }) => (
                             <Ionicons
                                 name={focused ? "home" : "home-outline"}
+                                size={24}
+                                color={
+                                    focused
+                                        ? colors.primary
+                                        : colors.textSecondary
+                                }
+                            />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
+                    name="scenarios"
+                    options={{
+                        title: t("tabs.scenarios"),
+                        tabBarIcon: ({ focused }) => (
+                            <Ionicons
+                                name={focused ? "sparkles" : "sparkles-outline"}
                                 size={24}
                                 color={
                                     focused

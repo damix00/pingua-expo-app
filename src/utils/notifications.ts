@@ -65,7 +65,7 @@ export async function scheduleReminderNotifications() {
             },
             trigger: {
                 type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-                seconds: (trigger.getTime() - Date.now()) / 1000,
+                seconds: (trigger.getTime() - Date.now()) / 1000 + 5,
                 channelId: "study-reminder",
                 repeats: false,
             },
