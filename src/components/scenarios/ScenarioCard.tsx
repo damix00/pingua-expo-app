@@ -1,9 +1,10 @@
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { ThemedText } from "../ui/ThemedText";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { AIScenario } from "@/context/ScenariosContext";
+import NativeTouchable from "../input/button/NativeTouchable";
 
 const blurhash =
     "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
@@ -12,8 +13,7 @@ export default function ScenarioCard({ data }: { data: AIScenario }) {
     const colors = useThemeColors();
 
     return (
-        <TouchableOpacity
-            delayPressIn={50}
+        <NativeTouchable
             onPress={() => {
                 router.push(`/scenarios/${data.id}`);
             }}>
@@ -48,7 +48,7 @@ export default function ScenarioCard({ data }: { data: AIScenario }) {
                     </ThemedText>
                 </View>
             </View>
-        </TouchableOpacity>
+        </NativeTouchable>
     );
 }
 

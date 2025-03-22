@@ -1,47 +1,71 @@
 import ScenarioCard from "@/components/scenarios/ScenarioCard";
+import ScenariosSkeleton from "@/components/scenarios/ScenariosSkeleton";
 import { ThemedView } from "@/components/ThemedView";
+import Chip from "@/components/ui/chip/Chip";
+import SelectableChip from "@/components/ui/chip/SelectableChip";
 import { ThemedText } from "@/components/ui/ThemedText";
-import { AIScenario } from "@/context/ScenariosContext";
+import { AIScenario, useScenarios } from "@/context/ScenariosContext";
 import { useCurrentCourse } from "@/hooks/course";
 import useAppbarSafeAreaInsets, {
     useBottomNavSafeAreaInsets,
 } from "@/hooks/useAppbarSafeAreaInsets";
+import { useThemeColors } from "@/hooks/useThemeColor";
 import { mascot } from "@/utils/cache/CachedImages";
 import axios from "axios";
 import { router } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-    ActivityIndicator,
-    FlatList,
-    Image,
-    StyleSheet,
-    TouchableOpacity,
-    View,
-} from "react-native";
-import Animated from "react-native-reanimated";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
+
+enum FilterType {
+    ALL = "all",
+    UNFINISHED = "unfinished",
+    NOT_STARTED = "not_started",
+    FINISHED = "finished",
+}
 
 export default function ScenariosTab() {
     const insets = useBottomNavSafeAreaInsets();
     const course = useCurrentCourse();
     const { t } = useTranslation();
+    const scenarios = useScenarios();
+    const colors = useThemeColors();
 
-    const [data, setData] = useState<AIScenario[]>([]);
+    const [filterType, setFilterType] = useState<FilterType>(FilterType.ALL);
 
     const fetchData = useCallback(async () => {
         if (!course.currentCourse) {
             return;
         }
 
-        const response = await axios.get(
-            `/v1/courses/${course.currentCourse.id}/scenarios`
-        );
+        scenarios.setState({
+            loading: true,
+            error: false,
+            scenarios: [],
+        });
 
-        setData(response.data.data);
+        try {
+            const response = await axios.get(
+                `/v1/courses/${course.currentCourse.id}/scenarios`
+            );
+
+            scenarios.setState({
+                loading: false,
+                error: false,
+                scenarios: response.data.data,
+            });
+        } catch (e) {
+            scenarios.setState({
+                loading: false,
+                error: true,
+                scenarios: [],
+            });
+        }
     }, [course]);
 
     const organizedData = useMemo(() => {
-        if (!data) return [];
+        if (!scenarios.scenarios) return [];
 
         // Organize by difficulty
         const organized = {
@@ -63,8 +87,12 @@ export default function ScenariosTab() {
             },
         };
 
-        for (const item of data) {
-            organized[item.type].data.push(item as AIScenario);
+        for (const item of scenarios.scenarios) {
+            try {
+                organized[item.type].data.push(item as AIScenario);
+            } catch (e) {
+                console.error(e);
+            }
         }
 
         return [
@@ -73,7 +101,7 @@ export default function ScenariosTab() {
             organized.advanced,
             organized.fluent,
         ];
-    }, [data]);
+    }, [scenarios.scenarios]);
 
     useEffect(() => {
         fetchData();
@@ -94,45 +122,103 @@ export default function ScenariosTab() {
         );
     }
 
+    if (scenarios.loading) return <ScenariosSkeleton />;
+
+    if (scenarios.error) {
+        return (
+            <ThemedView
+                style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}>
+                <ThemedText>{t("errors.something_went_wrong")}</ThemedText>
+            </ThemedView>
+        );
+    }
+
     return (
-        <FlatList
-            data={organizedData}
-            renderItem={({ item }) => (
-                <View>
-                    <ThemedText
-                        type="defaultSemiBold"
-                        style={{
-                            paddingHorizontal: 24,
-                            paddingBottom: 8,
-                            fontSize: 18,
-                        }}>
-                        {item.title}
-                    </ThemedText>
-                    <FlatList
-                        contentContainerStyle={{
-                            paddingHorizontal: 24,
-                            gap: 8,
-                        }}
-                        showsHorizontalScrollIndicator={false}
-                        horizontal
-                        data={item.data}
-                        renderItem={({ item }) => <ScenarioCard data={item} />}
-                        keyExtractor={(item, index) => index.toString()}
+        <>
+            <FlatList
+                data={[
+                    FilterType.ALL,
+                    FilterType.UNFINISHED,
+                    FilterType.NOT_STARTED,
+                    FilterType.FINISHED,
+                ]}
+                renderItem={({ item }) => (
+                    <SelectableChip
+                        text={t(`scenarios.filters.${item}`)}
+                        selected={filterType === item}
+                        onSelect={() => setFilterType(item)}
                     />
-                </View>
-            )}
-            keyExtractor={(item, index) => index.toString()}
-            contentContainerStyle={{
-                paddingTop: insets.top + 24,
-                paddingBottom: insets.bottom + 24,
-                gap: 16,
-            }}
-        />
+                )}
+                keyExtractor={(item, index) => item}
+                style={[
+                    styles.filters,
+                    {
+                        top: insets.top,
+                        backgroundColor: colors.background,
+                        borderBottomWidth: 1,
+                        borderBottomColor: colors.outline,
+                    },
+                ]}
+                contentContainerStyle={{
+                    paddingHorizontal: 16,
+                    gap: 8,
+                    alignItems: "center",
+                }}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+            />
+            <FlatList
+                style={{ marginTop: 48 }}
+                data={organizedData}
+                renderItem={({ item }) => (
+                    <View>
+                        <ThemedText
+                            type="defaultSemiBold"
+                            style={{
+                                paddingHorizontal: 16,
+                                paddingBottom: 8,
+                                fontSize: 18,
+                            }}>
+                            {item.title}
+                        </ThemedText>
+                        <FlatList
+                            contentContainerStyle={{
+                                paddingHorizontal: 16,
+                                gap: 8,
+                            }}
+                            showsHorizontalScrollIndicator={false}
+                            horizontal
+                            data={item.data}
+                            renderItem={({ item }) => (
+                                <ScenarioCard data={item} />
+                            )}
+                            keyExtractor={(item, index) => index.toString()}
+                        />
+                    </View>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+                contentContainerStyle={{
+                    paddingTop: insets.top + 16,
+                    paddingBottom: insets.bottom + 24,
+                    gap: 16,
+                }}
+            />
+        </>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    filters: {
+        position: "absolute",
+        height: 48,
+        width: "100%",
+        zIndex: 100,
     },
 });

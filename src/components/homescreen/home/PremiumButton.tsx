@@ -1,6 +1,5 @@
 import { useAuth } from "@/context/AuthContext";
 import React from "react";
-import Chip from "../../ui/Chip";
 import { ThemedText } from "../../ui/ThemedText";
 import { StyleSheet, View } from "react-native";
 import HapticTouchableOpacity from "../../input/button/HapticTouchableOpacity";
@@ -8,6 +7,7 @@ import { router } from "expo-router";
 import { Gem } from "lucide-react-native";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { useTranslation } from "react-i18next";
+import Chip from "@/components/ui/chip/Chip";
 
 export default function PremiumButton() {
     const auth = useAuth();

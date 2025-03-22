@@ -250,7 +250,7 @@ export default function AppRouter({ loggedIn }: { loggedIn: boolean }) {
                     }}
                 />
                 <Stack.Screen
-                    name="scenarios/[scenario]"
+                    name="scenarios/[id]/index"
                     options={{
                         presentation: "transparentModal",
                         animation: "slide_from_bottom",

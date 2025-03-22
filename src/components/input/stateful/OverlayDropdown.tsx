@@ -80,7 +80,7 @@ export default function OverlayDropdown({
 
     const handlePress = () => {
         if (triggerRef.current) {
-            triggerRef.current.measure((fx, fy, width, height, px, py) => {
+            triggerRef.current.measureInWindow((px, py, width, height) => {
                 const screenHeight = Dimensions.get("window").height;
                 const screenWidth = Dimensions.get("window").width;
                 const dropdownHeight = Math.min(items.length * 48, 200); // Approximate height of dropdown items with a max height
@@ -114,84 +114,89 @@ export default function OverlayDropdown({
             <TouchableOpacity ref={triggerRef} onPress={handlePress}>
                 {children}
             </TouchableOpacity>
-            <Modal
-                statusBarTranslucent
-                animationType="fade"
-                transparent={true}
-                visible={showDropdown}
-                onRequestClose={() => setShowDropdown(false)}>
-                <GestureHandlerRootView>
-                    <TouchableOpacity
-                        style={styles.backdrop}
-                        activeOpacity={1}
-                        onPress={() => setShowDropdown(false)}>
-                        <AnimatedIosBlurView
-                            tint="light"
-                            intensity={50}
-                            style={[
-                                styles.overlay,
-                                {
-                                    transform: [
-                                        {
-                                            scale,
-                                        },
-                                    ],
-                                    top: dropdownTop,
-                                    maxHeight: 200,
-                                    left:
-                                        left >
-                                        Dimensions.get("window").width / 2
-                                            ? Dimensions.get("window").width -
-                                              left +
-                                              32
-                                            : left,
-                                    backgroundColor:
-                                        Platform.OS == "ios"
-                                            ? colors.transparentBackgroundDarker
-                                            : colors.backgroundVariant,
-                                },
-                            ]}>
-                            <FlatList
-                                showsVerticalScrollIndicator={false}
-                                alwaysBounceVertical={false}
-                                data={items}
-                                keyExtractor={(item) => item.value}
-                                contentInset={{
-                                    top: 4,
-                                    bottom: 4,
-                                }}
-                                ItemSeparatorComponent={() => (
-                                    <View
-                                        style={{
-                                            height: 1,
-                                            backgroundColor: colors.outline,
-                                        }}
-                                    />
-                                )}
-                                renderItem={({ item }) => (
-                                    <GestureHandlerTouchableOpacity
-                                        key={item.value}
-                                        style={styles.item}
-                                        onPress={() =>
-                                            handleSelect(item.value)
-                                        }>
-                                        {typeof item.icon === "function"
-                                            ? item.icon({ size: 24 })
-                                            : item.icon}
-                                        <ThemedText>{item.label}</ThemedText>
-                                        {item.value === selectedValue && (
-                                            <Check
-                                                size={16}
-                                                color={colors.primary}
-                                            />
-                                        )}
-                                    </GestureHandlerTouchableOpacity>
-                                )}
-                            />
-                        </AnimatedIosBlurView>
-                    </TouchableOpacity>
-                </GestureHandlerRootView>
-            </Modal>
+            <View>
+                <Modal
+                    statusBarTranslucent
+                    animationType="fade"
+                    transparent={true}
+                    visible={showDropdown}
+                    onRequestClose={() => setShowDropdown(false)}>
+                    <GestureHandlerRootView>
+                        <TouchableOpacity
+                            style={styles.backdrop}
+                            activeOpacity={1}
+                            onPress={() => setShowDropdown(false)}>
+                            <AnimatedIosBlurView
+                                tint="light"
+                                intensity={50}
+                                style={[
+                                    styles.overlay,
+                                    {
+                                        transform: [
+                                            {
+                                                scale,
+                                            },
+                                        ],
+                                        top: dropdownTop,
+                                        maxHeight: 200,
+                                        left:
+                                            left >
+                                            Dimensions.get("window").width / 2
+                                                ? Dimensions.get("window")
+                                                      .width -
+                                                  left +
+                                                  32
+                                                : left,
+                                        backgroundColor:
+                                            Platform.OS == "ios"
+                                                ? colors.transparentBackgroundDarker
+                                                : colors.backgroundVariant,
+                                    },
+                                ]}>
+                                <FlatList
+                                    showsVerticalScrollIndicator={false}
+                                    alwaysBounceVertical={false}
+                                    data={items}
+                                    keyExtractor={(item) => item.value}
+                                    contentInset={{
+                                        top: 4,
+                                        bottom: 4,
+                                    }}
+                                    ItemSeparatorComponent={() => (
+                                        <View
+                                            style={{
+                                                height: 1,
+                                                backgroundColor: colors.outline,
+                                            }}
+                                        />
+                                    )}
+                                    renderItem={({ item }) => (
+                                        <GestureHandlerTouchableOpacity
+                                            key={item.value}
+                                            style={styles.item}
+                                            onPress={() =>
+                                                handleSelect(item.value)
+                                            }>
+                                            {typeof item.icon === "function"
+                                                ? item.icon({ size: 24 })
+                                                : item.icon}
+                                            <ThemedText>
+                                                {item.label}
+                                            </ThemedText>
+                                            {item.value === selectedValue && (
+                                                <Check
+                                                    size={16}
+                                                    color={colors.primary}
+                                                />
+                                            )}
+                                        </GestureHandlerTouchableOpacity>
+                                    )}
+                                />
+                            </AnimatedIosBlurView>
+                        </TouchableOpacity>
+                    </GestureHandlerRootView>
+                </Modal>
+            </View>
         </View>
     );
 }

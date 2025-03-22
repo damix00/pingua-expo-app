@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, useContext, useState } from "react";
 
 export type AIScenario = {
     id: string;
@@ -7,6 +7,7 @@ export type AIScenario = {
     imageUrl: string;
     aiRole: string;
     aiVoice: string;
+    status: "finished" | "started" | null;
     type: "beginner" | "intermediate" | "advanced" | "fluent";
 };
 
@@ -14,35 +15,48 @@ export type ScenariosContextType = {
     scenarios: AIScenario[];
     loading: boolean;
     error: boolean;
-    setScenarios: (scenarios: AIScenario[]) => void;
+    setState: React.Dispatch<
+        React.SetStateAction<{
+            scenarios: AIScenario[];
+            loading: boolean;
+            error: boolean;
+        }>
+    >;
 };
 
 export const ScenariosContext = createContext<ScenariosContextType | null>(
     null
 );
 
-export function ScenariosProvider({
-    scenarios,
-    setScenarios,
-    loading,
-    error,
-    ...props
-}: {
-    scenarios: AIScenario[];
-    setScenarios: (scenarios: AIScenario[]) => void;
-    loading: boolean;
-    error: boolean;
-    children: React.ReactNode;
-}) {
+export function ScenariosProvider({ children }: { children: React.ReactNode }) {
+    const [state, setState] = useState({
+        scenarios: [] as AIScenario[],
+        loading: true,
+        error: false,
+    });
+
     return (
         <ScenariosContext.Provider
             value={{
-                loading,
-                error,
-                scenarios,
-                setScenarios,
-            }}
-            {...props}
-        />
+                scenarios: state.scenarios,
+                loading: state.loading,
+                error: state.error,
+                setState,
+            }}>
+            {children}
+        </ScenariosContext.Provider>
     );
+}
+
+export function useScenarios() {
+    const context = useContext(ScenariosContext);
+    if (!context) {
+        throw new Error("useScenarios must be used within a ScenariosProvider");
+    }
+    return context;
+}
+
+export function useScenario(id: string) {
+    const { scenarios } = useScenarios();
+    return scenarios.find((scenario) => scenario.id === id);
 }

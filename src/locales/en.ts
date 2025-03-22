@@ -207,6 +207,12 @@ export default {
         intermediate: "Intermediate",
         advanced: "Advanced",
         fluent: "Fluent",
+        filters: {
+            all: "All",
+            unfinished: "Unfinished",
+            not_started: "Not started",
+            finished: "Finished",
+        },
     },
     chats: {
         tapToChat: "Tap to chat",

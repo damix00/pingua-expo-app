@@ -7,7 +7,7 @@ import { getJwt, setJwt } from "@/api/data";
 import axios from "axios";
 import { clearUserCache, saveUserCache } from "@/utils/cache/user-cache";
 import { useNetworkState } from "expo-network";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import IosBlurView from "@/components/IosBlurView";
 import { usePopAllAndPush } from "@/hooks/navigation";
 import { useTranslation } from "react-i18next";
@@ -115,7 +115,7 @@ export default function TabLayout() {
         <BottomSheetModalProvider>
             <Tabs
                 screenOptions={{
-                    freezeOnBlur: true,
+                    // freezeOnBlur: true,
                     sceneStyle: {
                         backgroundColor: colors.background,
                     },
@@ -198,6 +198,16 @@ export default function TabLayout() {
                                         ? colors.primary
                                         : colors.textSecondary
                                 }
+                            />
+                        ),
+                        headerBackground: () => (
+                            <View
+                                style={{
+                                    ...StyleSheet.absoluteFillObject,
+                                    borderBottomWidth: 1,
+                                    borderColor: colors.outline,
+                                    backgroundColor: colors.background,
+                                }}
                             />
                         ),
                     }}

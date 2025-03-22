@@ -9,6 +9,7 @@ import Animated, {
     interpolate,
     Extrapolation,
     withTiming,
+    interpolateColor,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useThemeColors } from "@/hooks/useThemeColor";
@@ -85,8 +86,14 @@ export default function GestureDismissableModal({
 
                 runOnJS(handleDismiss)();
             } else {
-                translateX.value = withSpring(0);
-                translateY.value = withSpring(0);
+                const damping = 15;
+
+                translateX.value = withSpring(0, {
+                    damping,
+                });
+                translateY.value = withSpring(0, {
+                    damping,
+                });
             }
         });
 
@@ -124,8 +131,18 @@ export default function GestureDismissableModal({
         };
     });
 
+    const overlayStyle = useAnimatedStyle(() => {
+        return {
+            backgroundColor: interpolateColor(
+                Math.max(translateX.value, translateY.value),
+                [0, height / 2],
+                ["rgba(0,0,0,0.75)", "rgba(0,0,0,0)"]
+            ),
+        };
+    });
+
     return (
-        <Animated.View style={{ opacity, flex: 1 }}>
+        <Animated.View style={[{ opacity, flex: 1 }, overlayStyle]}>
             <BlurView
                 experimentalBlurMethod="dimezisBlurView"
                 tint={scheme == "dark" ? "dark" : "light"}

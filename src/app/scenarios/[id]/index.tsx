@@ -9,19 +9,44 @@ import Animated, {
     runOnJS,
 } from "react-native-reanimated";
 import { Dimensions, View } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import {
+    Gesture,
+    GestureDetector,
+    ScrollView,
+} from "react-native-gesture-handler";
 import { BlurView } from "expo-blur";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { useCallback, useEffect } from "react";
 import { mascot } from "@/utils/cache/CachedImages";
 import GestureDismissableModal from "@/components/modal/GestureDismissableModal";
+import { useScenario } from "@/context/ScenariosContext";
+import { ThemedView } from "@/components/ThemedView";
+import { useTranslation } from "react-i18next";
 
 export default function ScenarioScreen() {
-    const { scenario } = useLocalSearchParams<{
-        scenario: string;
+    const { id } = useLocalSearchParams<{
+        id: string;
     }>();
 
+    const scenario = useScenario(id);
+
+    console.log(scenario);
+
     const colors = useThemeColors();
+    const { t } = useTranslation();
+
+    if (!scenario) {
+        return (
+            <ThemedView
+                style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}>
+                <ThemedText>{t("errors.something_went_wrong")}</ThemedText>
+            </ThemedView>
+        );
+    }
 
     return (
         <GestureDismissableModal
@@ -30,7 +55,9 @@ export default function ScenarioScreen() {
                 justifyContent: "center",
             }}
             onDismiss={() => router.back()}>
-            <ThemedText>Scenario: {scenario}</ThemedText>
+            <ScrollView bounces={false}>
+                <ThemedText>{scenario.title}</ThemedText>
+            </ScrollView>
         </GestureDismissableModal>
     );
 }

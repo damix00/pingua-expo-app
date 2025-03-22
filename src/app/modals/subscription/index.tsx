@@ -1,7 +1,7 @@
 import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
 import BrandText from "@/components/ui/BrandText";
-import Chip from "@/components/ui/Chip";
+import Chip from "@/components/ui/chip/Chip";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { router } from "expo-router";

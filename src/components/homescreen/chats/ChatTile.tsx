@@ -1,3 +1,4 @@
+import NativeTouchable from "@/components/input/button/NativeTouchable";
 import SelectItem from "@/components/input/stateful/select/SelectItem";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { chatCharacters, useChat, useChats } from "@/context/ChatContext";
@@ -85,7 +86,7 @@ export default function ChatTile({ name, image, character }: ChatTileProps) {
 
     return (
         <SelectItem items={menuItems}>
-            <TouchableOpacity onPress={handlePress}>
+            <NativeTouchable onPress={handlePress}>
                 <View
                     style={[
                         styles.item,
@@ -123,7 +124,7 @@ export default function ChatTile({ name, image, character }: ChatTileProps) {
                         </ThemedText>
                     </View>
                 </View>
-            </TouchableOpacity>
+            </NativeTouchable>
         </SelectItem>
     );
 }

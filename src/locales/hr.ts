@@ -214,6 +214,12 @@ const translations: typeof en = {
         intermediate: "Srednji",
         advanced: "Napredni",
         fluent: "Tečno",
+        filters: {
+            all: "Sve",
+            unfinished: "Nedovršeno",
+            not_started: "Nezapočeto",
+            finished: "Završeno",
+        },
     },
     chats: {
         tapToChat: "Dodirni za chat",
