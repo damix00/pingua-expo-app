@@ -1,8 +1,20 @@
 import { useBoxShadow } from "@/hooks/useBoxShadow";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { StyleSheet, View, ViewProps } from "react-native";
+import React from "react";
 
-export default function Chip({ children, style, ...props }: ViewProps) {
+type ChipProps = ViewProps & {
+    variant?: "primary" | "default" | "transparent";
+    rounding?: "rounded" | "pill";
+};
+
+export default function Chip({
+    children,
+    style,
+    variant = "primary",
+    rounding = "rounded",
+    ...props
+}: ChipProps) {
     const colors = useThemeColors();
     const { boxShadow } = useBoxShadow("medium");
 
@@ -13,7 +25,18 @@ export default function Chip({ children, style, ...props }: ViewProps) {
                 styles.container,
                 {
                     backgroundColor: colors.primaryContainer,
-                    boxShadow,
+                    boxShadow: variant == "primary" ? boxShadow : undefined,
+                },
+                variant == "default" && {
+                    backgroundColor: colors.backgroundVariant,
+                },
+                variant == "transparent" && {
+                    backgroundColor: "transparent",
+                    borderWidth: 1,
+                    borderColor: colors.outlineVariant,
+                },
+                rounding == "pill" && {
+                    borderRadius: 24,
                 },
                 style,
             ]}>
@@ -32,5 +55,9 @@ const styles = StyleSheet.create({
         gap: 4,
         alignItems: "center",
         flexDirection: "row",
+    },
+    selectable: {
+        borderWidth: 1,
+        borderColor: "gray",
     },
 });

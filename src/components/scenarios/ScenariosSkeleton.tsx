@@ -72,7 +72,7 @@ export default function ScenariosSkeleton() {
             style={[
                 styles.container,
                 {
-                    paddingTop: insets.top + 24,
+                    paddingTop: insets.top + 24 + 42,
                     paddingBottom: insets.bottom + 24,
                     backgroundColor: colors.background,
                 },

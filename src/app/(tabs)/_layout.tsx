@@ -205,7 +205,7 @@ export default function TabLayout() {
                                 style={{
                                     ...StyleSheet.absoluteFillObject,
                                     borderBottomWidth: 1,
-                                    borderColor: colors.outline,
+                                    borderColor: colors.background,
                                     backgroundColor: colors.background,
                                 }}
                             />

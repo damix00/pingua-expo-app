@@ -21,6 +21,7 @@ export default {
     update: "Update",
     logout: "Log out",
     cancel: "Cancel",
+    retry: "Retry",
     languages: {
         en: "English",
         de: "German",
@@ -213,6 +214,14 @@ export default {
             not_started: "Not started",
             finished: "Finished",
         },
+        actions: {
+            start: "Start",
+            continue: "Continue",
+            startNew: "Start new",
+        },
+        no_scenarios: "No scenarios found. Try changing the filters.",
+        input_placeholder: "Write a message...",
+        reason: "Reason",
     },
     chats: {
         tapToChat: "Tap to chat",

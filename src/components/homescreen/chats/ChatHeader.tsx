@@ -33,7 +33,6 @@ export default function ChatHeader() {
                 paddingTop: insets.top,
                 borderBottomWidth: 1,
                 borderBottomColor: colors.outline,
-                // backgroundColor: "transparent",
             }}>
             <View style={styles.headerInner}>
                 <TouchableOpacity

@@ -6,7 +6,7 @@ import { useThemeColors } from "@/hooks/useThemeColor";
 import { Question } from "@/types/course";
 import { Audio } from "expo-av";
 import { Circle, Ellipsis, Lock, Mic } from "lucide-react-native";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
     ActivityIndicator,
@@ -73,6 +73,10 @@ export default function RecordVoiceTask({
             console.log("Requesting permission..");
             await requestPermission();
         }
+    }, []);
+
+    useEffect(() => {
+        askForPermission();
     }, []);
 
     const startRecording = useCallback(async () => {
@@ -194,8 +198,6 @@ export default function RecordVoiceTask({
         .runOnJS(true)
         .onBegin(() => {
             haptics.selectionAsync();
-
-            askForPermission();
         })
         .runOnJS(false)
         .onStart(() => {

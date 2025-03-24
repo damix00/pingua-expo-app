@@ -1,5 +1,11 @@
 import React, { useCallback } from "react";
-import { Dimensions, Platform, StyleSheet, useColorScheme } from "react-native";
+import {
+    Dimensions,
+    Platform,
+    StyleSheet,
+    useColorScheme,
+    View,
+} from "react-native";
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
@@ -23,7 +29,7 @@ interface DismissableModalProps {
     style?: StyleProps;
 }
 
-export default function GestureDismissableModal({
+function InnerGestureDismissableModal({
     children,
     onDismiss,
     style,
@@ -53,18 +59,28 @@ export default function GestureDismissableModal({
         })
         .onUpdate(({ translationX, translationY }) => {
             const decayFactor = 0.5;
+            const biggerDecayFactor = 1;
+
             translateX.value =
                 translationX *
-                Math.exp((-decayFactor * Math.abs(translationX)) / width);
+                Math.exp(
+                    (-(translationX < 0 ? biggerDecayFactor : decayFactor) *
+                        Math.abs(translationX)) /
+                        width
+                );
             translateY.value =
                 translationY *
-                Math.exp((-decayFactor * Math.abs(translationY)) / height);
+                Math.exp(
+                    (-(translationY < 0 ? biggerDecayFactor : decayFactor) *
+                        Math.abs(translationY)) /
+                        height
+                );
         })
         .onEnd((event) => {
             if (
-                translateX.value > width / 2 ||
+                translateX.value > width / 2.5 ||
                 event.velocityX > 1000 ||
-                translateY.value > height / 2 ||
+                translateY.value > height / 2.5 ||
                 event.velocityY > 1000
             ) {
                 // Apply velocity to the animation
@@ -112,7 +128,7 @@ export default function GestureDismissableModal({
                     scale: interpolate(
                         Math.max(translateX.value, translateY.value),
                         [-200, 0, 200],
-                        [1.1, 1, 0.9],
+                        [1.2, 1, 0.9],
                         Extrapolation.CLAMP
                     ),
                 },
@@ -122,7 +138,9 @@ export default function GestureDismissableModal({
                     ? roundedCorners
                         ? 50
                         : interpolate(
-                              Math.max(translateX.value, translateY.value),
+                              Math.abs(
+                                  Math.max(translateX.value, translateY.value)
+                              ),
                               [0, 100],
                               [0, 50],
                               Extrapolation.CLAMP
@@ -146,7 +164,7 @@ export default function GestureDismissableModal({
             <BlurView
                 experimentalBlurMethod="dimezisBlurView"
                 tint={scheme == "dark" ? "dark" : "light"}
-                intensity={100}
+                intensity={Platform.OS == "android" ? 5 : 100}
                 style={{
                     flex: 1,
                 }}>
@@ -157,6 +175,7 @@ export default function GestureDismissableModal({
                                 borderCurve: "continuous",
                                 flex: 1,
                                 backgroundColor: colors.background,
+                                overflow: "hidden",
                             },
                             shadow,
                             animatedStyle,
@@ -167,5 +186,21 @@ export default function GestureDismissableModal({
                 </GestureDetector>
             </BlurView>
         </Animated.View>
+    );
+}
+
+export default function GestureDismissableModal({
+    children,
+    onDismiss,
+    style,
+}: DismissableModalProps) {
+    if (Platform.OS == "android") {
+        return <View style={[{ flex: 1 }, style]}>{children}</View>;
+    }
+
+    return (
+        <InnerGestureDismissableModal onDismiss={onDismiss} style={style}>
+            {children}
+        </InnerGestureDismissableModal>
     );
 }

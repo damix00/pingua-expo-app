@@ -252,12 +252,22 @@ export default function AppRouter({ loggedIn }: { loggedIn: boolean }) {
                 <Stack.Screen
                     name="scenarios/[id]/index"
                     options={{
-                        presentation: "transparentModal",
-                        animation: "slide_from_bottom",
+                        presentation:
+                            Platform.OS == "ios" ? "transparentModal" : "card",
+                        animation:
+                            Platform.OS == "ios" ? "slide_from_bottom" : "fade",
                         headerShown: false,
                         contentStyle: {
                             backgroundColor: "transparent",
                         },
+                    }}
+                />
+                <Stack.Screen
+                    name="scenarios/[id]/chat"
+                    options={{
+                        presentation:
+                            Platform.OS == "ios" ? "fullScreenModal" : "card",
+                        headerShown: false,
                     }}
                 />
             </Stack>

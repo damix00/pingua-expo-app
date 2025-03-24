@@ -80,7 +80,7 @@ export default function OverlayDropdown({
 
     const handlePress = () => {
         if (triggerRef.current) {
-            triggerRef.current.measureInWindow((px, py, width, height) => {
+            triggerRef.current.measure((fx, fy, width, height, px, py) => {
                 const screenHeight = Dimensions.get("window").height;
                 const screenWidth = Dimensions.get("window").width;
                 const dropdownHeight = Math.min(items.length * 48, 200); // Approximate height of dropdown items with a max height

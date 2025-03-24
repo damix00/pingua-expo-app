@@ -8,6 +8,7 @@ export default function HapticNativeTouchable({
     ...props
 }: TouchableNativeFeedbackProps & {
     enableHaptics?: boolean;
+    androidBorderRadius?: number;
 }) {
     const preferences = usePreferences();
 

@@ -1,3 +1,5 @@
+import Button from "@/components/input/button/Button";
+import ButtonText from "@/components/input/button/ButtonText";
 import ScenarioCard from "@/components/scenarios/ScenarioCard";
 import ScenariosSkeleton from "@/components/scenarios/ScenariosSkeleton";
 import { ThemedView } from "@/components/ThemedView";
@@ -13,10 +15,10 @@ import { useThemeColors } from "@/hooks/useThemeColor";
 import { mascot } from "@/utils/cache/CachedImages";
 import axios from "axios";
 import { router } from "expo-router";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { FlatList, RefreshControl } from "react-native-gesture-handler";
 
 enum FilterType {
     ALL = "all",
@@ -31,38 +33,47 @@ export default function ScenariosTab() {
     const { t } = useTranslation();
     const scenarios = useScenarios();
     const colors = useThemeColors();
+    const [refreshing, setRefreshing] = useState(false);
 
     const [filterType, setFilterType] = useState<FilterType>(FilterType.ALL);
+    const filterRef = useRef<FilterType>(filterType);
 
-    const fetchData = useCallback(async () => {
-        if (!course.currentCourse) {
-            return;
-        }
-
-        scenarios.setState({
-            loading: true,
-            error: false,
-            scenarios: [],
-        });
-
-        try {
-            const response = await axios.get(
-                `/v1/courses/${course.currentCourse.id}/scenarios`
-            );
+    const fetchData = useCallback(
+        async (updateLoading: boolean = false) => {
+            if (!course.currentCourse) {
+                return;
+            }
 
             scenarios.setState({
-                loading: false,
+                ...scenarios,
                 error: false,
-                scenarios: response.data.data,
+                ...(updateLoading ? { loading: true } : {}),
             });
-        } catch (e) {
-            scenarios.setState({
-                loading: false,
-                error: true,
-                scenarios: [],
-            });
-        }
-    }, [course]);
+
+            setRefreshing(true);
+
+            try {
+                const response = await axios.get(
+                    `/v1/courses/${course.currentCourse.id}/scenarios?filter=${filterRef.current}`
+                );
+
+                scenarios.setState({
+                    loading: false,
+                    error: false,
+                    scenarios: response.data.data,
+                });
+            } catch (e) {
+                scenarios.setState({
+                    loading: false,
+                    error: true,
+                    scenarios: [],
+                });
+            } finally {
+                setRefreshing(false);
+            }
+        },
+        [course]
+    );
 
     const organizedData = useMemo(() => {
         if (!scenarios.scenarios) return [];
@@ -100,7 +111,7 @@ export default function ScenariosTab() {
             organized.intermediate,
             organized.advanced,
             organized.fluent,
-        ];
+        ].filter((group) => group.data.length > 0);
     }, [scenarios.scenarios]);
 
     useEffect(() => {
@@ -122,35 +133,30 @@ export default function ScenariosTab() {
         );
     }
 
-    if (scenarios.loading) return <ScenariosSkeleton />;
-
-    if (scenarios.error) {
-        return (
-            <ThemedView
-                style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}>
-                <ThemedText>{t("errors.something_went_wrong")}</ThemedText>
-            </ThemedView>
-        );
-    }
-
     return (
         <>
             <FlatList
                 data={[
                     FilterType.ALL,
-                    FilterType.UNFINISHED,
                     FilterType.NOT_STARTED,
+                    FilterType.UNFINISHED,
                     FilterType.FINISHED,
                 ]}
                 renderItem={({ item }) => (
                     <SelectableChip
                         text={t(`scenarios.filters.${item}`)}
                         selected={filterType === item}
-                        onSelect={() => setFilterType(item)}
+                        onSelect={() => {
+                            if (item == filterType && item == FilterType.ALL) {
+                                return;
+                            }
+
+                            const newFilter =
+                                item === filterType ? FilterType.ALL : item;
+                            setFilterType(newFilter);
+                            filterRef.current = newFilter;
+                            fetchData(true);
+                        }}
                     />
                 )}
                 keyExtractor={(item, index) => item}
@@ -171,42 +177,83 @@ export default function ScenariosTab() {
                 horizontal
                 showsHorizontalScrollIndicator={false}
             />
-            <FlatList
-                style={{ marginTop: 48 }}
-                data={organizedData}
-                renderItem={({ item }) => (
-                    <View>
-                        <ThemedText
-                            type="defaultSemiBold"
-                            style={{
-                                paddingHorizontal: 16,
-                                paddingBottom: 8,
-                                fontSize: 18,
-                            }}>
-                            {item.title}
-                        </ThemedText>
-                        <FlatList
-                            contentContainerStyle={{
-                                paddingHorizontal: 16,
-                                gap: 8,
-                            }}
-                            showsHorizontalScrollIndicator={false}
-                            horizontal
-                            data={item.data}
-                            renderItem={({ item }) => (
-                                <ScenarioCard data={item} />
-                            )}
-                            keyExtractor={(item, index) => index.toString()}
-                        />
-                    </View>
-                )}
-                keyExtractor={(item, index) => index.toString()}
-                contentContainerStyle={{
-                    paddingTop: insets.top + 16,
-                    paddingBottom: insets.bottom + 24,
-                    gap: 16,
-                }}
-            />
+            {scenarios.loading && <ScenariosSkeleton />}
+            {scenarios.error && (
+                <ThemedView
+                    style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        paddingHorizontal: 24,
+                        gap: 16,
+                    }}>
+                    <ThemedText>{t("errors.something_went_wrong")}</ThemedText>
+                    <Button onPress={() => fetchData(true)}>
+                        <ButtonText>{t("retry")}</ButtonText>
+                    </Button>
+                </ThemedView>
+            )}
+            {!scenarios.loading &&
+                !scenarios.error &&
+                (scenarios.scenarios.length == 0 ? (
+                    <ThemedView
+                        style={{
+                            flex: 1,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            paddingHorizontal: 24,
+                            gap: 16,
+                        }}>
+                        <ThemedText>{t("scenarios.no_scenarios")}</ThemedText>
+                    </ThemedView>
+                ) : (
+                    <FlatList
+                        style={{ marginTop: 42 }}
+                        data={organizedData}
+                        refreshControl={
+                            <RefreshControl
+                                tintColor={colors.primary}
+                                progressViewOffset={insets.top}
+                                onRefresh={fetchData}
+                                refreshing={refreshing}
+                            />
+                        }
+                        renderItem={({ item }) => (
+                            <View>
+                                <ThemedText
+                                    type="defaultSemiBold"
+                                    style={{
+                                        paddingHorizontal: 16,
+                                        paddingBottom: 8,
+                                        fontSize: 18,
+                                    }}>
+                                    {item.title}
+                                </ThemedText>
+                                <FlatList
+                                    contentContainerStyle={{
+                                        paddingHorizontal: 16,
+                                        gap: 8,
+                                    }}
+                                    showsHorizontalScrollIndicator={false}
+                                    horizontal
+                                    data={item.data}
+                                    renderItem={({ item }) => (
+                                        <ScenarioCard data={item} />
+                                    )}
+                                    keyExtractor={(item, index) =>
+                                        index.toString()
+                                    }
+                                />
+                            </View>
+                        )}
+                        keyExtractor={(item, index) => index.toString()}
+                        contentContainerStyle={{
+                            paddingTop: insets.top + 16,
+                            paddingBottom: insets.bottom + 24,
+                            gap: 16,
+                        }}
+                    />
+                ))}
         </>
     );
 }
@@ -217,7 +264,7 @@ const styles = StyleSheet.create({
     },
     filters: {
         position: "absolute",
-        height: 48,
+        height: 42,
         width: "100%",
         zIndex: 100,
     },

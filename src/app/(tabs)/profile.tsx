@@ -18,6 +18,7 @@ import HapticTouchableOpacity from "@/components/input/button/HapticTouchableOpa
 import { Gem, LogOut, SettingsIcon } from "lucide-react-native";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
+import HapticNativeTouchable from "@/components/input/button/HapticNativeTouchable";
 
 function Divider({
     style,
@@ -149,7 +150,7 @@ const ListButton = ({
     icon: React.ReactNode;
 }) => {
     return (
-        <HapticTouchableOpacity style={styles.listButton} onPress={onPress}>
+        <HapticNativeTouchable style={styles.listButton} onPress={onPress}>
             {icon}
             <ThemedText
                 style={[
@@ -160,7 +161,7 @@ const ListButton = ({
                 ]}>
                 {text}
             </ThemedText>
-        </HapticTouchableOpacity>
+        </HapticNativeTouchable>
     );
 };
 

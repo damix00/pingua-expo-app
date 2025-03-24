@@ -14,6 +14,7 @@ export default function ScenarioCard({ data }: { data: AIScenario }) {
 
     return (
         <NativeTouchable
+            androidBorderRadius={8}
             onPress={() => {
                 router.push(`/scenarios/${data.id}`);
             }}>

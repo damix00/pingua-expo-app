@@ -149,28 +149,6 @@ export default function RootLayout() {
         );
     }, [prefs]);
 
-    const transparentHeader = useMemo(
-        () => ({
-            headerStyle: {
-                backgroundColor: "transparent",
-                elevation: 0,
-                borderBottomWidth: 0,
-            },
-            headerTransparent: true,
-            headerBackground: () => (
-                <IosBlurView
-                    intensity={36}
-                    style={{
-                        ...StyleSheet.absoluteFillObject,
-                        borderBottomWidth: 1,
-                        borderColor: colors.outline,
-                    }}
-                />
-            ),
-        }),
-        [colors]
-    );
-
     useEffect(() => {
         if (
             bottomSheetComponent &&

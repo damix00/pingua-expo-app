@@ -10,6 +10,7 @@ import { useUnitTitle } from "@/hooks/course";
 import { SectionData } from "@/context/AuthContext";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import React from "react";
+import NativeTouchable from "@/components/input/button/NativeTouchable";
 
 export default function UnitButton({
     currentXp,
@@ -36,7 +37,7 @@ export default function UnitButton({
     const title = useUnitTitle(sectionData, index);
 
     return (
-        <TouchableOpacity
+        <NativeTouchable
             onPress={onPress}
             disabled={(!shouldContinue && !completed) || completed}>
             <View
@@ -89,7 +90,7 @@ export default function UnitButton({
                     <LockKeyholeIcon size={20} color={colors.text} />
                 )}
             </View>
-        </TouchableOpacity>
+        </NativeTouchable>
     );
 }
 

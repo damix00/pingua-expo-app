@@ -23,6 +23,7 @@ const translations: typeof en = {
     update: "Ažuriraj",
     logout: "Odjava",
     cancel: "Odustani",
+    retry: "Pokušaj ponovno",
     languages: {
         en: "Engleski",
         de: "Njemački",
@@ -220,6 +221,14 @@ const translations: typeof en = {
             not_started: "Nezapočeto",
             finished: "Završeno",
         },
+        actions: {
+            start: "Započni",
+            continue: "Nastavi",
+            startNew: "Započni novi",
+        },
+        no_scenarios: "Nema scenarija za prikaz. Pokušajte promijeniti filtre.",
+        input_placeholder: "Napiši poruku...",
+        reason: "Promisli",
     },
     chats: {
         tapToChat: "Dodirni za chat",
@@ -280,7 +289,7 @@ const translations: typeof en = {
                 body: "dakle, ovo je sada tvoj život? netko tko odustaje? ja ne bih nikad.",
             },
             r12: {
-                title: "Nisam ljut.",
+                title: "nisam ljut.",
                 body: "samo razočaran. u tebe. jer ne učiš. mislio sam da smo prijatelji.",
             },
             r13: {
