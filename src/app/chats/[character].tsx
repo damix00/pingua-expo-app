@@ -6,7 +6,6 @@ import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { Chat, chatCharacters, useChat, useChats } from "@/context/ChatContext";
 import { useCurrentCourse } from "@/hooks/course";
-import useAppbarSafeAreaInsets from "@/hooks/useAppbarSafeAreaInsets";
 import useKeyboardHeight from "@/hooks/useKeyboardHeight";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import axios from "axios";
@@ -27,6 +26,8 @@ import Animated, {
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { Ellipsis } from "lucide-react-native";
+import { getPlatformHeaderHeight } from "@/utils/util";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function ChatScreen() {
     const colors = useThemeColors();
@@ -38,7 +39,7 @@ export default function ChatScreen() {
     const character = chatCharacters[charName as keyof typeof chatCharacters];
 
     const keyboardHeight = useKeyboardHeight();
-    const insets = useAppbarSafeAreaInsets();
+    const insets = useSafeAreaInsets();
     const chat = useChat(charName);
     const chats = useChats();
     const [loadingMessages, setLoadingMessages] = useState<string[]>([]);
@@ -178,8 +179,13 @@ export default function ChatScreen() {
                 contentContainerStyle={[
                     styles.contentContainer,
                     {
-                        paddingTop: 56 + 16,
-                        paddingBottom: insets.top + insets.bottom,
+                        paddingTop: 96 + 16 + 16,
+                        paddingBottom:
+                            insets.top +
+                            (Platform.OS == "android"
+                                ? insets.bottom + 56
+                                : 44) +
+                            16,
                     },
                 ]}
                 showsVerticalScrollIndicator={false}
@@ -268,7 +274,7 @@ export default function ChatScreen() {
             />
             <View style={styles.input} ref={inputRef}>
                 <MessageInput
-                    onSend={async (message) => {
+                    onSend={async (message, shouldReason) => {
                         if (message.trim() == "") {
                             return;
                         }
@@ -281,6 +287,7 @@ export default function ChatScreen() {
                             {
                                 content: message,
                                 language: course.currentCourse!.languageCode,
+                                should_reason: shouldReason,
                             },
                             {
                                 headers: {

@@ -234,6 +234,12 @@ export default function AppRouter({ loggedIn }: { loggedIn: boolean }) {
                     }}
                 />
                 <Stack.Screen
+                    name="settings/developer"
+                    options={{
+                        title: "Developer settings",
+                    }}
+                />
+                <Stack.Screen
                     name="subscribe/index"
                     options={{
                         presentation: "card",
@@ -265,8 +271,7 @@ export default function AppRouter({ loggedIn }: { loggedIn: boolean }) {
                 <Stack.Screen
                     name="scenarios/[id]/chat"
                     options={{
-                        presentation:
-                            Platform.OS == "ios" ? "fullScreenModal" : "card",
+                        presentation: "card",
                         headerShown: false,
                     }}
                 />

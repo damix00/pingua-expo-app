@@ -1,27 +1,24 @@
 import { ThemedText } from "@/components/ui/ThemedText";
 import { router, useLocalSearchParams } from "expo-router";
-import {
-    FlatList,
-    ScrollView,
-    TouchableOpacity,
-} from "react-native-gesture-handler";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import GestureDismissableModal from "@/components/modal/GestureDismissableModal";
-import { useScenario } from "@/context/ScenariosContext";
+import { useScenario, useScenarios } from "@/context/ScenariosContext";
 import { ThemedView } from "@/components/ThemedView";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft, HistoryIcon } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Image } from "expo-image";
 import { StyleSheet, View } from "react-native";
 import Button from "@/components/input/button/Button";
 import ButtonText from "@/components/input/button/ButtonText";
-import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
 import Chip from "@/components/ui/chip/Chip";
 import { useCallback, useState } from "react";
-
-const blurHash = "LFCaGY%g%hxs0[R.IvRP?Jt7s:t7";
+import ScenarioPageHeader from "@/components/scenarios/ScenarioPageHeader";
+import NativeTouchable from "@/components/input/button/NativeTouchable";
+import Toast from "react-native-toast-message";
+import axios from "axios";
+import { useCurrentCourse } from "@/hooks/course";
 
 export default function ScenarioScreen() {
     const { id } = useLocalSearchParams<{
@@ -29,7 +26,9 @@ export default function ScenarioScreen() {
     }>();
 
     const scenario = useScenario(id);
+    const scenarios = useScenarios();
     const insets = useSafeAreaInsets();
+    const course = useCurrentCourse();
 
     const colors = useThemeColors();
     const { t } = useTranslation();
@@ -37,10 +36,55 @@ export default function ScenarioScreen() {
     const [loading, setLoading] = useState(false);
 
     const handleStart = useCallback(async () => {
-        router.push(`/scenarios/${id}/chat`);
+        if (!scenario || !course.currentCourse) return;
+
+        if (scenario.session_id && scenario.status == "started") {
+            router.replace(
+                `/scenarios/${id}/chat?sessionId=${scenario.session_id}`
+            );
+
+            return;
+        }
+
+        // Create a new session
+        try {
+            setLoading(true);
+            const resp = await axios.post(
+                `/v1/courses/${course.currentCourse.id}/scenarios/${id}`
+            );
+
+            if (resp.status != 200) {
+                throw new Error("Failed to start scenario");
+            }
+
+            const sessionId = resp.data.scenario.id;
+
+            router.replace(`/scenarios/${id}/chat?sessionId=${sessionId}`);
+
+            scenarios.setState((state) => ({
+                ...state,
+                scenarios: state.scenarios.map((s) =>
+                    s.id == id
+                        ? {
+                              ...s,
+                              session_id: sessionId,
+                              status: "started",
+                          }
+                        : s
+                ),
+            }));
+        } catch (e) {
+            console.error(e);
+            Toast.show({
+                type: "error",
+                text1: t("errors.something_went_wrong"),
+            });
+        } finally {
+            setLoading(false);
+        }
     }, [scenario, id]);
 
-    if (!scenario) {
+    if (!scenario || !course.currentCourse) {
         return (
             <ThemedView
                 style={{
@@ -63,7 +107,7 @@ export default function ScenarioScreen() {
                         top: insets.top + 8,
                     },
                 ]}>
-                <TouchableOpacity
+                <NativeTouchable
                     style={{ flex: 1 }}
                     onPress={() => router.back()}>
                     <ChevronLeft
@@ -72,7 +116,7 @@ export default function ScenarioScreen() {
                         }}
                         color="white"
                     />
-                </TouchableOpacity>
+                </NativeTouchable>
             </View>
             <ScrollView
                 alwaysBounceVertical={false}
@@ -85,34 +129,7 @@ export default function ScenarioScreen() {
                     },
                 ]}>
                 <View>
-                    <View
-                        style={[
-                            styles.imageContainer,
-                            {
-                                paddingTop: insets.top / 2,
-                                backgroundColor: "black",
-                            },
-                        ]}>
-                        <Image
-                            placeholder={{ blurHash }}
-                            source={scenario.imageUrl}
-                            style={[
-                                styles.image,
-                                {
-                                    height: 200 + insets.top,
-                                },
-                            ]}
-                        />
-                        <LinearGradient
-                            colors={["transparent", "black"]}
-                            style={[
-                                styles.gradient,
-                                {
-                                    top: insets.top / 2 - 1, // Prevents a line from appearing
-                                },
-                            ]}
-                        />
-                    </View>
+                    <ScenarioPageHeader imageUrl={scenario.imageUrl} />
                     <View
                         style={{
                             paddingHorizontal: 16,
@@ -170,24 +187,6 @@ export default function ScenarioScreen() {
 }
 
 const styles = StyleSheet.create({
-    image: {
-        width: "100%",
-    },
-    imageContainer: {
-        position: "relative",
-    },
-    gradient: {
-        position: "absolute",
-        left: 0,
-        right: 0,
-        top: 0,
-        height: "40%",
-        transform: [
-            {
-                rotate: "180deg",
-            },
-        ],
-    },
     backButton: {
         width: 64,
         position: "absolute",

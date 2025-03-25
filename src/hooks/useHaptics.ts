@@ -3,6 +3,7 @@
 
 import { usePreferences } from "@/context/PreferencesContext";
 import * as Haptics from "expo-haptics";
+import { Vibration } from "react-native";
 
 export default function useHaptics() {
     const prefs = usePreferences();
@@ -12,6 +13,7 @@ export default function useHaptics() {
             notificationAsync: async () => {},
             impactAsync: async () => {},
             selectionAsync: async () => {},
+            vibrate: (...args: any[]) => {},
         };
     }
 
@@ -19,5 +21,6 @@ export default function useHaptics() {
         notificationAsync: Haptics.notificationAsync,
         impactAsync: Haptics.impactAsync,
         selectionAsync: Haptics.selectionAsync,
+        vibrate: Vibration.vibrate,
     };
 }

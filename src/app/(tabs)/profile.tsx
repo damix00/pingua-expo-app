@@ -15,7 +15,7 @@ import { clearUserCache } from "@/utils/cache/user-cache";
 import useAppbarSafeAreaInsets from "@/hooks/useAppbarSafeAreaInsets";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import HapticTouchableOpacity from "@/components/input/button/HapticTouchableOpacity";
-import { Gem, LogOut, SettingsIcon } from "lucide-react-native";
+import { Code, Gem, LogOut, SettingsIcon } from "lucide-react-native";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import HapticNativeTouchable from "@/components/input/button/HapticNativeTouchable";
@@ -133,6 +133,19 @@ export default function ProfileTab() {
                     text={t("logout")}
                     icon={<LogOut size={iconSize} color={iconColor} />}
                 />
+                {__DEV__ && (
+                    <>
+                        <Divider />
+                        <ListButton
+                            textColor={colors.text}
+                            onPress={() => {
+                                router.push("/settings/developer");
+                            }}
+                            text="Developer settings"
+                            icon={<Code size={iconSize} color={iconColor} />}
+                        />
+                    </>
+                )}
             </View>
         </ScrollView>
     );

@@ -7,8 +7,16 @@ export type AIScenario = {
     imageUrl: string;
     aiRole: string;
     aiVoice: string;
+    session_id: string | null;
     status: "finished" | "started" | null;
     type: "beginner" | "intermediate" | "advanced" | "fluent";
+};
+
+export type AIScenarioMessage = {
+    id: string;
+    content: string;
+    userMessage: boolean;
+    createdAt: string;
 };
 
 export type ScenariosContextType = {

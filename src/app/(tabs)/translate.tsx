@@ -132,6 +132,7 @@ export default function TranslateTab() {
                                 styles.textContent,
                                 {
                                     backgroundColor: colors.backgroundVariant,
+                                    textAlignVertical: "top",
                                 },
                             ]}
                         />
@@ -243,6 +244,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
         paddingVertical: 12,
         paddingHorizontal: 16,
+        fontFamily: "Montserrat_500Medium",
     },
     innerCard: {
         height: undefined,

@@ -24,6 +24,8 @@ const translations: typeof en = {
     logout: "Odjava",
     cancel: "Odustani",
     retry: "Pokušaj ponovno",
+    yes: "Da",
+    no: "Ne",
     languages: {
         en: "Engleski",
         de: "Njemački",
@@ -229,6 +231,13 @@ const translations: typeof en = {
         no_scenarios: "Nema scenarija za prikaz. Pokušajte promijeniti filtre.",
         input_placeholder: "Napiši poruku...",
         reason: "Promisli",
+        success: "Uspjeh!",
+        failure: "Neuspješno",
+        newScenarioAlert: {
+            title: "Žapočeti novo čavrljanje?",
+            description:
+                "Imate nedovršeno čavrljanje. Želite li započeti novo?",
+        },
     },
     chats: {
         tapToChat: "Dodirni za chat",

@@ -22,6 +22,8 @@ export default {
     logout: "Log out",
     cancel: "Cancel",
     retry: "Retry",
+    yes: "Yes",
+    no: "No",
     languages: {
         en: "English",
         de: "German",
@@ -222,6 +224,13 @@ export default {
         no_scenarios: "No scenarios found. Try changing the filters.",
         input_placeholder: "Write a message...",
         reason: "Reason",
+        success: "Success!",
+        failure: "Failure",
+        newScenarioAlert: {
+            title: "Start new chat?",
+            description:
+                "You have an unfinished chat. Do you want to start a new one?",
+        },
     },
     chats: {
         tapToChat: "Tap to chat",

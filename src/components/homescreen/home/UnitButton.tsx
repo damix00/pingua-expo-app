@@ -38,6 +38,7 @@ export default function UnitButton({
 
     return (
         <NativeTouchable
+            androidBorderRadius={32}
             onPress={onPress}
             disabled={(!shouldContinue && !completed) || completed}>
             <View

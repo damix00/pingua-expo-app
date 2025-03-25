@@ -8,7 +8,7 @@ import useHaptics from "@/hooks/useHaptics";
 import { saveUserCache } from "@/utils/cache/user-cache";
 import { sleep } from "@/utils/util";
 import axios from "axios";
-import { NotificationFeedbackType } from "expo-haptics";
+import { ImpactFeedbackStyle, NotificationFeedbackType } from "expo-haptics";
 import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -60,6 +60,13 @@ export default function LessonSuccessPage() {
     }, []);
 
     const playAnim = useCallback(async () => {
+        // Start the haptics feedback in parallel
+        for (let i = 0; i < 225; i++) {
+            setTimeout(() => {
+                haptics.impactAsync(ImpactFeedbackStyle.Light);
+            }, i * 5);
+        }
+
         opacity1.value = withTiming(1, { duration });
         await sleep(1000);
         opacity2.value = withTiming(1, { duration });
