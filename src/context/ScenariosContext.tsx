@@ -19,6 +19,15 @@ export type AIScenarioMessage = {
     createdAt: string;
 };
 
+export type AIScenarioSession = {
+    id: string;
+    cmsId: string;
+    completed: boolean;
+    success: boolean;
+    courseId: string;
+    createdAt: string;
+};
+
 export type ScenariosContextType = {
     scenarios: AIScenario[];
     loading: boolean;

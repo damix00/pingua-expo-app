@@ -210,6 +210,7 @@ export default {
         intermediate: "Intermediate",
         advanced: "Advanced",
         fluent: "Fluent",
+        scenario: "Scenario",
         filters: {
             all: "All",
             unfinished: "Unfinished",
@@ -230,6 +231,9 @@ export default {
             title: "Start new chat?",
             description:
                 "You have an unfinished chat. Do you want to start a new one?",
+        },
+        history: {
+            title: "History",
         },
     },
     chats: {

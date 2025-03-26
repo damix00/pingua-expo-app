@@ -42,17 +42,6 @@ export default function ScenarioMessageBubble({
                 <ThemedText>{content}</ThemedText>
                 <View style={styles.aiBtns}>
                     <ScenarioButton
-                        icon={Copy}
-                        onPress={() => {
-                            Clipboard.setStringAsync(content);
-                            Toast.show({
-                                type: "success",
-                                text1: t("copied"),
-                            });
-                        }}
-                    />
-                    <ScenarioButton icon={Volume2} onPress={() => {}} />
-                    <ScenarioButton
                         icon={Languages}
                         onPress={() => {
                             bottomSheet.setBottomSheet(
@@ -68,6 +57,17 @@ export default function ScenarioMessageBubble({
                             );
                         }}
                     />
+                    <ScenarioButton
+                        icon={Copy}
+                        onPress={() => {
+                            Clipboard.setStringAsync(content);
+                            Toast.show({
+                                type: "success",
+                                text1: t("copied"),
+                            });
+                        }}
+                    />
+                    <ScenarioButton icon={Volume2} onPress={() => {}} />
                 </View>
             </View>
         );

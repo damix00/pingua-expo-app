@@ -102,20 +102,36 @@ export default function ScenarioScreen() {
             <StatusBar style="light" />
             <View
                 style={[
-                    styles.backButton,
+                    styles.buttons,
                     {
-                        top: insets.top + 8,
+                        top: insets.top,
                     },
                 ]}>
                 <NativeTouchable
                     style={{ flex: 1 }}
                     onPress={() => router.back()}>
-                    <ChevronLeft
-                        style={{
-                            paddingHorizontal: 24,
-                        }}
-                        color="white"
-                    />
+                    <View style={styles.headerButton}>
+                        <ChevronLeft
+                            size={24}
+                            style={{
+                                paddingHorizontal: 24,
+                            }}
+                            color="white"
+                        />
+                    </View>
+                </NativeTouchable>
+                <NativeTouchable
+                    style={{ flex: 1 }}
+                    onPress={() => router.replace(`/scenarios/${id}/history`)}>
+                    <View style={styles.headerButton}>
+                        <HistoryIcon
+                            size={24}
+                            style={{
+                                paddingHorizontal: 24,
+                            }}
+                            color="white"
+                        />
+                    </View>
                 </NativeTouchable>
             </View>
             <ScrollView
@@ -187,11 +203,13 @@ export default function ScenarioScreen() {
 }
 
 const styles = StyleSheet.create({
-    backButton: {
-        width: 64,
+    buttons: {
         position: "absolute",
         left: 0,
         zIndex: 10,
+        width: "100%",
+        flexDirection: "row",
+        justifyContent: "space-between",
     },
     scrollView: {
         position: "relative",
@@ -203,5 +221,8 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         paddingHorizontal: 16,
+    },
+    headerButton: {
+        paddingVertical: 8,
     },
 });

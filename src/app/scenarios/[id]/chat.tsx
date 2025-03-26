@@ -113,6 +113,7 @@ export default function ScenarioChatPage(props: any) {
             const msgs = resp.data.scenario.messages;
             msgRef.current = [...msgRef.current, ...msgs];
             setMessages(msgRef.current);
+            setHasMore(msgs.length > 0);
         } catch (e) {
             console.error(e);
         } finally {

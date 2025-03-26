@@ -217,6 +217,7 @@ const translations: typeof en = {
         intermediate: "Srednji",
         advanced: "Napredni",
         fluent: "Tečno",
+        scenario: "Scenarij",
         filters: {
             all: "Sve",
             unfinished: "Nedovršeno",
@@ -237,6 +238,9 @@ const translations: typeof en = {
             title: "Žapočeti novo čavrljanje?",
             description:
                 "Imate nedovršeno čavrljanje. Želite li započeti novo?",
+        },
+        history: {
+            title: "Povijest",
         },
     },
     chats: {

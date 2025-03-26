@@ -23,6 +23,11 @@ export default function AppRouter({ loggedIn }: { loggedIn: boolean }) {
                 elevation: 0,
                 borderBottomWidth: 0,
             },
+            headerTitleStyle: {
+                fontSize: 16,
+                fontFamily: "Montserrat_700Bold",
+            },
+            headerTintColor: colors.text,
             headerTransparent: true,
             headerBackground: () => (
                 <IosBlurView
@@ -273,6 +278,13 @@ export default function AppRouter({ loggedIn }: { loggedIn: boolean }) {
                     options={{
                         presentation: "card",
                         headerShown: false,
+                    }}
+                />
+                <Stack.Screen
+                    name="scenarios/[id]/history"
+                    options={{
+                        presentation: "card",
+                        ...transparentHeader,
                     }}
                 />
             </Stack>
