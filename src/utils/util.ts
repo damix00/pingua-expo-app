@@ -46,3 +46,10 @@ export function deviceHasRoundCorners() {
         (parseInt(mainName) == 10 && parseInt(split[1]) >= 6)
     );
 }
+
+export function durationToTime(duration: number) {
+    const minutes = Math.floor(duration / 60);
+    const seconds = Math.floor(duration % 60);
+
+    return `${addZero(minutes)}:${addZero(seconds)}`;
+}

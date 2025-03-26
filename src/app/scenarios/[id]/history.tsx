@@ -48,9 +48,8 @@ export default function ScenarioHistoryPage() {
                 throw new Error("Failed to fetch data");
             }
 
-            console.log(response.data);
-
-            setData(response.data.sessions);
+            setHasMore(response.data.sessions.length > 0);
+            setData(response.data.sessions || []);
             setLoading(false);
         } catch (error) {
             console.error(error);
@@ -86,8 +85,6 @@ export default function ScenarioHistoryPage() {
                 throw new Error("Failed to fetch data");
             }
 
-            console.log(response.data);
-
             setData((prevData) => [...prevData, ...response.data.sessions]);
             setLoadingMore(false);
             setHasMore(response.data.sessions.length > 0);
@@ -100,7 +97,7 @@ export default function ScenarioHistoryPage() {
         }
     }, [loading, loadingMore, hasMore, course]);
 
-    if (loading) {
+    if (loading || data.length == 0) {
         return (
             <ThemedView
                 style={[
@@ -110,7 +107,10 @@ export default function ScenarioHistoryPage() {
                         alignItems: "center",
                     },
                 ]}>
-                <ActivityIndicator />
+                {!loading && data.length == 0 && (
+                    <ThemedText>{t("scenarios.history.no_data")}</ThemedText>
+                )}
+                {loading && <ActivityIndicator />}
             </ThemedView>
         );
     }
@@ -146,7 +146,7 @@ export default function ScenarioHistoryPage() {
                     return null;
                 }
 
-                if ("_internal_ignore" in item && item._internal_ignore) {
+                if ("_internal_ignore" in item) {
                     return null;
                 }
                 return <ScenarioSessionCard {...(item as AIScenarioSession)} />;

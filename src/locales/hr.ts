@@ -241,6 +241,7 @@ const translations: typeof en = {
         },
         history: {
             title: "Povijest",
+            no_data: "Nema podataka za prikaz.",
         },
     },
     chats: {
@@ -283,7 +284,7 @@ const translations: typeof en = {
             },
             r7: {
                 title: "Postaješ popularan!",
-                body: "Na listi 'Najmanje učenih'. Promijenimo to!",
+                body: "Na listi 'Ljudi koji najmanje uče'. Promijenimo to!",
             },
             r8: {
                 title: "Nema pritiska, ali...",

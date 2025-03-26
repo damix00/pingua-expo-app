@@ -71,6 +71,7 @@ import { cancelReminderNotifications } from "@/utils/notifications";
 import IosBlurView from "@/components/IosBlurView";
 import AppRouter from "@/components/AppRouter";
 import { ScenariosProvider } from "@/context/ScenariosContext";
+import { AudioBubbleProvider } from "@/context/AudioBubbleContext";
 
 // Disable auto-hide and manage it manually
 SplashScreen.preventAutoHideAsync();
@@ -277,36 +278,41 @@ export default function RootLayout() {
                                             ? DarkTheme
                                             : DefaultTheme
                                     }>
-                                    <ScenariosProvider>
-                                        <BottomSheetModalProvider>
-                                            <StatusBar style="auto" />
+                                    <AudioBubbleProvider>
+                                        <ScenariosProvider>
+                                            <BottomSheetModalProvider>
+                                                <StatusBar style="auto" />
 
-                                            {/* Stack for handling navigation between screens */}
-                                            <AppRouter loggedIn={loggedIn} />
+                                                {/* Stack for handling navigation between screens */}
+                                                <AppRouter
+                                                    loggedIn={loggedIn}
+                                                />
 
-                                            <CustomBottomSheetModal
-                                                ref={bottomSheetRef}>
-                                                {bottomSheetComponent}
-                                            </CustomBottomSheetModal>
+                                                <CustomBottomSheetModal
+                                                    ref={bottomSheetRef}>
+                                                    {bottomSheetComponent}
+                                                </CustomBottomSheetModal>
 
-                                            {/* Toast notifications */}
-                                            <Toast
-                                                config={{
-                                                    success: BaseToast,
-                                                    error: (props) => (
-                                                        <BaseToast
-                                                            error
-                                                            {...props}
-                                                        />
-                                                    ),
-                                                    info: BaseToast,
-                                                    any_custom_type: BaseToast,
-                                                }}
-                                                topOffset={0}
-                                                bottomOffset={0}
-                                            />
-                                        </BottomSheetModalProvider>
-                                    </ScenariosProvider>
+                                                {/* Toast notifications */}
+                                                <Toast
+                                                    config={{
+                                                        success: BaseToast,
+                                                        error: (props) => (
+                                                            <BaseToast
+                                                                error
+                                                                {...props}
+                                                            />
+                                                        ),
+                                                        info: BaseToast,
+                                                        any_custom_type:
+                                                            BaseToast,
+                                                    }}
+                                                    topOffset={0}
+                                                    bottomOffset={0}
+                                                />
+                                            </BottomSheetModalProvider>
+                                        </ScenariosProvider>
+                                    </AudioBubbleProvider>
                                 </ThemeProvider>
                             </ChatProvider>
                         </AuthProvider>

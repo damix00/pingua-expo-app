@@ -25,6 +25,7 @@ import Toast from "react-native-toast-message";
 import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from "expo-av";
 import axios from "axios";
 import SelectItem from "@/components/input/stateful/select/SelectItem";
+import { useAudioBubble } from "@/context/AudioBubbleContext";
 
 export default function ChatBubble({
     content,
@@ -46,6 +47,7 @@ export default function ChatBubble({
     const { t } = useTranslation();
     const bottomSheet = useBottomSheet();
     const course = useCurrentCourse();
+    const audioBubble = useAudioBubble();
 
     useEffect(() => {
         if (loading) {
@@ -115,21 +117,7 @@ export default function ChatBubble({
                                   return;
                               }
 
-                              const { sound } = await Audio.Sound.createAsync({
-                                  uri: data.data.url,
-                              });
-
-                              await Audio.setAudioModeAsync({
-                                  playsInSilentModeIOS: true,
-                                  allowsRecordingIOS: false,
-                                  interruptionModeIOS:
-                                      InterruptionModeIOS.DoNotMix,
-                                  shouldDuckAndroid: true,
-                                  interruptionModeAndroid:
-                                      InterruptionModeAndroid.DoNotMix,
-                              });
-
-                              await sound.playAsync();
+                              audioBubble.setAudioUrl(data.data.url);
                           },
                           icon: <Volume2 size={iconSize} color={colors.text} />,
                       },

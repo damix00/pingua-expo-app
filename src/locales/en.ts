@@ -234,6 +234,7 @@ export default {
         },
         history: {
             title: "History",
+            no_data: "No history found.",
         },
     },
     chats: {
