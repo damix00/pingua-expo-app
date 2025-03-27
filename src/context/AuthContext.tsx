@@ -11,6 +11,11 @@ export type AuthUser = {
     xp: number;
     plan: Plan;
     planExpiresAt: Date | null;
+    streak: {
+        current: number;
+        longest: number;
+        lastDate: string;
+    };
 };
 
 export type SectionCache = {

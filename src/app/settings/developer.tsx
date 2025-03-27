@@ -8,15 +8,31 @@ import ButtonText from "@/components/input/button/ButtonText";
 import { router } from "expo-router";
 import { SettingsCheckboxItem } from "@/components/settings/SettingsItems";
 
+function Divider() {
+    const colors = useThemeColors();
+
+    return (
+        <ThemedText
+            style={{
+                width: "100%",
+                height: 1,
+                backgroundColor: colors.outline,
+                marginVertical: 8,
+            }}
+        />
+    );
+}
+
 export default function DeveloperSettings() {
     const colors = useThemeColors();
     const [xp, setXp] = useState(0);
     const [newSection, setNewSection] = useState(false);
+    const [updatedStreak, setUpdatedStreak] = useState(false);
 
     return (
         <ScrollView
             contentContainerStyle={{
-                gap: 8,
+                gap: 12,
             }}
             style={{
                 backgroundColor: colors.background,
@@ -37,13 +53,31 @@ export default function DeveloperSettings() {
                 checked={newSection}
                 onChange={setNewSection}
             />
+            <SettingsCheckboxItem
+                title="Updated streak"
+                checked={updatedStreak}
+                onChange={setUpdatedStreak}
+            />
             <Button
                 onPress={() => {
                     router.push(
-                        `/lessons/success?xp=${xp}&advancedToNextSection=${newSection}`
+                        `/lessons/success?xp=${xp}&advancedToNextSection=${newSection}&updatedStreak=${updatedStreak}`
                     );
                 }}>
-                <ButtonText>Show success screen</ButtonText>
+                <ButtonText>Task/story success screen</ButtonText>
+            </Button>
+            <Divider />
+            <Button
+                onPress={() => {
+                    router.push("/scenarios/test/success");
+                }}>
+                <ButtonText>Scenario success screen</ButtonText>
+            </Button>
+            <Button
+                onPress={() => {
+                    router.push("/lessons/streak");
+                }}>
+                <ButtonText>New streak screen</ButtonText>
             </Button>
         </ScrollView>
     );

@@ -4,22 +4,39 @@ import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { usePreventBack } from "@/hooks/navigation";
 import useHaptics from "@/hooks/useHaptics";
+import { sleep } from "@/utils/util";
 import { NotificationFeedbackType } from "expo-haptics";
-import { router } from "expo-router";
-import { useEffect } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function NewSectionPage() {
+    const { updatedStreak } = useLocalSearchParams<{
+        updatedStreak: string;
+    }>();
+
+    const streak = updatedStreak === "true";
+
     const insets = useSafeAreaInsets();
     const { t } = useTranslation();
     usePreventBack();
 
     const haptics = useHaptics();
 
-    useEffect(() => {
+    const playAnim = useCallback(async () => {
         haptics.notificationAsync(NotificationFeedbackType.Success);
+
+        await sleep(1500);
+
+        if (streak) {
+            router.replace("/lessons/streak");
+        }
+    }, []);
+
+    useEffect(() => {
+        playAnim();
     }, []);
 
     return (
@@ -35,9 +52,13 @@ export default function NewSectionPage() {
             <ThemedText fontWeight="800" style={styles.text}>
                 {t("lesson.success.new_section")}
             </ThemedText>
-            <Button style={styles.button} onPress={() => router.back()}>
-                <ButtonText>{t("great")}</ButtonText>
-            </Button>
+            {streak ? (
+                <View />
+            ) : (
+                <Button style={styles.button} onPress={() => router.back()}>
+                    <ButtonText>{t("great")}</ButtonText>
+                </Button>
+            )}
         </ThemedView>
     );
 }

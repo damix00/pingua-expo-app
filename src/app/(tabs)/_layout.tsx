@@ -11,13 +11,14 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import IosBlurView from "@/components/IosBlurView";
 import { usePopAllAndPush } from "@/hooks/navigation";
 import { useTranslation } from "react-i18next";
-import CourseSelect from "@/components/homescreen/home/CourseSelect";
+import HomeHeaderActions from "@/components/homescreen/home/HomeHeaderActions";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import CourseSelectSheet from "@/components/homescreen/home/CourseSelectSheet";
 import PremiumButton from "@/components/homescreen/home/PremiumButton";
 import { useBottomSheet } from "@/context/BottomSheetContext";
 import { useChats } from "@/context/ChatContext";
 import { scheduleReminderNotifications } from "@/utils/notifications";
+import StreakSheet from "@/components/homescreen/home/StreakSheet";
 
 export default function TabLayout() {
     const bottomSheet = useBottomSheet();
@@ -35,6 +36,10 @@ export default function TabLayout() {
 
     const handlePresentModalPress = useCallback(() => {
         bottomSheet.setBottomSheet(<CourseSelectSheet />);
+    }, []);
+
+    const handleStreakButtonPress = useCallback(() => {
+        bottomSheet.setBottomSheet(<StreakSheet />);
     }, []);
 
     const fetchUser = async () => {
@@ -131,10 +136,6 @@ export default function TabLayout() {
                         color: colors.text,
                         fontFamily: "Montserrat_600SemiBold",
                     },
-                    headerLeft: () => (
-                        <CourseSelect onPress={handlePresentModalPress} />
-                    ),
-                    headerRight: () => <PremiumButton />,
                     // Bottom navigation bar
                     tabBarBackground: () => (
                         <IosBlurView
@@ -148,14 +149,21 @@ export default function TabLayout() {
                         // @ts-ignore
                         <TouchableOpacity {...props} activeOpacity={1} />
                     ),
-
                     // Header
+                    headerTitleAlign: "center",
                     headerTransparent: true,
                     headerStyle: {
                         backgroundColor: "transparent",
                         elevation: 0,
                         borderBottomWidth: 0,
                     },
+                    headerLeft: () => (
+                        <HomeHeaderActions
+                            onCourseSelect={handlePresentModalPress}
+                            onStreakSelect={handleStreakButtonPress}
+                        />
+                    ),
+                    headerRight: () => <PremiumButton />,
                     tabBarInactiveTintColor: colors.textSecondary,
                     headerBackground: () => (
                         <IosBlurView

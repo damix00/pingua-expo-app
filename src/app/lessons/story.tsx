@@ -167,7 +167,7 @@ export default function StoryLessonScreen() {
         }
 
         router.replace(
-            `/lessons/success?xp=${data.data.xp}&advancedToNextSection=${data.data.advancedToNextSection}`
+            `/lessons/success?xp=${data.data.xp}&advancedToNextSection=${data.data.advancedToNextSection}&updatedStreak=${data.data.updatedStreak}`
         );
     }, []);
 

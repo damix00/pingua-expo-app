@@ -84,7 +84,7 @@ export default function QuestionsLessonScreen() {
         }
 
         router.replace(
-            `/lessons/success?xp=${result.data.xp}&advancedToNextSection=${result.data.advancedToNextSection}`
+            `/lessons/success?xp=${result.data.xp}&advancedToNextSection=${result.data.advancedToNextSection}&updatedStreak=${result.data.updatedStreak}`
         );
     }, [course.currentCourse, parsed.id, t]);
 

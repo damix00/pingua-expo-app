@@ -13,16 +13,22 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
-import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
+import Animated, {
+    Easing,
+    useSharedValue,
+    withTiming,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function LessonSuccessPage() {
-    const { xp, advancedToNextSection } = useLocalSearchParams<{
+    const { xp, advancedToNextSection, updatedStreak } = useLocalSearchParams<{
         xp: string;
         advancedToNextSection: string;
+        updatedStreak: string;
     }>();
 
     const advanced = advancedToNextSection === "true";
+    const streak = updatedStreak === "true";
 
     const insets = useSafeAreaInsets();
     const haptics = useHaptics();
@@ -33,6 +39,7 @@ export default function LessonSuccessPage() {
     const { t } = useTranslation();
 
     const opacity1 = useSharedValue(0);
+    const scale1 = useSharedValue(0.8);
     const opacity2 = useSharedValue(0);
     const opacity3 = useSharedValue(0);
     const opacity4 = useSharedValue(0);
@@ -61,21 +68,27 @@ export default function LessonSuccessPage() {
 
     const playAnim = useCallback(async () => {
         // Start the haptics feedback in parallel
-        for (let i = 0; i < 225; i++) {
-            setTimeout(() => {
-                haptics.impactAsync(ImpactFeedbackStyle.Light);
-            }, i * 5);
-        }
+        haptics.successVibration();
 
-        opacity1.value = withTiming(1, { duration });
+        await sleep(1000);
+        opacity1.value = withTiming(1, {
+            duration: 1000,
+            easing: Easing.out(Easing.exp),
+        });
+        scale1.value = withTiming(1, {
+            duration: 1000,
+            easing: Easing.out(Easing.exp),
+        });
+        haptics.impactAsync(ImpactFeedbackStyle.Medium);
         await sleep(1000);
         opacity2.value = withTiming(1, { duration });
+        haptics.impactAsync(ImpactFeedbackStyle.Heavy);
 
         await sleep(1000);
         haptics.notificationAsync(NotificationFeedbackType.Success);
         opacity3.value = withTiming(1, { duration });
 
-        if (advanced) {
+        if (advanced || streak) {
             await sleep(1500);
             opacity1.value = withTiming(0, { duration });
             opacity2.value = withTiming(0, { duration });
@@ -90,7 +103,11 @@ export default function LessonSuccessPage() {
     useEffect(() => {
         Promise.all([playAnim(), loadNewSection()]).then(() => {
             if (advanced) {
-                router.replace("/lessons/new-section");
+                router.replace(
+                    `/lessons/new-section?updatedStreak=${updatedStreak}`
+                );
+            } else if (streak) {
+                router.replace("/lessons/streak");
             }
         });
     }, []);
@@ -105,7 +122,18 @@ export default function LessonSuccessPage() {
                 },
             ]}>
             <View style={styles.textContainer}>
-                <Animated.View style={[{ opacity: opacity1 }, styles.item]}>
+                <Animated.View
+                    style={[
+                        {
+                            opacity: opacity1,
+                            transform: [
+                                {
+                                    scale: scale1,
+                                },
+                            ],
+                        },
+                        styles.item,
+                    ]}>
                     <ThemedText type="heading" style={styles.text}>
                         {t("lesson.success.title")}
                     </ThemedText>

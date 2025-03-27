@@ -14,6 +14,7 @@ export default function useHaptics() {
             impactAsync: async () => {},
             selectionAsync: async () => {},
             vibrate: (...args: any[]) => {},
+            successVibration: () => {},
         };
     }
 
@@ -22,5 +23,12 @@ export default function useHaptics() {
         impactAsync: Haptics.impactAsync,
         selectionAsync: Haptics.selectionAsync,
         vibrate: Vibration.vibrate,
+        successVibration: () => {
+            for (let i = 0; i < 225; i++) {
+                setTimeout(() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+                }, i * 5);
+            }
+        },
     };
 }

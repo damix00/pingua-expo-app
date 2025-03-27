@@ -28,6 +28,7 @@ import Toast from "react-native-toast-message";
 import { Ellipsis } from "lucide-react-native";
 import { getPlatformHeaderHeight } from "@/utils/util";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useAudioBubble } from "@/context/AudioBubbleContext";
 
 export default function ChatScreen() {
     const colors = useThemeColors();
@@ -48,6 +49,7 @@ export default function ChatScreen() {
     const messagesRef = useRef<Chat["messages"]>(chat?.messages || []);
     const [lazyLoading, setLazyLoading] = useState(false);
     const [reachedEnd, setReachedEnd] = useState(false);
+    const audioBubble = useAudioBubble();
 
     const inputRef = useRef<View>(null);
 
@@ -274,7 +276,7 @@ export default function ChatScreen() {
             />
             <View style={styles.input} ref={inputRef}>
                 <MessageInput
-                    onSend={async (message, shouldReason) => {
+                    onSend={async (message, shouldReason, audioMode) => {
                         if (message.trim() == "") {
                             return;
                         }
@@ -288,6 +290,8 @@ export default function ChatScreen() {
                                 content: message,
                                 language: course.currentCourse!.languageCode,
                                 should_reason: shouldReason,
+                                fluency: course.currentCourse?.fluencyLevel,
+                                auto_tts: audioMode,
                             },
                             {
                                 headers: {
@@ -296,6 +300,12 @@ export default function ChatScreen() {
                                 },
                             }
                         );
+
+                        console.log(audioMode, resp.data.ttsUrl);
+
+                        if (audioMode && resp.data.ttsUrl) {
+                            audioBubble.setAudioUrl(resp.data.ttsUrl);
+                        }
 
                         // Update messages
                         const messages = resp.data.messages;

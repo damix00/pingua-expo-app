@@ -27,6 +27,7 @@ import Animated, {
     withTiming,
 } from "react-native-reanimated";
 import { Check } from "lucide-react-native";
+import NativeTouchable from "../button/NativeTouchable";
 
 interface OverlayDropdownProps {
     items: {
@@ -171,7 +172,7 @@ export default function OverlayDropdown({
                                         />
                                     )}
                                     renderItem={({ item }) => (
-                                        <GestureHandlerTouchableOpacity
+                                        <NativeTouchable
                                             key={item.value}
                                             style={styles.item}
                                             onPress={() =>
@@ -189,7 +190,7 @@ export default function OverlayDropdown({
                                                     color={colors.primary}
                                                 />
                                             )}
-                                        </GestureHandlerTouchableOpacity>
+                                        </NativeTouchable>
                                     )}
                                 />
                             </AnimatedIosBlurView>

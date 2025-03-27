@@ -24,6 +24,7 @@ import MessageInput from "@/components/homescreen/chats/MessageInput";
 import Toast from "react-native-toast-message";
 import { useTranslation } from "react-i18next";
 import { useThemeColors } from "@/hooks/useThemeColor";
+import { useAudioBubble } from "@/context/AudioBubbleContext";
 
 type MessageType =
     | AIScenarioMessage
@@ -46,6 +47,7 @@ export default function ScenarioChatPage(props: any) {
     const course = useCurrentCourse();
     const { t } = useTranslation();
     const colors = useThemeColors();
+    const audioBubble = useAudioBubble();
 
     const [loading, setLoading] = useState(true);
     const [messages, setMessages] = useState<MessageType[]>([]);
@@ -189,6 +191,8 @@ export default function ScenarioChatPage(props: any) {
 
                         return (
                             <ScenarioMessageBubble
+                                scenarioId={scenario.id}
+                                sessionId={scenario.session_id as string}
                                 id={"tmpId" in item ? item.tmpId : item.id}
                                 content={item.content}
                                 userMessage={item.userMessage}
@@ -223,7 +227,7 @@ export default function ScenarioChatPage(props: any) {
             ) : (
                 <MessageInput
                     disableSending={sending}
-                    onSend={async (content, shouldReason) => {
+                    onSend={async (content, shouldReason, audioMode) => {
                         setSending(true);
 
                         const tmpId = Date.now().toString();
@@ -243,6 +247,7 @@ export default function ScenarioChatPage(props: any) {
                                 {
                                     content,
                                     use_reasoning: shouldReason,
+                                    auto_tts: audioMode,
                                 }
                             );
 
@@ -270,7 +275,15 @@ export default function ScenarioChatPage(props: any) {
                                     };
                                 });
 
+                                router.replace(
+                                    `/scenarios/${id}/success?updatedStreak=${resp.data.updatedStreak}`
+                                );
+
                                 return;
+                            }
+
+                            if (audioMode && resp.data.ttsUrl) {
+                                audioBubble.setAudioUrl(resp.data.ttsUrl);
                             }
 
                             const data = resp.data.scenario.messages;

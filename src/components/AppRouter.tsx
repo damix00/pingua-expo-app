@@ -169,6 +169,15 @@ export default function AppRouter({ loggedIn }: { loggedIn: boolean }) {
                     }}
                 />
                 <Stack.Screen
+                    name="lessons/streak"
+                    options={{
+                        gestureEnabled: false,
+                        headerShown: false,
+                        animation: "fade",
+                        animationDuration: 300,
+                    }}
+                />
+                <Stack.Screen
                     name="lessons/new-section"
                     options={{
                         gestureEnabled: false,
@@ -285,6 +294,15 @@ export default function AppRouter({ loggedIn }: { loggedIn: boolean }) {
                     options={{
                         presentation: "card",
                         ...transparentHeader,
+                    }}
+                />
+                <Stack.Screen
+                    name="scenarios/[id]/success"
+                    options={{
+                        presentation: "card",
+                        headerShown: false,
+                        animation: "fade",
+                        gestureEnabled: false,
                     }}
                 />
             </Stack>

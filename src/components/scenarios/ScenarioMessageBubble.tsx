@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { ThemedText } from "../ui/ThemedText";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import HapticNativeTouchable from "../input/button/HapticNativeTouchable";
@@ -9,6 +9,9 @@ import { useTranslation } from "react-i18next";
 import { useBottomSheet } from "@/context/BottomSheetContext";
 import TranslateBottomSheet from "../translate/TranslateBottomSheet";
 import { useCurrentCourse } from "@/hooks/course";
+import axios from "axios";
+import { useAudioBubble } from "@/context/AudioBubbleContext";
+import { useState } from "react";
 
 function ScenarioButton({ icon, onPress }: { icon: any; onPress: () => void }) {
     const colors = useThemeColors();
@@ -26,15 +29,22 @@ export default function ScenarioMessageBubble({
     content,
     userMessage,
     id,
+    scenarioId,
+    sessionId,
 }: {
     content: string;
     userMessage: boolean;
     id: string;
+    scenarioId: string;
+    sessionId: string;
 }) {
     const colors = useThemeColors();
     const { t } = useTranslation();
     const bottomSheet = useBottomSheet();
     const course = useCurrentCourse();
+    const audioBubble = useAudioBubble();
+
+    const [audioLoading, setAudioLoading] = useState(false);
 
     if (!userMessage) {
         return (
@@ -67,7 +77,43 @@ export default function ScenarioMessageBubble({
                             });
                         }}
                     />
-                    <ScenarioButton icon={Volume2} onPress={() => {}} />
+                    {audioLoading ? (
+                        <ActivityIndicator size={16} />
+                    ) : (
+                        <ScenarioButton
+                            icon={Volume2}
+                            onPress={async () => {
+                                try {
+                                    setAudioLoading(true);
+
+                                    const data = await axios.post(
+                                        `/v1/courses/${
+                                            course.currentCourse!.id
+                                        }/scenarios/${scenarioId}/${sessionId}/messages/${id}/tts`,
+                                        {
+                                            language:
+                                                course.currentCourse!
+                                                    .languageCode,
+                                        }
+                                    );
+
+                                    if (data.status != 200) {
+                                        return;
+                                    }
+
+                                    audioBubble.setAudioUrl(data.data.url);
+                                } catch (e) {
+                                    console.error(e);
+                                    Toast.show({
+                                        type: "error",
+                                        text1: t("errors.something_went_wrong"),
+                                    });
+                                } finally {
+                                    setAudioLoading(false);
+                                }
+                            }}
+                        />
+                    )}
                 </View>
             </View>
         );

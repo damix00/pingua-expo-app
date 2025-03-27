@@ -7,7 +7,7 @@ import {
     View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { TextInput } from "react-native-gesture-handler";
+import { ScrollView, TextInput } from "react-native-gesture-handler";
 import useKeyboardHeight from "@/hooks/useKeyboardHeight";
 import Animated, {
     FadeIn,
@@ -22,7 +22,7 @@ import { useAuth } from "@/context/AuthContext";
 import useHaptics from "@/hooks/useHaptics";
 import { ImpactFeedbackStyle } from "expo-haptics";
 import HapticNativeTouchable from "@/components/input/button/HapticNativeTouchable";
-import { ArrowUp, Lightbulb } from "lucide-react-native";
+import { ArrowUp, Headphones, Lightbulb } from "lucide-react-native";
 import { AnimatedIosBlurView } from "@/components/IosBlurView";
 import { AnimatedThemedText } from "@/components/ui/ThemedText";
 
@@ -100,7 +100,11 @@ export default function MessageInput({
     onSend,
     disableSending = false,
 }: {
-    onSend: (message: string, shouldReason: boolean) => void;
+    onSend: (
+        message: string,
+        shouldReason: boolean,
+        audioMode: boolean
+    ) => void;
     disableSending?: boolean;
 }) {
     const colors = useThemeColors();
@@ -116,6 +120,7 @@ export default function MessageInput({
     }));
 
     const [shouldReason, setShouldReason] = useState(auth.user?.plan != "FREE");
+    const [audioMode, setAudioMode] = useState(false);
     const [message, setMessage] = useState("");
 
     let canSend = !disableSending && message.trim().length > 0;
@@ -133,9 +138,9 @@ export default function MessageInput({
     const sendMessage = useCallback(() => {
         if (message.trim().length == 0) return;
 
-        onSend(message.trim(), shouldReason);
+        onSend(message.trim(), shouldReason, audioMode);
         setMessage("");
-    }, [message, shouldReason]);
+    }, [message, shouldReason, audioMode, onSend]);
 
     return (
         <AnimatedIosBlurView
@@ -170,14 +175,32 @@ export default function MessageInput({
                 multiline
             />
             <View style={styles.buttons}>
-                <ToggleChip
-                    selected={shouldReason}
-                    onSelect={() => {
-                        setShouldReason((prev) => !prev);
-                    }}
-                    text={t("scenarios.reason")}
-                    icon={Lightbulb}
-                />
+                <ScrollView
+                    style={{ flex: 1 }}
+                    horizontal
+                    alwaysBounceHorizontal={false}
+                    contentContainerStyle={{
+                        gap: 8,
+                    }}>
+                    {auth.user?.plan != "FREE" && (
+                        <ToggleChip
+                            selected={shouldReason}
+                            onSelect={() => {
+                                setShouldReason((prev) => !prev);
+                            }}
+                            text={t("scenarios.reason")}
+                            icon={Lightbulb}
+                        />
+                    )}
+                    <ToggleChip
+                        selected={audioMode}
+                        onSelect={() => {
+                            setAudioMode((prev) => !prev);
+                        }}
+                        text={t("chats.audioMode")}
+                        icon={Headphones}
+                    />
+                </ScrollView>
                 <Animated.View style={sendBtnStyle}>
                     <HapticNativeTouchable
                         androidBorderRadius={28}
@@ -223,7 +246,8 @@ const styles = StyleSheet.create({
         width: "100%",
         alignItems: "flex-end",
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "flex-start",
+        gap: 8,
         paddingHorizontal: 12,
         marginBottom: 12,
     },

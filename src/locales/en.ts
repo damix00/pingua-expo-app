@@ -243,6 +243,7 @@ export default {
         clear: "Clear chat",
         clearChatPrompt:
             "Are you sure you want to clear this chat? This action cannot be undone.",
+        audioMode: "Audio mode",
     },
     translation: {
         from: "From",
@@ -322,5 +323,15 @@ export default {
         description:
             "This feature is only available to Premium members. Subscribe now to unlock it.",
         subscribe: "Subscribe",
+    },
+    streak: {
+        title: "Streak",
+        noStreak:
+            "Looks like you don't have a streak yet. Solve lessons or scenarios to start building your streak!",
+        current: "Your current streak is {{count}} days.",
+        longest: "Your longest streak is {{count}} days.",
+        streakUpdated: "+1 Streak!",
+        streakUpdatedDescription:
+            "You've completed lessons for {{count}} days in a row. Good job!",
     },
 };

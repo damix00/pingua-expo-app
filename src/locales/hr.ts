@@ -250,6 +250,7 @@ const translations: typeof en = {
         clear: "Očisti chat",
         clearChatPrompt:
             "Jeste li sigurni da želite očistiti chat? Ova radnja je nepovratna.",
+        audioMode: "Audio način",
     },
     translation: {
         from: "Sa",
@@ -329,6 +330,16 @@ const translations: typeof en = {
         description:
             "Ova je značajka dostupna samo Premium korisnicima. Pretplatite se kako biste je otključali.",
         subscribe: "Pretplati se",
+    },
+    streak: {
+        title: "Streak",
+        noStreak:
+            "Izgleda da trenutno nemaš streak. Rješavaj lekcije ili scenarije kako bi ga izgradio.",
+        current: "Tvoj trenutni streak je {{count}} dan(a).",
+        longest: "Tvoj najduži streak je {{count}} dan(a).",
+        streakUpdated: "+1 Streak!",
+        streakUpdatedDescription:
+            "Završavali ste lekcije {{count}} dan(a) zaredom. Svaka čast!",
     },
 };
 
