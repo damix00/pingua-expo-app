@@ -88,6 +88,13 @@ export default function LessonSuccessPage() {
         haptics.notificationAsync(NotificationFeedbackType.Success);
         opacity3.value = withTiming(1, { duration });
 
+        if (!advanced && currentCourse.currentCourse) {
+            currentCourse.updateCurrentCourse({
+                ...currentCourse.currentCourse,
+                xp: currentCourse.currentCourse.xp + parseInt(xp),
+            });
+        }
+
         if (advanced || streak) {
             await sleep(1500);
             opacity1.value = withTiming(0, { duration });
@@ -156,15 +163,6 @@ export default function LessonSuccessPage() {
                         if (advanced) {
                             return;
                         }
-
-                        if (!currentCourse.currentCourse) {
-                            return;
-                        }
-
-                        currentCourse.updateCurrentCourse({
-                            ...currentCourse.currentCourse,
-                            xp: currentCourse.currentCourse.xp + parseInt(xp),
-                        });
 
                         router.back();
                     }}>
