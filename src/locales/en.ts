@@ -236,6 +236,7 @@ export default {
             title: "History",
             no_data: "No history found.",
         },
+        subscribeToStart: "Subscribe to start",
     },
     chats: {
         tapToChat: "Tap to chat",

@@ -74,7 +74,6 @@ export default function TranslateTab() {
     const fromText = useRef("");
 
     const auth = useAuth();
-    const isPremium = useMemo(() => auth.user?.plan != "FREE", [auth.user]);
 
     const handleTranslate = useCallback(async () => {
         if (fromText.current.length == 0) return;
@@ -95,129 +94,119 @@ export default function TranslateTab() {
     }, [from, to]);
 
     return (
-        <>
-            {!isPremium && <Paywall />}
-            <View
-                pointerEvents={isPremium ? "auto" : "auto"}
+        <View
+            style={{
+                flex: 1,
+            }}>
+            <KeyboardAwareScrollView
+                keyboardDismissMode="on-drag"
+                contentContainerStyle={{
+                    paddingHorizontal: 24,
+                    paddingTop: insets.top,
+                    paddingBottom: insets.bottom + 16 + 56,
+                }}
                 style={{
-                    flex: 1,
+                    backgroundColor: colors.background,
                 }}>
-                <KeyboardAwareScrollView
-                    keyboardDismissMode="on-drag"
-                    contentContainerStyle={{
-                        paddingHorizontal: 24,
-                        paddingTop: insets.top,
-                        paddingBottom: insets.bottom + 16 + 56,
-                    }}
-                    style={{
-                        backgroundColor: colors.background,
-                    }}>
-                    <View style={[styles.card]}>
-                        <LanguageSelectButton
-                            exclude={to}
-                            label={t("translation.from")}
-                            language={from}
-                            onSelect={(v) => {
-                                setFrom(v);
-                            }}
-                        />
+                <View style={[styles.card]}>
+                    <LanguageSelectButton
+                        exclude={to}
+                        label={t("translation.from")}
+                        language={from}
+                        onSelect={(v) => {
+                            setFrom(v);
+                        }}
+                    />
 
-                        <TextInput
-                            onChangeText={(text) => {
-                                fromText.current = text;
-                            }}
-                            multiline
+                    <TextInput
+                        onChangeText={(text) => {
+                            fromText.current = text;
+                        }}
+                        multiline
+                        style={[
+                            styles.innerCard,
+                            styles.textContent,
+                            {
+                                backgroundColor: colors.backgroundVariant,
+                                textAlignVertical: "top",
+                            },
+                        ]}
+                    />
+                </View>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: 8,
+                    }}>
+                    <View
+                        style={[
+                            styles.divider,
+                            {
+                                backgroundColor: colors.outline,
+                            },
+                        ]}
+                    />
+                    <HapticTouchableOpacity
+                        onPress={() => {
+                            // swap languages
+                            const temp = from;
+                            setFrom(to);
+                            setTo(temp);
+                        }}>
+                        <ArrowDownUp size={24} color={colors.textSecondary} />
+                    </HapticTouchableOpacity>
+                    <View
+                        style={[
+                            styles.divider,
+                            {
+                                backgroundColor: colors.outline,
+                            },
+                        ]}
+                    />
+                </View>
+                <View style={[styles.card]}>
+                    <LanguageSelectButton
+                        exclude={from}
+                        label={t("translation.to")}
+                        language={to}
+                        onSelect={(v) => {
+                            setTo(v);
+                        }}
+                    />
+
+                    {loading ? (
+                        <ActivityIndicator
+                            color={colors.primary}
+                            style={{ marginVertical: 4 }}
+                        />
+                    ) : (
+                        <View
                             style={[
                                 styles.innerCard,
-                                styles.textContent,
                                 {
                                     backgroundColor: colors.backgroundVariant,
-                                    textAlignVertical: "top",
+                                    marginTop: 4,
+                                    paddingVertical: 0,
                                 },
-                            ]}
-                        />
-                    </View>
-                    <View
-                        style={{
-                            flexDirection: "row",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: 8,
-                        }}>
-                        <View
-                            style={[
-                                styles.divider,
-                                {
-                                    backgroundColor: colors.outline,
-                                },
-                            ]}
-                        />
-                        <HapticTouchableOpacity
-                            onPress={() => {
-                                // swap languages
-                                const temp = from;
-                                setFrom(to);
-                                setTo(temp);
-                            }}>
-                            <ArrowDownUp
-                                size={24}
-                                color={colors.textSecondary}
-                            />
-                        </HapticTouchableOpacity>
-                        <View
-                            style={[
-                                styles.divider,
-                                {
-                                    backgroundColor: colors.outline,
-                                },
-                            ]}
-                        />
-                    </View>
-                    <View style={[styles.card]}>
-                        <LanguageSelectButton
-                            exclude={from}
-                            label={t("translation.to")}
-                            language={to}
-                            onSelect={(v) => {
-                                setTo(v);
-                            }}
-                        />
-
-                        {loading ? (
-                            <ActivityIndicator
-                                color={colors.primary}
-                                style={{ marginVertical: 4 }}
-                            />
-                        ) : (
-                            <View
-                                style={[
-                                    styles.innerCard,
-                                    {
-                                        backgroundColor:
-                                            colors.backgroundVariant,
-                                        marginTop: 4,
-                                        paddingVertical: 0,
-                                    },
-                                ]}>
-                                <ThemedText
-                                    selectable
-                                    selectionColor={colors.primary}
-                                    style={styles.textContent}>
-                                    {translated}
-                                </ThemedText>
-                            </View>
-                        )}
-                    </View>
-                    <View style={styles.buttonWrapper}>
-                        <Button onPress={handleTranslate}>
-                            <ButtonText>
-                                {t("translation.translate")}
-                            </ButtonText>
-                        </Button>
-                    </View>
-                </KeyboardAwareScrollView>
-            </View>
-        </>
+                            ]}>
+                            <ThemedText
+                                selectable
+                                selectionColor={colors.primary}
+                                style={styles.textContent}>
+                                {translated}
+                            </ThemedText>
+                        </View>
+                    )}
+                </View>
+                <View style={styles.buttonWrapper}>
+                    <Button onPress={handleTranslate}>
+                        <ButtonText>{t("translation.translate")}</ButtonText>
+                    </Button>
+                </View>
+            </KeyboardAwareScrollView>
+        </View>
     );
 }
 

@@ -19,6 +19,7 @@ import NativeTouchable from "@/components/input/button/NativeTouchable";
 import Toast from "react-native-toast-message";
 import axios from "axios";
 import { useCurrentCourse } from "@/hooks/course";
+import { useAuth } from "@/context/AuthContext";
 
 export default function ScenarioScreen() {
     const { id } = useLocalSearchParams<{
@@ -34,6 +35,7 @@ export default function ScenarioScreen() {
     const { t } = useTranslation();
 
     const [loading, setLoading] = useState(false);
+    const auth = useAuth();
 
     const handleStart = useCallback(async () => {
         if (!scenario || !course.currentCourse) return;
@@ -73,6 +75,13 @@ export default function ScenarioScreen() {
                         : s
                 ),
             }));
+
+            if (auth.user && auth.user?.plan == "FREE") {
+                auth.setUser({
+                    ...auth.user,
+                    freeScenariosStarted: auth.user.freeScenariosStarted + 1,
+                });
+            }
         } catch (e) {
             console.error(e);
             Toast.show({
@@ -83,6 +92,8 @@ export default function ScenarioScreen() {
             setLoading(false);
         }
     }, [scenario, id]);
+
+    console.log(auth.user);
 
     if (!scenario || !course.currentCourse) {
         return (
@@ -186,13 +197,24 @@ export default function ScenarioScreen() {
                     </View>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <Button loading={loading} onPress={handleStart}>
+                    <Button
+                        disabled={
+                            (auth.user?.freeScenariosStarted ?? 0) > 0 &&
+                            auth.user?.plan == "FREE"
+                        }
+                        loading={loading}
+                        onPress={handleStart}>
                         <ButtonText>
-                            {scenario.status == "finished" &&
+                            {scenario.status === "finished" &&
                                 t("scenarios.actions.startNew")}
-                            {scenario.status == "started" &&
+                            {auth.user?.plan === "FREE" &&
+                                scenario.status !== "started" &&
+                                t("scenarios.subscribeToStart")}
+                            {auth.user?.plan !== "FREE" &&
+                                scenario.status === "started" &&
                                 t("scenarios.actions.continue")}
-                            {scenario.status == null &&
+                            {auth.user?.plan !== "FREE" &&
+                                scenario.status == null &&
                                 t("scenarios.actions.start")}
                         </ButtonText>
                     </Button>

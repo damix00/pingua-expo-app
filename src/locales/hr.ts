@@ -243,6 +243,7 @@ const translations: typeof en = {
             title: "Povijest",
             no_data: "Nema podataka za prikaz.",
         },
+        subscribeToStart: "Pretplati se za početak",
     },
     chats: {
         tapToChat: "Dodirni za chat",

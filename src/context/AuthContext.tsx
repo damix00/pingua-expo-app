@@ -11,6 +11,7 @@ export type AuthUser = {
     xp: number;
     plan: Plan;
     planExpiresAt: Date | null;
+    freeScenariosStarted: number;
     streak: {
         current: number;
         longest: number;
