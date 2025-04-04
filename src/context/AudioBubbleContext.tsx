@@ -24,7 +24,16 @@ export function AudioBubbleProvider({
                 audioUrl,
                 setAudioUrl,
             }}>
-            {audioUrl && <AudioBubble key={audioUrl} uri={audioUrl} />}
+            {audioUrl && (
+                <AudioBubble
+                    key={audioUrl}
+                    uri={audioUrl}
+                    context={{
+                        audioUrl,
+                        setAudioUrl,
+                    }}
+                />
+            )}
             {children}
         </AudioBubbleContext.Provider>
     );

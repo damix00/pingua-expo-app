@@ -1,5 +1,5 @@
 import { useAudioBubble } from "@/context/AudioBubbleContext";
-import { Audio, InterruptionModeAndroid } from "expo-av";
+import { Audio, AVPlaybackStatus, InterruptionModeAndroid } from "expo-av";
 import { InterruptionModeIOS } from "expo-av/src/Audio.types";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
@@ -20,21 +20,52 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import HapticNativeTouchable from "../input/button/HapticNativeTouchable";
 import { Pause, Play, X } from "lucide-react-native";
 
-export default function AudioBubble({ uri }: { uri: string }) {
+export default function AudioBubble({
+    uri,
+    context,
+}: {
+    uri: string;
+    context: {
+        setAudioUrl: (audioUrl: string) => void;
+        audioUrl: string;
+    };
+}) {
     const soundRef = useRef<Audio.Sound>();
-    const audioBubble = useAudioBubble();
     const colors = useThemeColors();
     const insets = useSafeAreaInsets();
 
     const [duration, setDuration] = useState<number>(0);
     const [currentPosition, setCurrentPosition] = useState<number>(0);
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    const isPlayingRef = useRef<boolean>(false);
 
     const prevY = useSharedValue(0);
 
     const yPos = useSharedValue(insets.top);
 
-    const playSound = useCallback(async () => {
+    const onPlaybackStatusUpdate = useCallback(
+        (status: AVPlaybackStatus) => {
+            if (status.isLoaded && status.didJustFinish) {
+                soundRef.current?.unloadAsync();
+                context.setAudioUrl("");
+            }
+
+            if (status.isLoaded) {
+                if (duration != status.durationMillis) {
+                    setDuration((status.durationMillis ?? 0) / 1000);
+                }
+                setCurrentPosition(status.positionMillis / 1000);
+
+                if (status.isPlaying != isPlayingRef.current) {
+                    setIsPlaying(status.isPlaying);
+                    isPlayingRef.current = status.isPlaying;
+                }
+            }
+        },
+        [context, duration, isPlaying]
+    );
+
+    const playSound = async () => {
         const sound = new Audio.Sound();
         await sound.loadAsync({ uri });
 
@@ -48,26 +79,11 @@ export default function AudioBubble({ uri }: { uri: string }) {
 
         soundRef.current = sound;
 
-        sound.setOnPlaybackStatusUpdate((status) => {
-            if (status.isLoaded && status.didJustFinish) {
-                sound.unloadAsync();
-                audioBubble.setAudioUrl("");
-            }
-
-            if (status.isLoaded) {
-                if (duration != status.durationMillis) {
-                    setDuration((status.durationMillis ?? 0) / 1000);
-                }
-                setCurrentPosition(status.positionMillis / 1000);
-
-                if (status.isPlaying != isPlaying) {
-                    setIsPlaying(status.isPlaying);
-                }
-            }
-        });
+        sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
+        sound.setProgressUpdateIntervalAsync(1000);
 
         await sound.playAsync();
-    }, [uri]);
+    };
 
     useEffect(() => {
         if (!uri || uri.length == 0) return;
@@ -150,7 +166,7 @@ export default function AudioBubble({ uri }: { uri: string }) {
                             soundRef.current?.stopAsync();
                             soundRef.current?.unloadAsync();
 
-                            audioBubble.setAudioUrl("");
+                            context.setAudioUrl("");
                         }}>
                         <X size={24} color={colors.text} />
                     </HapticNativeTouchable>
