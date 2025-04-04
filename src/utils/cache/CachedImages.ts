@@ -16,6 +16,11 @@ const jaxonAvatar = jaxonPfp;
 const saraAvatar = saraPfp;
 const mrWilliamsAvatar = mrWilliamsPfp;
 
+const mascotSuccess = require("@/assets/images/mascot.png");
+const fireAnimation = require("@/assets/ui/fire.json");
+const highFiveAnimation = require("@/assets/ui/high_five.json");
+const clappingAnimation = require("@/assets/ui/clapping.json");
+
 export {
     auraBg,
     staticBg,
@@ -25,4 +30,8 @@ export {
     jaxonAvatar,
     saraAvatar,
     mrWilliamsAvatar,
+    mascotSuccess,
+    fireAnimation,
+    highFiveAnimation,
+    clappingAnimation,
 };

@@ -33,14 +33,14 @@ export async function loadPreferences(): Promise<PreferencesType> {
 
 // Function to save preferences to AsyncStorage
 export async function savePreferences(preferences: Partial<PreferencesType>) {
-    if (preferences.hapticFeedback) {
+    if (preferences.hapticFeedback !== undefined) {
         await AsyncStorage.setItem(
             "hapticFeedback",
             preferences.hapticFeedback.toString()
         );
     }
 
-    if (preferences.darkMode) {
+    if (preferences.darkMode !== undefined) {
         await AsyncStorage.setItem("darkMode", preferences.darkMode);
     }
 }

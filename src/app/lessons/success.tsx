@@ -5,11 +5,13 @@ import { ThemedText } from "@/components/ui/ThemedText";
 import { useAuth } from "@/context/AuthContext";
 import { useCurrentCourse } from "@/hooks/course";
 import useHaptics from "@/hooks/useHaptics";
+import { clappingAnimation } from "@/utils/cache/CachedImages";
 import { saveUserCache } from "@/utils/cache/user-cache";
 import { sleep } from "@/utils/util";
 import axios from "axios";
 import { ImpactFeedbackStyle, NotificationFeedbackType } from "expo-haptics";
 import { router, useLocalSearchParams } from "expo-router";
+import LottieView from "lottie-react-native";
 import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
@@ -37,6 +39,8 @@ export default function LessonSuccessPage() {
     const auth = useAuth();
 
     const { t } = useTranslation();
+
+    const animOpacity = useSharedValue(0);
 
     const opacity1 = useSharedValue(0);
     const scale1 = useSharedValue(0.8);
@@ -71,6 +75,12 @@ export default function LessonSuccessPage() {
         haptics.successVibration();
 
         await sleep(1000);
+        animOpacity.value = withTiming(1, {
+            duration: 1000,
+            easing: Easing.out(Easing.exp),
+        });
+        await sleep(200);
+
         opacity1.value = withTiming(1, {
             duration: 1000,
             easing: Easing.out(Easing.exp),
@@ -129,6 +139,16 @@ export default function LessonSuccessPage() {
                 },
             ]}>
             <View style={styles.textContainer}>
+                <Animated.View
+                    style={{
+                        opacity: animOpacity,
+                    }}>
+                    <LottieView
+                        autoPlay
+                        style={styles.animation}
+                        source={clappingAnimation}
+                    />
+                </Animated.View>
                 <Animated.View
                     style={[
                         {
@@ -201,5 +221,11 @@ const styles = StyleSheet.create({
         fontSize: 48,
         marginTop: 12,
         textAlign: "center",
+    },
+    animation: {
+        width: 200,
+        height: 100,
+        alignSelf: "center",
+        marginBottom: 16,
     },
 });

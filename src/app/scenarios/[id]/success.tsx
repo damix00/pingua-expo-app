@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import Animated, {
@@ -16,6 +16,8 @@ import Button from "@/components/input/button/Button";
 import { router, useLocalSearchParams } from "expo-router";
 import ButtonText from "@/components/input/button/ButtonText";
 import { useTranslation } from "react-i18next";
+import LottieView from "lottie-react-native";
+import { highFiveAnimation } from "@/utils/cache/CachedImages";
 
 export default function ScenarioSuccessPage() {
     const { updatedStreak } = useLocalSearchParams<{
@@ -32,11 +34,14 @@ export default function ScenarioSuccessPage() {
     const scale = useSharedValue(0.8);
 
     const btnOpacity = useSharedValue(0);
+    const animation = useRef<LottieView>(null);
 
     const animate = useCallback(async () => {
         haptics.successVibration();
 
         await sleep(1500);
+
+        animation.current?.play();
 
         opacity.value = withTiming(1, {
             duration: 1000,
@@ -89,14 +94,21 @@ export default function ScenarioSuccessPage() {
                     {
                         flex: 1,
                         justifyContent: "center",
+                        alignItems: "center",
                     },
                 ]}>
+                <LottieView
+                    autoPlay={false}
+                    ref={animation}
+                    style={styles.animation}
+                    source={highFiveAnimation}
+                />
                 <ThemedText
                     fontWeight="800"
                     style={{
                         fontSize: 32,
                     }}>
-                    Success!
+                    {t("scenarios.success")}
                 </ThemedText>
             </Animated.View>
             {streak ? (
@@ -124,5 +136,11 @@ const styles = StyleSheet.create({
     },
     btn: {
         width: "100%",
+    },
+    animation: {
+        width: 200,
+        height: 200,
+        alignSelf: "center",
+        marginBottom: 16,
     },
 });

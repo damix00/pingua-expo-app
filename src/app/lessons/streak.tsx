@@ -18,6 +18,8 @@ import { View } from "react-native";
 import useHaptics from "@/hooks/useHaptics";
 import { sleep } from "@/utils/util";
 import { ImpactFeedbackStyle, NotificationFeedbackType } from "expo-haptics";
+import LottieView from "lottie-react-native";
+import { fireAnimation } from "@/utils/cache/CachedImages";
 
 export default function StreakUpdatePage() {
     const auth = useAuth();
@@ -26,6 +28,9 @@ export default function StreakUpdatePage() {
     const haptics = useHaptics();
 
     // Shared values for animations
+    const animOpacity = useSharedValue(0);
+    const animScale = useSharedValue(0.8);
+
     const streakOpacity = useSharedValue(0);
     const streakScale = useSharedValue(0.8);
 
@@ -43,6 +48,11 @@ export default function StreakUpdatePage() {
         haptics.successVibration();
 
         await sleep(1500);
+
+        animOpacity.value = withTiming(1, jumpingAnimOptions);
+        animScale.value = withTiming(1, jumpingAnimOptions);
+
+        await sleep(200);
 
         streakOpacity.value = withTiming(1, jumpingAnimOptions);
         streakScale.value = withTiming(1, jumpingAnimOptions);
@@ -89,6 +99,21 @@ export default function StreakUpdatePage() {
                 },
             ]}>
             <View style={styles.textContainer}>
+                <Animated.View
+                    style={{
+                        opacity: animOpacity,
+                        transform: [
+                            {
+                                scale: animScale,
+                            },
+                        ],
+                    }}>
+                    <LottieView
+                        autoPlay
+                        style={styles.animation}
+                        source={fireAnimation}
+                    />
+                </Animated.View>
                 <AnimatedThemedText
                     fontWeight="800"
                     style={[
@@ -149,5 +174,11 @@ const styles = StyleSheet.create({
     },
     streakText: {
         textAlign: "center",
+    },
+    animation: {
+        width: 200,
+        height: 200,
+        alignSelf: "center",
+        marginBottom: 16,
     },
 });
