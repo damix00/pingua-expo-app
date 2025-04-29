@@ -8,6 +8,8 @@
 
 🥈 2nd Place in the national computer science competition in the Software Development category in Croatia, 2025.
 
+Check out the [backend](https://github.com/damix00/pingua-backend) and [CMS](https://github.com/damix00/pingua-cms) aswell.
+
 ## 🎯 Purpose
 
 Pingua is built for people who want to:
