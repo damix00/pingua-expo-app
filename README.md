@@ -1,6 +1,10 @@
 # 🐧 Pingua – Language Learning Made Fun
 
+![Pingua logo](https://github.com/joinpingua/expo-app/blob/a432e1351ca42fb0dd26c09cf7371de52c356f50/src/assets/images/mascot.png)
+
 **Pingua** is a playful and engaging mobile app that helps you learn new languages the fun way. No pressure, no rigid lessons — just interactive practice, games, and a friendly penguin to cheer you on.
+
+**The documentation was written by @FranGalovic13, and the app images were made by @josip858.**
 
 ## 🎯 Purpose
 
@@ -20,7 +24,7 @@ Pingua is built for people who want to:
 
 - React Native / Expo
 - Reanimated
-- React native new architecture
+- React Native new architecture
 
 ## 🚀 Installation (Dev)
 
