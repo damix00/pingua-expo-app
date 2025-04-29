@@ -6,6 +6,8 @@
 
 **The documentation was written by @FranGalovic13, and the app images were made by @josip858.**
 
+🥈 2nd Place in the national computer science competition in the Software Development category in Croatia, 2025.
+
 ## 🎯 Purpose
 
 Pingua is built for people who want to:
