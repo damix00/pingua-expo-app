@@ -1,50 +1,36 @@
-# Welcome to your Expo app 👋
+# 🐧 Pingua – Language Learning Made Fun
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Pingua** is a playful and engaging mobile app that helps you learn new languages the fun way. No pressure, no rigid lessons — just interactive practice, games, and a friendly penguin to cheer you on.
 
-## Get started
+## 🎯 Purpose
 
-1. Install dependencies
+Pingua is built for people who want to:
+- Learn a new language casually and enjoyably
+- Practice speaking, listening, and vocabulary through interactive activities
+- Have fun while leveling up their language skills
 
-   ```bash
-   npm install
-   ```
+## 🧩 Key Features
 
-2. Start the app
+- **Daily Practice** – Quick sessions to build consistency.
+- **Roleplay Chats** – Practice real-life situations with AI-driven conversations.
+- **Streaks & Rewards** – Keep up the habit with gamification.
+- **Cute Penguin Mascot** – Your language-learning buddy.
 
-   ```bash
-    npx expo start
-   ```
+## 📱 Tech Stack
 
-In the output, you'll find options to open the app in a
+- React Native / Expo
+- Reanimated
+- React native new architecture
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## 🚀 Installation (Dev)
 
 ```bash
-npm run reset-project
+git clone https://github.com/joinpingua/expo-app.git
+cd expo-app
+npm install
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## 🗣️ Contributing
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Open to contributions! If you have ideas to make language learning even more fun, open a PR or drop an issue.
